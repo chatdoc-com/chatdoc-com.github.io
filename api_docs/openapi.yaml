@@ -1,0 +1,520 @@
+---
+openapi: 3.0.2
+info:
+  title: ChatDOC API
+  version: 0.1.0
+  x-logo:
+    url: https://chatdoc.com/chatdoc/chatdoc.webp
+    backgroundColor: "#FFFFFF"
+    altText: ChatDOC API
+servers:
+- url: "/api/v1/external"
+tags:
+- name: Get Started
+  description: Get Started description
+- name: Documents
+- name: Question
+paths:
+  "/documents/collection":
+    post:
+      tags:
+      - Documents
+      summary: Create Collection
+      operationId: create_collection_documents_collection_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CollectionReq"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UploadResp"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - HTTPBearer: []
+      - HTTPBearer: []
+  "/documents/upload":
+    post:
+      tags:
+      - Documents
+      summary: Upload Document
+      operationId: upload_document_documents_upload_post
+      parameters:
+      - required: false
+        schema:
+          title: Collection Id
+          type: string
+        name: collection_id
+        in: query
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              "$ref": "#/components/schemas/Body_upload_document_documents_upload_post"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UploadResp"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - HTTPBearer: []
+      - HTTPBearer: []
+      - HTTPBearer: []
+  "/documents/{upload_id}":
+    get:
+      tags:
+      - Documents
+      summary: Get Document
+      operationId: get_document_documents__upload_id__get
+      parameters:
+      - required: true
+        schema:
+          title: Upload Id
+          type: string
+        name: upload_id
+        in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UploadResp"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - HTTPBearer: []
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Documents
+      summary: Delete Document
+      operationId: delete_document_documents__upload_id__delete
+      parameters:
+      - required: true
+        schema:
+          title: Upload Id
+          type: string
+        name: upload_id
+        in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UploadResp"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - HTTPBearer: []
+      - HTTPBearer: []
+  "/documents/{upload_id}/chat":
+    post:
+      tags:
+      - Documents
+      summary: Chat Stream
+      operationId: chat_stream_documents__upload_id__chat_post
+      parameters:
+      - required: true
+        schema:
+          title: Upload Id
+          type: string
+        name: upload_id
+        in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/QuestionReq"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - HTTPBearer: []
+      - HTTPBearer: []
+      - HTTPBearer: []
+  "/documents/{upload_id}/elements":
+    get:
+      tags:
+      - Documents
+      summary: Get Element
+      operationId: get_element_documents__upload_id__elements_get
+      parameters:
+      - required: true
+        schema:
+          title: Upload Id
+          type: string
+        name: upload_id
+        in: path
+      - required: true
+        schema:
+          title: Page
+          type: array
+          items:
+            type: integer
+        name: page
+        in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Get Element Documents  Upload Id  Elements Get
+                type: array
+                items:
+                  type: object
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - HTTPBearer: []
+      - HTTPBearer: []
+  "/documents/{upload_id}/recommend-questions":
+    get:
+      tags:
+      - Documents
+      summary: Recommend
+      description: |-
+        Recommend questions for a document, defaults to 5.
+
+        Response example:
+        ```
+        [
+                "What is the name of the author?",
+                "What is the name of the book?",
+                "When was the book published?",
+                "What is the name of the publisher?",
+                "Where is the book published?"
+        ]
+        ```
+      operationId: recommend_documents__upload_id__recommend_questions_get
+      parameters:
+      - required: true
+        schema:
+          title: Upload Id
+          type: string
+        name: upload_id
+        in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Recommend Documents  Upload Id  Recommend Questions
+                  Get
+                type: array
+                items:
+                  type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - HTTPBearer: []
+      - HTTPBearer: []
+  "/documents/{upload_id}/download":
+    get:
+      tags:
+      - Documents
+      summary: Download Document
+      description: Support range request
+      operationId: download_document_documents__upload_id__download_get
+      parameters:
+      - required: true
+        schema:
+          title: Upload Id
+          type: string
+        name: upload_id
+        in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - HTTPBearer: []
+      - HTTPBearer: []
+  "/questions/{question_id}":
+    get:
+      tags:
+      - Question
+      summary: Get Question
+      operationId: get_question_questions__question_id__get
+      parameters:
+      - required: true
+        schema:
+          title: Question Id
+          type: integer
+        name: question_id
+        in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - HTTPBearer: []
+      - HTTPBearer: []
+components:
+  schemas:
+    Body_upload_document_documents_upload_post:
+      title: Body_upload_document_documents_upload_post
+      required:
+      - file
+      type: object
+      properties:
+        file:
+          title: File
+          type: string
+          format: binary
+    ChatMessage:
+      title: ChatMessage
+      required:
+      - role
+      - content
+      type: object
+      properties:
+        role:
+          "$ref": "#/components/schemas/ChatRoleEnum"
+        content:
+          title: Content
+          type: string
+    ChatRoleEnum:
+      title: ChatRoleEnum
+      enum:
+      - assistant
+      - user
+      type: string
+      description: An enumeration.
+    CollectionReq:
+      title: CollectionReq
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          title: Name
+          maxLength: 80
+          minLength: 1
+          type: string
+    DocumentStatus:
+      title: DocumentStatus
+      enum:
+      - 1
+      - 7
+      - 10
+      - 12
+      - 15
+      - 20
+      - 25
+      - 30
+      - 40
+      - 50
+      - 70
+      - 120
+      - 210
+      - 300
+      - 0
+      - -1
+      - -2
+      - -3
+      - -4
+      - -5
+      - -6
+      - -10
+      - -11
+      - -12
+      - -13
+      type: integer
+      description: An enumeration.
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            "$ref": "#/components/schemas/ValidationError"
+    QuestionReq:
+      title: QuestionReq
+      required:
+      - question
+      type: object
+      properties:
+        question:
+          title: Question
+          maxLength: 3000
+          minLength: 1
+          type: string
+        selected_meta:
+          "$ref": "#/components/schemas/SelectedMeta"
+        history:
+          title: History
+          type: array
+          items:
+            "$ref": "#/components/schemas/ChatMessage"
+          default: []
+        search_entire_doc:
+          title: Search Entire Doc
+          type: boolean
+          default: true
+        detailed_citation:
+          title: Detailed Citation
+          type: boolean
+          default: true
+        language:
+          title: Language
+          type: string
+    SelectedMeta:
+      title: SelectedMeta
+      required:
+      - selected_text
+      - selected_source
+      type: object
+      properties:
+        selected_text:
+          title: Selected Text
+          type: string
+        selected_source:
+          title: Selected Source
+          type: array
+          items:
+            "$ref": "#/components/schemas/SourceItemSchema"
+    SourceItemSchema:
+      title: SourceItemSchema
+      required:
+      - upload_id
+      - rects
+      type: object
+      properties:
+        upload_id:
+          title: Upload Id
+          type: string
+        rects:
+          title: Rects
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+    UploadResp:
+      title: UploadResp
+      required:
+      - id
+      - status
+      - name
+      - created_at
+      - type
+      type: object
+      properties:
+        id:
+          title: Id
+          type: string
+        status:
+          "$ref": "#/components/schemas/DocumentStatus"
+        name:
+          title: Name
+          type: string
+        created_at:
+          title: Created At
+          type: integer
+        type:
+          "$ref": "#/components/schemas/UploadType"
+        document_count:
+          title: Document Count
+          type: integer
+    UploadType:
+      title: UploadType
+      enum:
+      - collection
+      - single_doc
+      - doc_of_collection
+      type: string
+      description: An enumeration.
+    ValidationError:
+      title: ValidationError
+      required:
+      - loc
+      - msg
+      - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
