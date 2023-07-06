@@ -1,199 +1,256 @@
----
 openapi: 3.0.2
 info:
   title: ChatDOC API
+  description: |2
+    # Introduction
+
+    ChatDOC helps you chat with documents, and get instant answers with cited sources. The reference is your key to a comprehensive understanding of the ChatDOC API.
+
+    Developers can use the API to access ChatDOC's documents and questions, and build interactive experiences for users outside ChatDOC. Below you'll find details for objects and endpoints used in the API.
+
+
+    > You need an API key to interact with the ChatDOC API. You can create keys after you buy the API package or membership plan.
+
+    ## Conventions
+
+    The base URL to send all API requests is https://chatdoc.com/api. HTTPS is required for all API requests.
+
+    The ChatDOC API follows RESTful conventions when possible, with most operations performed via GET, POST, PUT, and DELETE requests. Request and response bodies are encoded as JSON.
+
+    ## JSON conventions
+
+    * Response body of success requests is generally as follows:
+
+        ```json
+        {
+          "status": "ok",
+          "data": {
+            "id": 160,
+            "name": "Bo",
+            ...
+          }
+        }
+        ```
+
+        * `status` and `data` are common properties.
+        * Object properties are contained directly in `data`, there is no extra model objects. (e.g. "document", "user", etc.)
+    * Property names are in snake_case (not camelCase or kebab-case).
+    * Time is stored as [Unix timestamps](https://www.unixtimestamp.com/) in seconds, and this point in time technically does not change no matter where you are located on the globe. You can convert it to datetime of your local timezone.
+
+    ## Request limits
+
+    To ensure a consistent developer experience for all API users, the ChatDOC API is rate limited.
+
+    ## Authentication
+
+    Requests use the HTTP `Authorization` header to both authenticate and authorize operations. The ChatDOC API accepts bearer tokens in this header. Bearer keys can be managed in our web site.
+
+    ```curl
+    curl 'https://chatdoc.com/api/v1/external/documents/upload'   -H 'Authorization: Bearer '"$NOTION_ACCESS_TOKEN"''
+    ```
+
+    ## Objects
+
+    ### Documents
+
+    You can first upload documents to get started.
+
+    * Supported document formats including pdf, docx/doc, and more formats such as markdown, epub are upcoming.
+    * As for questioning, a document can be standalone or grouped as a `collection`, each file collection is a customized database, and you can acquire knowledge effortlessly through conversation.
+
+    ### Questions
+
+    Namely chat, there can be [4 Ways to Make Queries](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7):
+
+    * **Try our Suggested Queries**
+    * **Ask About Full Text**
+    * **Ask About Selected Text**
+    * **Query across multi docs**
+
+    ## Endpoints
   version: 0.1.0
-  x-logo:
-    url: https://chatdoc.com/chatdoc/chatdoc.webp
-    backgroundColor: "#FFFFFF"
-    altText: ChatDOC API
 servers:
-- url: "/api/v1/external"
-tags:
-- name: Get Started
-  description: Get Started description
-- name: Documents
-- name: Question
+  - url: /api/v1/external
 paths:
-  "/documents/collection":
+  /documents/collection:
     post:
       tags:
-      - Documents
+        - Documents
       summary: Create Collection
       operationId: create_collection_documents_collection_post
       requestBody:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/CollectionReq"
+              $ref: '#/components/schemas/CollectionReq'
         required: true
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/UploadResp"
-        '422':
+                $ref: '#/components/schemas/UploadResp'
+        "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-      - HTTPBearer: []
-      - HTTPBearer: []
-  "/documents/upload":
+        - HTTPBearer: []
+        - HTTPBearer: []
+  /documents/upload:
     post:
       tags:
-      - Documents
+        - Documents
       summary: Upload Document
       operationId: upload_document_documents_upload_post
       parameters:
-      - required: false
-        schema:
-          title: Collection Id
-          type: string
-        name: collection_id
-        in: query
+        - required: false
+          schema:
+            title: Collection Id
+            type: string
+          name: collection_id
+          in: query
       requestBody:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/Body_upload_document_documents_upload_post"
+              $ref: '#/components/schemas/Body_upload_document_documents_upload_post'
         required: true
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/UploadResp"
-        '422':
+                $ref: '#/components/schemas/UploadResp'
+        "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-      - HTTPBearer: []
-      - HTTPBearer: []
-      - HTTPBearer: []
-  "/documents/{upload_id}":
+        - HTTPBearer: []
+        - HTTPBearer: []
+        - HTTPBearer: []
+  /documents/{upload_id}:
     get:
       tags:
-      - Documents
+        - Documents
       summary: Get Document
       operationId: get_document_documents__upload_id__get
       parameters:
-      - required: true
-        schema:
-          title: Upload Id
-          type: string
-        name: upload_id
-        in: path
+        - required: true
+          schema:
+            title: Upload Id
+            type: string
+          name: upload_id
+          in: path
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/UploadResp"
-        '422':
+                $ref: '#/components/schemas/UploadResp'
+        "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-      - HTTPBearer: []
-      - HTTPBearer: []
+        - HTTPBearer: []
+        - HTTPBearer: []
     delete:
       tags:
-      - Documents
+        - Documents
       summary: Delete Document
       operationId: delete_document_documents__upload_id__delete
       parameters:
-      - required: true
-        schema:
-          title: Upload Id
-          type: string
-        name: upload_id
-        in: path
+        - required: true
+          schema:
+            title: Upload Id
+            type: string
+          name: upload_id
+          in: path
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/UploadResp"
-        '422':
+                $ref: '#/components/schemas/UploadResp'
+        "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-      - HTTPBearer: []
-      - HTTPBearer: []
-  "/documents/{upload_id}/chat":
+        - HTTPBearer: []
+        - HTTPBearer: []
+  /documents/{upload_id}/chat:
     post:
       tags:
-      - Documents
+        - Documents
       summary: Chat Stream
       operationId: chat_stream_documents__upload_id__chat_post
       parameters:
-      - required: true
-        schema:
-          title: Upload Id
-          type: string
-        name: upload_id
-        in: path
+        - required: true
+          schema:
+            title: Upload Id
+            type: string
+          name: upload_id
+          in: path
       requestBody:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/QuestionReq"
+              $ref: '#/components/schemas/QuestionReq'
         required: true
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema: {}
-        '422':
+        "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-      - HTTPBearer: []
-      - HTTPBearer: []
-      - HTTPBearer: []
-  "/documents/{upload_id}/elements":
+        - HTTPBearer: []
+        - HTTPBearer: []
+        - HTTPBearer: []
+  /documents/{upload_id}/elements:
     get:
       tags:
-      - Documents
+        - Documents
       summary: Get Element
       operationId: get_element_documents__upload_id__elements_get
       parameters:
-      - required: true
-        schema:
-          title: Upload Id
-          type: string
-        name: upload_id
-        in: path
-      - required: true
-        schema:
-          title: Page
-          type: array
-          items:
-            type: integer
-        name: page
-        in: query
+        - required: true
+          schema:
+            title: Upload Id
+            type: string
+          name: upload_id
+          in: path
+        - required: true
+          schema:
+            title: Page
+            type: array
+            items:
+              type: integer
+          name: page
+          in: query
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
@@ -202,19 +259,19 @@ paths:
                 type: array
                 items:
                   type: object
-        '422':
+        "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-      - HTTPBearer: []
-      - HTTPBearer: []
-  "/documents/{upload_id}/recommend-questions":
+        - HTTPBearer: []
+        - HTTPBearer: []
+  /documents/{upload_id}/recommend-questions:
     get:
       tags:
-      - Documents
+        - Documents
       summary: Recommend
       description: |-
         Recommend questions for a document, defaults to 5.
@@ -231,95 +288,94 @@ paths:
         ```
       operationId: recommend_documents__upload_id__recommend_questions_get
       parameters:
-      - required: true
-        schema:
-          title: Upload Id
-          type: string
-        name: upload_id
-        in: path
+        - required: true
+          schema:
+            title: Upload Id
+            type: string
+          name: upload_id
+          in: path
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                title: Response Recommend Documents  Upload Id  Recommend Questions
-                  Get
+                title: Response Recommend Documents  Upload Id  Recommend Questions Get
                 type: array
                 items:
                   type: string
-        '422':
+        "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-      - HTTPBearer: []
-      - HTTPBearer: []
-  "/documents/{upload_id}/download":
+        - HTTPBearer: []
+        - HTTPBearer: []
+  /documents/{upload_id}/download:
     get:
       tags:
-      - Documents
+        - Documents
       summary: Download Document
       description: Support range request
       operationId: download_document_documents__upload_id__download_get
       parameters:
-      - required: true
-        schema:
-          title: Upload Id
-          type: string
-        name: upload_id
-        in: path
+        - required: true
+          schema:
+            title: Upload Id
+            type: string
+          name: upload_id
+          in: path
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema: {}
-        '422':
+        "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-      - HTTPBearer: []
-      - HTTPBearer: []
-  "/questions/{question_id}":
+        - HTTPBearer: []
+        - HTTPBearer: []
+  /questions/{question_id}:
     get:
       tags:
-      - Question
+        - Question
       summary: Get Question
       operationId: get_question_questions__question_id__get
       parameters:
-      - required: true
-        schema:
-          title: Question Id
-          type: integer
-        name: question_id
-        in: path
+        - required: true
+          schema:
+            title: Question Id
+            type: integer
+          name: question_id
+          in: path
       responses:
-        '200':
+        "200":
           description: Successful Response
           content:
             application/json:
               schema: {}
-        '422':
+        "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-      - HTTPBearer: []
-      - HTTPBearer: []
+        - HTTPBearer: []
+        - HTTPBearer: []
 components:
   schemas:
     Body_upload_document_documents_upload_post:
       title: Body_upload_document_documents_upload_post
       required:
-      - file
+        - file
       type: object
       properties:
         file:
@@ -329,26 +385,26 @@ components:
     ChatMessage:
       title: ChatMessage
       required:
-      - role
-      - content
+        - role
+        - content
       type: object
       properties:
         role:
-          "$ref": "#/components/schemas/ChatRoleEnum"
+          $ref: '#/components/schemas/ChatRoleEnum'
         content:
           title: Content
           type: string
     ChatRoleEnum:
       title: ChatRoleEnum
       enum:
-      - assistant
-      - user
+        - assistant
+        - user
       type: string
       description: An enumeration.
     CollectionReq:
       title: CollectionReq
       required:
-      - name
+        - name
       type: object
       properties:
         name:
@@ -359,31 +415,31 @@ components:
     DocumentStatus:
       title: DocumentStatus
       enum:
-      - 1
-      - 7
-      - 10
-      - 12
-      - 15
-      - 20
-      - 25
-      - 30
-      - 40
-      - 50
-      - 70
-      - 120
-      - 210
-      - 300
-      - 0
-      - -1
-      - -2
-      - -3
-      - -4
-      - -5
-      - -6
-      - -10
-      - -11
-      - -12
-      - -13
+        - 1
+        - 7
+        - 10
+        - 12
+        - 15
+        - 20
+        - 25
+        - 30
+        - 40
+        - 50
+        - 70
+        - 120
+        - 210
+        - 300
+        - 0
+        - -1
+        - -2
+        - -3
+        - -4
+        - -5
+        - -6
+        - -10
+        - -11
+        - -12
+        - -13
       type: integer
       description: An enumeration.
     HTTPValidationError:
@@ -394,11 +450,11 @@ components:
           title: Detail
           type: array
           items:
-            "$ref": "#/components/schemas/ValidationError"
+            $ref: '#/components/schemas/ValidationError'
     QuestionReq:
       title: QuestionReq
       required:
-      - question
+        - question
       type: object
       properties:
         question:
@@ -407,12 +463,12 @@ components:
           minLength: 1
           type: string
         selected_meta:
-          "$ref": "#/components/schemas/SelectedMeta"
+          $ref: '#/components/schemas/SelectedMeta'
         history:
           title: History
           type: array
           items:
-            "$ref": "#/components/schemas/ChatMessage"
+            $ref: '#/components/schemas/ChatMessage'
           default: []
         search_entire_doc:
           title: Search Entire Doc
@@ -428,8 +484,8 @@ components:
     SelectedMeta:
       title: SelectedMeta
       required:
-      - selected_text
-      - selected_source
+        - selected_text
+        - selected_source
       type: object
       properties:
         selected_text:
@@ -439,12 +495,12 @@ components:
           title: Selected Source
           type: array
           items:
-            "$ref": "#/components/schemas/SourceItemSchema"
+            $ref: '#/components/schemas/SourceItemSchema'
     SourceItemSchema:
       title: SourceItemSchema
       required:
-      - upload_id
-      - rects
+        - upload_id
+        - rects
       type: object
       properties:
         upload_id:
@@ -462,18 +518,18 @@ components:
     UploadResp:
       title: UploadResp
       required:
-      - id
-      - status
-      - name
-      - created_at
-      - type
+        - id
+        - status
+        - name
+        - created_at
+        - type
       type: object
       properties:
         id:
           title: Id
           type: string
         status:
-          "$ref": "#/components/schemas/DocumentStatus"
+          $ref: '#/components/schemas/DocumentStatus'
         name:
           title: Name
           type: string
@@ -481,24 +537,24 @@ components:
           title: Created At
           type: integer
         type:
-          "$ref": "#/components/schemas/UploadType"
+          $ref: '#/components/schemas/UploadType'
         document_count:
           title: Document Count
           type: integer
     UploadType:
       title: UploadType
       enum:
-      - collection
-      - single_doc
-      - doc_of_collection
+        - collection
+        - single_doc
+        - doc_of_collection
       type: string
       description: An enumeration.
     ValidationError:
       title: ValidationError
       required:
-      - loc
-      - msg
-      - type
+        - loc
+        - msg
+        - type
       type: object
       properties:
         loc:
@@ -506,8 +562,8 @@ components:
           type: array
           items:
             anyOf:
-            - type: string
-            - type: integer
+              - type: string
+              - type: integer
         msg:
           title: Message
           type: string
