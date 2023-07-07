@@ -68,7 +68,179 @@ info:
     * **Query across multi docs**
 
     ## Endpoints
-  version: 0.1.0
+
+    # Get start
+    1. Deploy `js-sdk-app` to the server, you can get the application code from the url
+      
+       >  `js-sdk-app` is based on the @paodingai/pdflux-pdf-viewer
+   
+    2. Install @paodingai/pdf-document-viewer-js-sdk
+
+       `@paodingai/pdf-document-viewer-js-sdk` created a iframe and link the `js-sdk-app` 
+       ```bash
+       pnpm install @paodingai/pdf-document-viewer-js-sdk
+       # npm install @paodingai/pdf-document-viewer-js-sdk
+       # npm install @paodingai/pdf-document-viewer-js-sdk
+       ```
+    3. Init PdfViewerSdk
+
+        Example 
+
+        ```js
+        import { initSDK, EVENT_TYPES } from '@paodingai/pdf-document-viewer-js-sdk';
+
+        const sdkInstance = initSDK({
+          mount: here input the dom you will mount the sdk,
+          url: here input the sdk app url from setp 1,
+          fileUrl: here input the pdf url 
+        })
+
+        // this event is dispatched after the document per page rendered
+        // you can set elements in the event
+        sdkInstance.on(EVENT_TYPES.PAGE_RENDERED, async (pageNumber) => {
+          // 1. get element blocks from api
+          // 2. set elements to sdk
+          const elements = await getElementBlocks(docId, [pageNumber - 1]);
+          sdkInstance.setElementBlocks(pageNumber, elements, true)
+        });
+
+        // this event is dispatched after you clicked the chat icon in document
+        sdkInstance.on(EVENT_TYPES.CHAT_ICON_CLICKED, (data) => {
+          // data is the selected text info from document
+          console.log(data)
+        });
+
+        ``` 
+    # PdfViewerSdk
+
+    Represents a PDF Viewer SDK.
+
+    ## Constructor
+
+    ### PdfViewerSdk(config: SdkConfigParams)
+
+    Creates an instance of PdfViewerSdk.
+
+    - **config**: `SdkConfigParams` - The configuration parameters for the SDK.
+
+    ## Properties
+
+    ### iframe: HTMLIFrameElement
+
+    Gets the iframe element.
+
+    - Returns: `HTMLIFrameElement` - The iframe element.
+
+    ### mountEle: Element | null
+
+    Gets the mount element for rendering the PDF viewer.
+
+    - Returns: `Element | null` - The mount element.
+
+    ## Methods
+
+    ### ready(): Promise<void>
+
+    Waits for the app connection to be ready.
+
+    - Returns: `Promise<void>` - A promise that resolves when the app connection is ready.
+
+    ### destroy(): void
+
+    Destroys the PDF viewer SDK instance.
+
+    ### on(name: string, handler: Func): void
+
+    Adds an event listener for the specified event.
+
+    - **name**: `string` - The name of the event.
+    - **handler**: `Func` - The event handler function.
+
+    ### off(name: string, handler: Func): void
+
+    Removes an event listener for the specified event.
+
+    - **name**: `string` - The name of the event.
+    - **handler**: `Func` - The event handler function.
+
+    ### emit(name: string, data?: any): void
+
+    Emits an event with optional data.
+
+    - **name**: `string` - The name of the event.
+    - **data**: `any` (optional) - The data to pass along with the event.
+
+    ### clearListeners(): void
+
+    Clears all event listeners.
+
+    ### getCurrentPageNumber(): any
+
+    Gets the current page number.
+
+    - Returns: `any` - The current page number.
+
+    ### setFileUrl(fileUrl: string): any
+
+    Sets the file URL.
+
+    - **fileUrl**: `string` - The URL of the file to load.
+
+    ### setElementBlocks(page: number, blocks: any[], isRenderToAnnotation = true): void
+
+    Sets the element blocks for a specific page.
+
+    - **page**: `number` - The page number.
+    - **blocks**: `any[]` - The element blocks.
+    - **isRenderToAnnotation**: `boolean` (optional) - Indicates whether to render the blocks as annotations. Default is `true`.
+
+    ### drawSourceRects(sources: Source[]): Promise<void>
+
+    Draws source rectangles on the PDF viewer.
+
+    - **sources**: `Source[]` - The source rectangles to draw.
+
+    ### clearSourceAnnotations(): void
+
+    Clears source annotations.
+
+    ## Interface
+
+    ### SdkConfigParams
+
+    The configuration parameters for the SDK.
+
+    - **mount**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
+    - **url**: `string` - The URL of the page.
+    - **fileUrl**: `string` (optional) - The URL of the PDF file.
+
+     Example 
+    ```javascript
+     const config: SdkConfigParams = {
+      mount: '#pdf-viewer',
+      url: 'https://example.com/pdf-viewer',
+      fileUrl: 'https://example.com/pdf-file.pdf',
+    };
+    ```
+    ### Source
+    Type representing a source in the PDF Viewer.
+
+    - **pageNumber**: `number` - The page number of the source.
+
+    - **rects**: `number[][]` -  An array of rectangles representing the coordinates of the source.
+
+    Example
+    ```
+     const source: Source = {
+       pageNumber: 1,
+       rects: [[10, 10, 50, 50], [60, 60, 100, 100]],
+     };
+
+    ```
+
+    
+ 
+  version: 0.1.0 
 servers:
   - url: /api/v1/external
 paths:
