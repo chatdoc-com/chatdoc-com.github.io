@@ -17,6 +17,8 @@ info:
 
     The ChatDOC API follows RESTful conventions when possible, with most operations performed via GET, POST, PUT, and DELETE requests. Request and response bodies are encoded as JSON.
 
+    We follow HTTP standards for status codes. For example, a successful request returns a 200 OK response code, and a failed request returns a 4xx or 5xx error code.
+
     ## JSON conventions
 
     * Response body of success requests is generally as follows:
@@ -36,6 +38,7 @@ info:
         * Object properties are contained directly in `data`, there is no extra model objects. (e.g. "document", "user", etc.)
     * Property names are in snake_case (not camelCase or kebab-case).
     * Time is stored as [Unix timestamps](https://www.unixtimestamp.com/) in seconds, and this point in time technically does not change no matter where you are located on the globe. You can convert it to datetime of your local timezone.
+    * Optional properties are nullable, you can just ignore it sometimes.
 
     ## Request limits
 
@@ -46,19 +49,22 @@ info:
     Requests use the HTTP `Authorization` header to both authenticate and authorize operations. The ChatDOC API accepts bearer tokens in this header. Bearer keys can be managed in our web site.
 
     ```curl
-    curl 'https://chatdoc.com/api/v1/external/documents/upload'   -H 'Authorization: Bearer '"$NOTION_ACCESS_TOKEN"''
+    curl 'https://chatdoc.com/api/v1/external/documents/upload'   -H 'Authorization: Bearer '"$API_KEY"''
     ```
+
+    Different keys of the same user are interoperable of each others' resource, they share common permission of the user.
 
     ## Objects
 
-    ### Documents
+    ### Document
 
-    You can first upload documents to get started.
+    You can first upload documents to get started. Supported document formats including pdf, docx/doc, and more formats such as markdown, epub are upcoming.
 
-    * Supported document formats including pdf, docx/doc, and more formats such as markdown, epub are upcoming.
-    * As for questioning, a document can be standalone or grouped as a `collection`, each file collection is a customized database, and you can acquire knowledge effortlessly through conversation.
+    ### Collection
 
-    ### Questions
+    Collection is just a special type of `document`, they have common properties like `name`, `status` etc. The difference is that as for questioning, a document can be standalone or grouped as a `collection`, each file collection is a customized database, and you can acquire knowledge effortlessly through conversation.
+
+    ### Question
 
     Namely chat, there can be [4 Ways to Make Queries](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7):
 
@@ -66,8 +72,6 @@ info:
     * **Ask About Full Text**
     * **Ask About Selected Text**
     * **Query across multi docs**
-
-    ## Endpoints
 
     # Getting started
     1. Deploy `js-sdk-app` to the server, you can get the application code from the url
@@ -235,44 +239,64 @@ info:
     ```
 
     
- 
-  version: 0.1.0 
+
+  version: 0.1.0
 servers:
   - url: /api/v1/external
 paths:
-  /documents/collection:
-    post:
-      tags:
-        - Documents
-      summary: Create Collection
-      operationId: create_collection_documents_collection_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CollectionReq'
-        required: true
-      responses:
-        "200":
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UploadResp'
-        "422":
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-      security:
-        - HTTPBearer: []
-        - HTTPBearer: []
   /documents/upload:
     post:
       tags:
         - Documents
       summary: Upload Document
+      description: |-
+        Upload a document
+
+        **Params**:
+
+        `collection_id`: if provided, add document to the collection, collection can be created by `POST /documents/collections`
+
+        **Response**:
+
+        * `id`: document id, also called `upload_id`, you can use it to get the document by `GET /documents/{upload_id}`. It's of uuid format.
+
+        **Attention**: you should store `id` in your database, because we don't have a `GET /documents/list` API to list all documents for now.
+
+        * `status`: Once uploaded, the status is `UN_PARSED`, after a series of processing, the
+        status would change by time, and finally to be one of the following two cases:
+
+        ```
+        UN_PARSED = 1              file uploaded or collection has no document
+        ELEMENT_PARSED = 300       analysis of the document has succeeded
+        ERROR_STATUSES (< 0)       error occurred during analysis
+        ```
+
+        So before the document status finalized, you can poll the status by
+        `GET /documents/{upload_id}` at interval of 10s , generally it takes 1-2 minutes to
+        finish depending on content length of the document. If error occurred, it doesn't occupy your quota.
+
+        For reference, other statuses are as follows:
+
+        ```
+        UN_PARSED = 1              file uploaded or collection has no document
+        LINK_UN_PARSED = 10        file link submitted
+        PARSING = 12               parsing, mainly used for collection
+        LINK_DOWNLOADING = 15      file link downloading
+        PDF_CONVERTING = 20        docx to pdf converting
+        PDF_CONVERTED = 30         docx to pdf success
+        TEXT_PARSING = 40          text embedding（when element parse timeout 2min）
+        ELEMENT_PARSING = 50       element embedding
+        INSIGHT_CALLBACK = 70      element parse success
+        TEXT_PARSED = 210          text embedding success
+        ELEMENT_PARSED = 300       element embedding success
+        TEXT_PARSE_ERROR = -1      text embedding failed
+        ELEMENT_PARED_ERROR = -2   element embedding failed
+        PDF_CONVERT_ERROR = -3     docx to pdf failed
+        LINK_DOWNLOAD_ERROR = -4   file link download failed
+        EXCEED_SIZE_ERROR = -5     file size exceed limit
+        PAGE_LIMIT_ERROR = -10     page limit error
+        TITLE_COMPLETE_ERROR = -11 complete title failed
+        ```
       operationId: upload_document_documents_upload_post
       parameters:
         - required: false
@@ -293,7 +317,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UploadResp'
+                $ref: '#/components/schemas/APIUploadResp'
         "422":
           description: Validation Error
           content:
@@ -309,6 +333,19 @@ paths:
       tags:
         - Documents
       summary: Get Document
+      description: |-
+        Get a document
+
+        **Response**:
+
+        Similar with `POST /documents/upload`, and pay attention to the following fields:
+
+        * `type`:
+            * collection: document collection
+            * single_doc: standalone document
+            * doc_of_collection: sub document of collection
+
+        * `documents`: sub document list of collection, which only returns for collection
       operationId: get_document_documents__upload_id__get
       parameters:
         - required: true
@@ -323,7 +360,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UploadResp'
+                $ref: '#/components/schemas/APICollectionOrUploadResp'
         "422":
           description: Validation Error
           content:
@@ -337,6 +374,7 @@ paths:
       tags:
         - Documents
       summary: Delete Document
+      description: Delete a document
       operationId: delete_document_documents__upload_id__delete
       parameters:
         - required: true
@@ -350,8 +388,36 @@ paths:
           description: Successful Response
           content:
             application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
               schema:
-                $ref: '#/components/schemas/UploadResp'
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - HTTPBearer: []
+        - HTTPBearer: []
+  /documents/collection:
+    post:
+      tags:
+        - Documents
+      summary: Create Collection
+      description: Create an empty collection
+      operationId: create_collection_documents_collection_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionReq'
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIUploadResp'
         "422":
           description: Validation Error
           content:
@@ -366,6 +432,52 @@ paths:
       tags:
         - Documents
       summary: Chat Stream
+      description: |-
+        Chat with the document, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode, which is also called `streaming` mode.
+
+        **Params**:
+
+        * `question`: question to ask
+
+        * `selected_meta`:
+            * TODO (wubo) to compliment
+            * `selected_text`: selected text of document.
+            * `selected_source`:
+            * TODO (wubo) to compliment
+
+        * `history`: chat history
+            * TODO (wubo) to compliment
+
+        * `search_entire_doc`:
+            * if true: limit responses to current file' information
+            * else: responses go freely with knowledge of our AI
+
+        * `detailed_citation`: Whether to show the source at the end of each sentence or not . Requires enabling the `search_entire_doc` setting.
+
+        * `language`: preferred language of answer to the question, if not provided, we will try to detect the language automatically. But we can't promise, when AI can't answer your question well, it generally answers in English. It's strongly recommended to not pass this parameter, which is more flexible and works well.
+
+        **Response**:
+
+        structure is as follows:
+
+        ```json
+        {
+            "data": {
+                "answer": data,
+                "id": question_id,
+                "source_info": source_info
+            }
+        }
+        ```
+
+        * `answer`: chunks of answer, may be markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables), [Links](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links).
+            * If the answer is empty, it means error occurred.
+
+        * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
+
+        **Attention**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
+
+        * `source_info`: TODO (wubo) to compliment
       operationId: chat_stream_documents__upload_id__chat_post
       parameters:
         - required: true
@@ -442,10 +554,10 @@ paths:
         - Documents
       summary: Recommend
       description: |-
-        Recommend questions for a document, defaults to 5.
+        Recommend questions for a document, defaults to 5 questions.
 
         Response example:
-        ```
+        ```json
         [
                 "What is the name of the author?",
                 "What is the name of the book?",
@@ -454,6 +566,8 @@ paths:
                 "Where is the book published?"
         ]
         ```
+
+        Only when analysis of the document has succeeded(status=300), can questions be generated.
       operationId: recommend_documents__upload_id__recommend_questions_get
       parameters:
         - required: true
@@ -486,7 +600,10 @@ paths:
       tags:
         - Documents
       summary: Download Document
-      description: Support range request
+      description: |-
+        Download content of the document with pdf format, support range request.
+
+        If the document is of doc/docx format, then it's converted to pdf version, and the original version can't be downloaded.
       operationId: download_document_documents__upload_id__download_get
       parameters:
         - required: true
@@ -515,6 +632,19 @@ paths:
       tags:
         - Question
       summary: Get Question
+      description: |-
+        Get a question detail
+
+        **Response**:
+
+        * `answer`: full content of answer, including content of Markdown format
+
+        * `type`: question type, refer [4 Ways to Make Queries](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7):
+            * doc: Ask About Full Text
+            * select: Ask About Selected Text
+
+        * `selected_source`:
+            TODO (wubo) to compliment
       operationId: get_question_questions__question_id__get
       parameters:
         - required: true
@@ -540,6 +670,57 @@ paths:
         - HTTPBearer: []
 components:
   schemas:
+    APICollectionOrUploadResp:
+      title: APICollectionOrUploadResp
+      required:
+        - id
+        - status
+        - name
+        - created_at
+        - type
+      type: object
+      properties:
+        id:
+          title: Id
+          type: string
+        status:
+          $ref: '#/components/schemas/DocumentStatus'
+        name:
+          title: Name
+          type: string
+        created_at:
+          title: Created At
+          type: integer
+        type:
+          $ref: '#/components/schemas/UploadType'
+        documents:
+          title: Documents
+          type: array
+          items:
+            $ref: '#/components/schemas/APIUploadResp'
+    APIUploadResp:
+      title: APIUploadResp
+      required:
+        - id
+        - status
+        - name
+        - created_at
+        - type
+      type: object
+      properties:
+        id:
+          title: Id
+          type: string
+        status:
+          $ref: '#/components/schemas/DocumentStatus'
+        name:
+          title: Name
+          type: string
+        created_at:
+          title: Created At
+          type: integer
+        type:
+          $ref: '#/components/schemas/UploadType'
     Body_upload_document_documents_upload_post:
       title: Body_upload_document_documents_upload_post
       required:
@@ -683,32 +864,6 @@ components:
               type: array
               items:
                 type: number
-    UploadResp:
-      title: UploadResp
-      required:
-        - id
-        - status
-        - name
-        - created_at
-        - type
-      type: object
-      properties:
-        id:
-          title: Id
-          type: string
-        status:
-          $ref: '#/components/schemas/DocumentStatus'
-        name:
-          title: Name
-          type: string
-        created_at:
-          title: Created At
-          type: integer
-        type:
-          $ref: '#/components/schemas/UploadType'
-        document_count:
-          title: Document Count
-          type: integer
     UploadType:
       title: UploadType
       enum:
