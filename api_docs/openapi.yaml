@@ -403,7 +403,18 @@ paths:
       tags:
         - Documents
       summary: Create Collection
-      description: Create an empty collection
+      description: |-
+        Create an empty collection
+
+        **Response**:
+
+        Similar with `POST /documents/upload`, `id` also called `upload_id`, which can be used for document related APIs:
+
+        * `GET /documents/{upload_id}`
+        * `DELETE /documents/{upload_id}`
+        * `POST /documents/{upload_id}/chat`
+
+        Upon created you can add sub documents to the collection by `POST /documents/upload?collection_id={upload_id}`.
       operationId: create_collection_documents_collection_post
       requestBody:
         content:
@@ -439,20 +450,26 @@ paths:
 
         * `question`: question to ask
 
-        * `selected_meta`:
-            * TODO (wubo) to compliment
-            * `selected_text`: selected text of document.
-            * `selected_source`:
-            * TODO (wubo) to compliment
+        * `selected_meta`: When use **Ask About Selected Text**, this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/api_docs/#section/Getting-started) of our PdfViewerSdk.
 
-        * `history`: chat history
-            * TODO (wubo) to compliment
+        * `history`: chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
+            * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
+            * history is question and answer pairs, which is a list of `ChatMessage` objects, sample parameters are as follows:
+
+            ```json
+            [
+                {"role": "user", "content": "Who won the world series in 2020?"},
+                {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+                {"role": "user", "content": "Where was it played?"}
+                {"role": "assistant", "content": "The 2020 World Series was played at Globe Life Field in Arlington, Texas."},
+            ]
+            ```
 
         * `search_entire_doc`:
             * if true: limit responses to current file' information
             * else: responses go freely with knowledge of our AI
 
-        * `detailed_citation`: Whether to show the source at the end of each sentence or not . Requires enabling the `search_entire_doc` setting.
+        * `detailed_citation`: Whether to show the source at the end of each sentence or not. Requires enabling the `search_entire_doc` setting.
 
         * `language`: preferred language of answer to the question, if not provided, we will try to detect the language automatically. But we can't promise, when AI can't answer your question well, it generally answers in English. It's strongly recommended to not pass this parameter, which is more flexible and works well.
 
@@ -470,14 +487,30 @@ paths:
         }
         ```
 
-        * `answer`: chunks of answer, may be markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables), [Links](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links).
+        * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables), [Links](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links).
             * If the answer is empty, it means error occurred.
 
         * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
 
         **Attention**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
-        * `source_info`: TODO (wubo) to compliment
+        * `source_info`: only responses in the last chunk, and the structure is as follows:
+
+        ```json
+        [
+            {
+                # key: page number
+                # value: rects
+                '0': [[38.1063, 557.8058, 553.9003, 584.0043]]
+            },
+            {'1': [[38.0, 152.3994, 523.6151, 178.6392]]},
+            {'0': [[38.0, 758.0623, 537.0082, 784.0]]},
+            ...
+        ]
+        ```
+
+        Page number may not be ordered, you can use this information to highlight the source of the answer in your PDF viewer, by
+        calling [`drawSources`](/api_docs/#section/PdfViewerSdk/Methods) method of our PdfViewerSdk, and converting `source_info` to [`Source`](/api_docs/#section/PdfViewerSdk/Interface) parameter.
       operationId: chat_stream_documents__upload_id__chat_post
       parameters:
         - required: true
@@ -513,6 +546,14 @@ paths:
       tags:
         - Documents
       summary: Get Element
+      description: |-
+        Get elements of a document
+
+        **Params**:
+
+        `page`: page number of the document, starts from 0
+
+        this API is used for our [EVENT_TYPES.PAGE_RENDERED](/api_docs/#section/Getting-started) of our PdfViewerSdk, refer it to get details.
       operationId: get_element_documents__upload_id__elements_get
       parameters:
         - required: true
@@ -559,11 +600,11 @@ paths:
         Response example:
         ```json
         [
-                "What is the name of the author?",
-                "What is the name of the book?",
-                "When was the book published?",
-                "What is the name of the publisher?",
-                "Where is the book published?"
+            "What is the name of the author?",
+            "What is the name of the book?",
+            "When was the book published?",
+            "What is the name of the publisher?",
+            "Where is the book published?"
         ]
         ```
 
@@ -603,7 +644,8 @@ paths:
       description: |-
         Download content of the document with pdf format, support range request.
 
-        If the document is of doc/docx format, then it's converted to pdf version, and the original version can't be downloaded.
+        * If the document is of doc/docx format, then it's converted to pdf version, and the original version can't be downloaded.
+        * If the document is of pdf format, it's recommended to use your local file to avoid unnecessary network traffic.
       operationId: download_document_documents__upload_id__download_get
       parameters:
         - required: true
@@ -643,8 +685,7 @@ paths:
             * doc: Ask About Full Text
             * select: Ask About Selected Text
 
-        * `selected_source`:
-            TODO (wubo) to compliment
+        * `source_info`: source information of answer, same with `POST /documents/{upload_id}/chat`
       operationId: get_question_questions__question_id__get
       parameters:
         - required: true
@@ -800,6 +841,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ValidationError'
+    PDFViewerRect:
+      title: PDFViewerRect
+      required:
+        - pageNumber
+        - outline
+      type: object
+      properties:
+        pageNumber:
+          title: Pagenumber
+          type: integer
+        outline:
+          title: Outline
+          type: array
+          items:
+            type: integer
     QuestionReq:
       title: QuestionReq
       required:
@@ -833,37 +889,18 @@ components:
     SelectedMeta:
       title: SelectedMeta
       required:
-        - selected_text
-        - selected_source
-      type: object
-      properties:
-        selected_text:
-          title: Selected Text
-          type: string
-        selected_source:
-          title: Selected Source
-          type: array
-          items:
-            $ref: '#/components/schemas/SourceItemSchema'
-    SourceItemSchema:
-      title: SourceItemSchema
-      required:
-        - upload_id
+        - material
         - rects
       type: object
       properties:
-        upload_id:
-          title: Upload Id
+        material:
+          title: Material
           type: string
         rects:
           title: Rects
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: array
-              items:
-                type: number
+          type: array
+          items:
+            $ref: '#/components/schemas/PDFViewerRect'
     UploadType:
       title: UploadType
       enum:
