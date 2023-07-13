@@ -74,34 +74,44 @@ info:
     * **Query across multi docs**
 
     # Getting started
-    1. Deploy `js-sdk-app` to the server, you can get the application code from the url
+    1. Get the `chatdoc-sdk` application url
       
-       >  `js-sdk-app` is based on the @paodingai/pdflux-pdf-viewer
+       >  `chatdoc-sdk` is based on the @paodingai/pdflux-pdf-viewer
    
-    2. Install @paodingai/pdf-document-viewer-js-sdk
+    2. Install `@paodingai/chatdoc-sdk`
 
-       `@paodingai/pdf-document-viewer-js-sdk` created a iframe and link the `js-sdk-app` 
+       `@paodingai/chatdoc-sdk` created a iframe and link the `chatdoc-sdk` 
        ```bash
-       pnpm install @paodingai/pdf-document-viewer-js-sdk
-       # npm install @paodingai/pdf-document-viewer-js-sdk
-       # npm install @paodingai/pdf-document-viewer-js-sdk
+       pnpm install @paodingai/chatdoc-sdk
+       # npm install @paodingai/chatdoc-sdk
+       # yarn install @paodingai/chatdoc-sdk
        ```
-    3. Init PdfViewerSdk
+    3. Init chatdoc-sdk
+
+        `@paodingai/chatdoc-sdk` exports the  `initSDK`, use  `initSDK`, you can get a `chatdoc-sdk` instance
 
         Example 
 
         ```js
-        import { initSDK, EVENT_TYPES } from '@paodingai/pdf-document-viewer-js-sdk';
+        import { initSDK } from '@paodingai/chatdoc-sdk';
 
-        const sdkInstance = initSDK({
+        const sdk = initSDK({
           mount: here input the dom you will mount the sdk,
           url: here input the sdk app url from setp 1,
           fileUrl: here input the pdf url 
         })
 
+        ``` 
+    4. add event listener
+
+        `@paodingai/chatdoc-sdk` exports the  `EVENT_TYPES`, [**here**](#section/SDK-API/Global) is the event types info
+
+        Example
+        ```js
+        import { EVENT_TYPES } from '@paodingai/chatdoc-sdk';
         // this event is dispatched after the document per page rendered
         // you can set elements in the event
-        sdkInstance.on(EVENT_TYPES.PAGE_RENDERED, async (pageNumber) => {
+        sdk.on(EVENT_TYPES.PAGE_RENDERED, async (pageNumber) => {
           // 1. get element blocks from api
           // 2. set elements to sdk
           const elements = await getElementBlocks(docId, [pageNumber - 1]);
@@ -109,23 +119,105 @@ info:
         });
 
         // this event is dispatched after you clicked the chat icon in document
-        sdkInstance.on(EVENT_TYPES.CHAT_ICON_CLICKED, (data) => {
+        sdk.on(EVENT_TYPES.CHAT_ICON_CLICKED, (data) => {
           // data is the selected text info from document
           console.log(data)
         });
 
-        ``` 
-    # PdfViewerSdk
+        ```
+    # SDK API
 
-    Represents a PDF Viewer SDK.
+    ## Global 
+    ### initSDK(config: [SdkConfigParams](#section/SDK-API/Types))
+    Example
+    ```javascript
+    const sdk = initSDK({
+      mount: '#pdf-viewer',
+      url: 'https://example.com/pdf-viewer',
+      fileUrl: 'https://example.com/pdf-file.pdf',
+    });
+    ```
 
-    ## Constructor
+    ### EVENT_TYPES
+       
+       - **PAGE_RENDERED** - this event is dispatched after the document per page rendered, and return the `pageNumber`.
 
-    ### PdfViewerSdk(config: SdkConfigParams)
+       - **CHAT_ICON_CLICKED** - after you clicked the chat icon in document, you can get the event, and return [`MaterialData`](#section/SDK-API/Types).
 
-    Creates an instance of PdfViewerSdk.
+    ## Params
 
-    - **config**: `SdkConfigParams` - The configuration parameters for the SDK.
+    - **config**: [SdkConfig](#section/SDK-API/Types) - The configuration parameters for the SDK.
+
+    ## Types
+
+    ### SdkConfig
+
+    The configuration parameters for the SDK.
+
+    - **mount**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
+    - **url**: `string` - The URL of the page.
+    - **fileUrl**: `string` (optional) - The URL of the PDF file.
+
+     Example 
+    ```javascript
+     const config: SdkConfigParams = {
+      mount: '#pdf-viewer',
+      url: 'https://example.com/pdf-viewer',
+      fileUrl: 'https://example.com/pdf-file.pdf',
+    };
+    ```
+    ### Source
+    Type representing a source in the PDF Viewer.
+
+    - **pageNumber**: `number` - The page number of the source.
+
+    - **rects**: `number[][]` -  An array of rectangles representing the coordinates of the source.
+
+    Example
+    ```
+     const source: Source = {
+       pageNumber: 1,
+       rects: [[10, 10, 50, 50], [60, 60, 100, 100]],
+     };
+
+    ```
+    ### Rect 
+    Type representing a rectangle in the PDF Viewer.
+
+    - **pageNumber**: `number` - The page number of the rectangle.
+
+    - **outline**: `number[]` - An array of numbers representing the outline coordinates of the rectangle.
+    
+    Example
+    ```
+     const rect: Rect = {
+       pageNumber: 1,
+       outline: [10, 10, 50, 50],
+     };
+    ```
+
+    ### MaterialData
+    Type representing material data in the PDF Viewer.
+
+    - **material**: `string` - The content of the material.
+    - **rects**: `Rect[]` - An array of rectangles representing the outlines.
+
+    Example
+    ```
+     const material: MaterialData = {
+       material: 'content',
+       rects: [
+         {
+           pageNumber: 1,
+           outline: [10, 10, 50, 50],
+         },
+         {
+           pageNumber: 2,
+           outline: [60, 60, 100, 100],
+         },
+       ],
+     };
+    ```
 
     ## Properties
 
@@ -204,43 +296,8 @@ info:
 
     Clears source annotations.
 
-    ## Interface
+  version: 0.1.0 
 
-    ### SdkConfigParams
-
-    The configuration parameters for the SDK.
-
-    - **mount**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
-    - **url**: `string` - The URL of the page.
-    - **fileUrl**: `string` (optional) - The URL of the PDF file.
-
-     Example 
-    ```javascript
-     const config: SdkConfigParams = {
-      mount: '#pdf-viewer',
-      url: 'https://example.com/pdf-viewer',
-      fileUrl: 'https://example.com/pdf-file.pdf',
-    };
-    ```
-    ### Source
-    Type representing a source in the PDF Viewer.
-
-    - **pageNumber**: `number` - The page number of the source.
-
-    - **rects**: `number[][]` -  An array of rectangles representing the coordinates of the source.
-
-    Example
-    ```
-     const source: Source = {
-       pageNumber: 1,
-       rects: [[10, 10, 50, 50], [60, 60, 100, 100]],
-     };
-
-    ```
-
-    
-
-  version: 0.1.0
 servers:
   - url: /api/v1/external
 paths:
