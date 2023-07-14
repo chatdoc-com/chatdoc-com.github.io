@@ -73,50 +73,48 @@ info:
     * **Ask About Selected Text**
     * **Query across multi docs**
 
-    # Getting started
-    1. Get the `chatdoc-sdk` application url
-      
-       >  `chatdoc-sdk` is based on the @paodingai/pdflux-pdf-viewer
-   
-    2. Install `@paodingai/chatdoc-sdk`
+    # ChatDOC Document Viewer
+    If you want to view the document in the browser, you can use the `@chatdoc/chatdoc-sdk` npm package.
 
-       `@paodingai/chatdoc-sdk` created a iframe and link the `chatdoc-sdk` 
+    The `@chatdoc/chatdoc-sdk` npm package is used to display PDF files and interact with them by selecting text and asking questions. Here are the steps to get started:
+
+    1. **You need to prepare a URL**
+
+        > You can get the URL after you buy the API package or membership plan.
+    
+    2. **Install `@chatdoc/chatdoc-sdk`**
+
        ```bash
-       pnpm install @paodingai/chatdoc-sdk
-       # npm install @paodingai/chatdoc-sdk
-       # yarn install @paodingai/chatdoc-sdk
+       pnpm install @chatdoc/chatdoc-sdk
+       # npm install @chatdoc/chatdoc-sdk
+       # yarn install @chatdoc/chatdoc-sdk
        ```
-    3. Init chatdoc-sdk
+    3. **Init chatdoc-sdk**
 
-        `@paodingai/chatdoc-sdk` exports the  `initSDK`, use  `initSDK`, you can get a `chatdoc-sdk` instance
+        Initialize the chatdoc-sdk by importing the **initSDK** function from `@chatdoc/chatdoc-sdk` and using it to create an instance of the [PdfViewerSdk](#section/ChatDOC-Document-Viewer/PdfViewerSdk). 
+        Provide the mount element the DOM element where you want to mount the SDK), the URL of the SDK app from **step 1**, and the URL of the PDF file.
 
         Example 
 
         ```js
-        import { initSDK } from '@paodingai/chatdoc-sdk';
+        import { initSDK } from '@chatdoc/chatdoc-sdk';
 
         const sdk = initSDK({
-          mount: here input the dom you will mount the sdk,
-          url: here input the sdk app url from setp 1,
-          fileUrl: here input the pdf url 
+          mount: '#pdf-viewer',
+          url: 'https://example.com/pdf-viewer',
+          fileUrl: 'https://example.com/pdf-file.pdf',
         })
 
         ``` 
-    4. add event listener
+    4. **Add event listener**
 
-        `@paodingai/chatdoc-sdk` exports the  `EVENT_TYPES`, [**here**](#section/SDK-API/Global) is the event types info
+        Add event listeners to handle specific events. For example, you can listen to the **CHAT_ICON_CLICKED** event to get the selected text from the document when the chat icon is clicked.
+
+        The `@chatdoc/chatdoc-sdk` package also exports the EVENT_TYPES object, which types the event name. [**here**](#section/SDK-API/Global) is the event types info
 
         Example
         ```js
-        import { EVENT_TYPES } from '@paodingai/chatdoc-sdk';
-        // this event is dispatched after the document per page rendered
-        // you can set elements in the event
-        sdk.on(EVENT_TYPES.PAGE_RENDERED, async (pageNumber) => {
-          // 1. get element blocks from api
-          // 2. set elements to sdk
-          const elements = await getElementBlocks(docId, [pageNumber - 1]);
-          sdkInstance.setElementBlocks(pageNumber, elements, true)
-        });
+        import { EVENT_TYPES } from '@chatdoc/chatdoc-sdk';
 
         // this event is dispatched after you clicked the chat icon in document
         sdk.on(EVENT_TYPES.CHAT_ICON_CLICKED, (data) => {
@@ -125,103 +123,88 @@ info:
         });
 
         ```
-    # SDK API
 
-    ## Global 
-    ### initSDK(config: [SdkConfigParams](#section/SDK-API/Types))
-    Example
-    ```javascript
-    const sdk = initSDK({
-      mount: '#pdf-viewer',
-      url: 'https://example.com/pdf-viewer',
-      fileUrl: 'https://example.com/pdf-file.pdf',
-    });
-    ```
+    ## PdfViewerSdk
+    The PdfViewerSdk class provides a PDF viewer SDK with various methods and properties for interacting with the PDF viewer. Here are some key details about the class:
 
-    ### EVENT_TYPES
-       
-       - **PAGE_RENDERED** - this event is dispatched after the document per page rendered, and return the `pageNumber`.
-
-       - **CHAT_ICON_CLICKED** - after you clicked the chat icon in document, you can get the event, and return [`MaterialData`](#section/SDK-API/Types).
-
-    ## Params
+    ### Params
 
     - **config**: [SdkConfig](#section/SDK-API/Types) - The configuration parameters for the SDK.
 
-    ## Types
+    ### Types
 
-    ### SdkConfig
+    #### SdkConfig
 
-    The configuration parameters for the SDK.
+      The configuration parameters for the SDK.
 
-    - **mount**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
-    - **url**: `string` - The URL of the page.
-    - **fileUrl**: `string` (optional) - The URL of the PDF file.
+      - **mount**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
+      - **url**: `string` - The URL of the page.
+      - **fileUrl**: `string` (optional) - The URL of the PDF file.
 
-     Example 
-    ```javascript
-     const config: SdkConfigParams = {
-      mount: '#pdf-viewer',
-      url: 'https://example.com/pdf-viewer',
-      fileUrl: 'https://example.com/pdf-file.pdf',
-    };
-    ```
-    ### Source
+        Example 
+        ```javascript
+        const config: SdkConfig = {
+          mount: '#pdf-viewer',
+          url: 'https://example.com/pdf-viewer',
+          fileUrl: 'https://example.com/pdf-file.pdf',
+        };
+        ```
+    #### Source
     Type representing a source in the PDF Viewer.
 
     - **pageNumber**: `number` - The page number of the source.
 
     - **rects**: `number[][]` -  An array of rectangles representing the coordinates of the source.
 
-    Example
-    ```
-     const source: Source = {
-       pageNumber: 1,
-       rects: [[10, 10, 50, 50], [60, 60, 100, 100]],
-     };
+        Example
+        ```
+        const source: Source = {
+          pageNumber: 1,
+          rects: [[10, 10, 50, 50], [60, 60, 100, 100]],
+        };
 
-    ```
-    ### Rect 
+        ```
+    #### Rect 
     Type representing a rectangle in the PDF Viewer.
 
     - **pageNumber**: `number` - The page number of the rectangle.
 
     - **outline**: `number[]` - An array of numbers representing the outline coordinates of the rectangle.
     
-    Example
-    ```
-     const rect: Rect = {
-       pageNumber: 1,
-       outline: [10, 10, 50, 50],
-     };
-    ```
+        Example
+        ```
+        const rect: Rect = {
+          pageNumber: 1,
+          outline: [10, 10, 50, 50],
+        };
+        ```
 
-    ### MaterialData
+    #### MaterialData
     Type representing material data in the PDF Viewer.
 
     - **material**: `string` - The content of the material.
     - **rects**: `Rect[]` - An array of rectangles representing the outlines.
 
-    Example
-    ```
-     const material: MaterialData = {
-       material: 'content',
-       rects: [
-         {
-           pageNumber: 1,
-           outline: [10, 10, 50, 50],
-         },
-         {
-           pageNumber: 2,
-           outline: [60, 60, 100, 100],
-         },
-       ],
-     };
-    ```
+          Example
+          ```
+          const material: MaterialData = {
+            material: 'content',
+            rects: [
+              {
+                pageNumber: 1,
+                outline: [10, 10, 50, 50],
+              },
+              {
+                pageNumber: 2,
+                outline: [60, 60, 100, 100],
+              },
+            ],
+          };
+          ```
 
-    ## Properties
+    ### Properties
 
-    ### iframe: HTMLIFrameElement
+    #### iframe: HTMLIFrameElement
 
     Gets the iframe element.
 
@@ -233,68 +216,67 @@ info:
 
     - Returns: `Element | null` - The mount element.
 
-    ## Methods
+    ### Methods
 
-    ### ready(): Promise<void>
+    #### ready(): Promise<void>
 
     Waits for the app connection to be ready.
 
     - Returns: `Promise<void>` - A promise that resolves when the app connection is ready.
 
-    ### destroy(): void
+    #### destroy(): void
 
     Destroys the PDF viewer SDK instance.
 
-    ### on(name: string, handler: Func): void
+    #### on(name: string, handler: Func): void
 
     Adds an event listener for the specified event.
 
     - **name**: `string` - The name of the event.
     - **handler**: `Func` - The event handler function.
 
-    ### off(name: string, handler: Func): void
+    #### off(name: string, handler: Func): void
 
     Removes an event listener for the specified event.
 
     - **name**: `string` - The name of the event.
     - **handler**: `Func` - The event handler function.
 
-    ### emit(name: string, data?: any): void
+    #### emit(name: string, data?: any): void
 
     Emits an event with optional data.
 
     - **name**: `string` - The name of the event.
     - **data**: `any` (optional) - The data to pass along with the event.
 
-    ### getCurrentPageNumber(): any
+    #### getCurrentPageNumber(): any
 
     Gets the current page number.
 
     - Returns: `any` - The current page number.
 
-    ### setFileUrl(fileUrl: string): any
+    #### setFileUrl(fileUrl: string): any
 
     Sets the file URL.
 
     - **fileUrl**: `string` - The URL of the file to load.
 
-    ### setElements(page: number, elements: any[], isRender = true): void
-
-    Sets the element blocks for a specific page.
-
-    - **page**: `number` - The page number.
-    - **elements**: `any[]` - The element blocks.
-    - **isRender**: `boolean` (optional) - Indicates whether to render the blocks to pdf. Default is `true`.
-
-    ### drawSources(sources: Source[]): Promise<void>
+    #### drawSources(sources: Source[]): Promise<void>
 
     Draws source rectangles on the PDF viewer.
 
     - **sources**: `Source[]` - The source rectangles to draw.
 
-    ### clearSourceAnnotations(): void
+    #### clearSourceAnnotations(): void
 
     Clears source annotations.
+    
+    ## EVENT_TYPES
+       
+    - **PAGE_RENDERED** - this event is dispatched after the document per page rendered, and return the `pageNumber`.
+
+    - **CHAT_ICON_CLICKED** - after you clicked the chat icon in document, you can get the event, and return [`MaterialData`](#section/SDK-API/Types).    
+    
 
   version: 0.1.0 
 
