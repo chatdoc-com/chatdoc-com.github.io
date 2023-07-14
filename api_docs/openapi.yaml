@@ -178,6 +178,7 @@ info:
       - **mount**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
       - **url**: `string` - The URL of the page.
       - **fileUrl**: `string` (optional) - The URL of the PDF file.
+      - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the token.
 
         Example 
         ```javascript
