@@ -73,6 +73,44 @@ info:
     * **Ask About Selected Text**
     * **Query across multi docs**
 
+    # Quick Start
+    To use the **ChatDOC API**, you have two options:
+    - Directly call the ChatDOC RESTful API from your own service and custom the UI by yourself.
+    - Use the `@chatdoc/chatdoc-sdk` to display PDF documents and retrieve data by calling the ChatDOC RESTful API.
+
+      > Before using the API, you need to obtain an API Key and URL from The [ChatDoc API]()
+    
+    You can download [ChatDOC_API_Demo](https://gitpd.paodingai.com/cheftin/frontend-team/front_chatdoc_api_demo) to start your application.
+    
+       > The  server folder is an node server, which request the ChatDOC RESTful API.
+    
+       > The  client folder is a vue web app, which use `@chatdoc/chatdoc-sdk` to show the document, and request the node server.
+    
+    Here are the steps to start the demo:
+    - `run pnpm install`
+    - Start the node server
+      1. run `cp ./projects/server/.env.template ./projects/server/.env`.
+
+      2. Fill in **PROXY_BASE_URL** and **PROXY_API_KEY** in the .env file.
+        > **PROXY_BASE_URL** is the base URL of the ChatDOC RESTful API.
+
+         > **PROXY_API_KEY**  is the API key that you obtained after purchasing the API package or membership plan.
+      3. run `pnpm server:dev`
+    
+    - Start the vue web app
+      1. run `cp ./projects/client/.env.template ./projects/client/.env`.
+
+      2. Fill in **VITE_SERVER_HOST** and **VITE_SDK_APP_HOST** in the .env file.
+        > **VITE_SERVER_HOST** is the base URL of the node server. 
+
+         > **VITE_SDK_APP_HOST**  is the URL that you obtained after purchasing the API package or membership plan.
+      3. run `pnpm client:dev`  
+
+    By following these steps, you will have a simple ChatDOC API application. If you need more specific information or have any other questions, feel free to ask!
+
+
+
+
     # ChatDOC Document Viewer
     If you want to view the document in the browser, you can use the `@chatdoc/chatdoc-sdk` npm package.
 
@@ -270,7 +308,7 @@ info:
     #### clearSourceAnnotations(): void
 
     Clears source annotations.
-    
+
     ## EVENT_TYPES
        
     - **PAGE_RENDERED** - this event is dispatched after the document per page rendered, and return the `pageNumber`.
