@@ -54,25 +54,6 @@ info:
 
     Different keys of the same user are interoperable of each others' resource, they share common permission of the user.
 
-    ## Objects
-
-    ### Document
-
-    You can first upload documents to get started. Supported document formats including pdf, docx/doc, and more formats such as markdown, epub are upcoming.
-
-    ### Collection
-
-    Collection is just a special type of `document`, they have common properties like `name`, `status` etc. The difference is that as for questioning, a document can be standalone or grouped as a `collection`, each file collection is a customized database, and you can acquire knowledge effortlessly through conversation.
-
-    ### Question
-
-    Namely message or chat, there can be [4 Ways to Make Queries](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7):
-
-    * **Try our Suggested Queries**
-    * **Ask About Full Text**
-    * **Ask About Selected Text**
-    * **Query across multi docs**
-
     # Quick Start
     To use the **ChatDOC API**, you have two options:
     - Directly call the ChatDOC RESTful API from your own service and custom the UI by yourself.
@@ -315,6 +296,26 @@ info:
     - **CHAT_ICON_CLICKED** - after you clicked the chat icon in document, you can get the event, and return [`MaterialData`](#section/SDK-API/Types).    
   
   
+    # 
+    # OBJECTS
+
+    ## Document
+
+    You can first upload documents to get started. Supported document formats including pdf, docx/doc, and more formats such as markdown, epub are upcoming.
+
+    ## Collection
+
+    Collection is just a special type of `document`, they have common properties like `name`, `status` etc. The difference is that as for questioning, a document can be standalone or grouped as a `collection`, each file collection is a customized database, and you can acquire knowledge effortlessly through conversation.
+
+    ## Question
+
+    Namely message or chat, there can be [4 Ways to Make Queries](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7):
+
+    * **Try our Suggested Queries**
+    * **Ask About Full Text**
+    * **Ask About Selected Text**
+    * **Query across multi docs**
+
     # 
     # ChatDOC RESTful API
   version: 0.1.0
