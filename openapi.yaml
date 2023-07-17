@@ -59,7 +59,7 @@ info:
     - Directly call the ChatDOC RESTful API from your own service and custom the UI by yourself.
     - Use the `@chatdocai/chatdoc-sdk` to display PDF documents and retrieve data by calling the ChatDOC RESTful API.
 
-      > Before using the API, you need to obtain an API Key and URL from The [https://chatdoc.com/](https://chatdoc.com/)
+      > Before using the API, you need to obtain an API Key from The [https://chatdoc.com/](https://chatdoc.com/)
     
     You can download [ChatDOC-API-Demo](https://github.com/chatdoc-com/ChatDOC-API-Demo) to start your application.
     
@@ -68,22 +68,11 @@ info:
        > The  client folder is a vue web app, which use `@chatdocai/chatdoc-sdk` to show the document, and request the node server.
     
     Here are the steps to start the demo:
-    - `run pnpm install`
-    - Start the node server
-
-      1. Set the env variables **PROXY_BASE_URL** and **PROXY_API_KEY**.
-        > **PROXY_BASE_URL** is the base URL of the ChatDOC RESTful API.
-
-         > **PROXY_API_KEY**  is the API key that you obtained after purchasing the API package or membership plan.
-      2. run `pnpm server:dev`
-    
-    - Start the vue web app
-
-      1. Set the env variables **VITE_SERVER_HOST** and **VITE_SDK_APP_HOST**.
-        > **VITE_SERVER_HOST** is the base URL of the node server. 
-
-         > **VITE_SDK_APP_HOST**  is the URL that you obtained after purchasing the API package or membership plan.
-      2. run `pnpm client:dev`  
+    1. run `pnpm install`
+    2. Set the env variable **PROXY_API_KEY**.
+     > **PROXY_API_KEY**  is the API key that you obtained after purchasing the API package or membership plan.
+        
+    3. run `pnpm start`
 
     By following these steps, you will have a simple ChatDOC API application. If you need more specific information or have any other questions, feel free to ask!
 
@@ -94,22 +83,18 @@ info:
     If you want to view the document in the browser, you can use the `@chatdocai/chatdoc-sdk` npm package.
 
     The `@chatdocai/chatdoc-sdk` npm package is used to display PDF files and interact with them by selecting text and asking questions. Here are the steps to get started:
-
-    1. **You need to prepare a URL**
-
-        > You can get the URL after you buy the API package or membership plan.
     
-    2. **Install `@chatdocai/chatdoc-sdk`**
+    1. **Install `@chatdocai/chatdoc-sdk`**
 
        ```bash
        pnpm install @chatdocai/chatdoc-sdk
        # npm install @chatdocai/chatdoc-sdk
        # yarn install @chatdocai/chatdoc-sdk
        ```
-    3. **Init chatdoc-sdk**
+    2. **Init chatdoc-sdk**
 
         Initialize the chatdoc-sdk by importing the **initSDK** function from `@chatdocai/chatdoc-sdk` and using it to create an instance of the [PdfViewerSdk](#section/ChatDOC-Document-Viewer/PdfViewerSdk). 
-        Provide the mount element the DOM element where you want to mount the SDK), the URL of the SDK app from **step 1**, and the URL of the PDF file.
+        Provide the mount element the DOM element where you want to mount the SDK, the URL of the PDF file.
 
         Example 
 
@@ -118,12 +103,11 @@ info:
 
         const sdk = initSDK({
           mount: '#pdf-viewer',
-          url: 'https://example.com/pdf-viewer',
           fileUrl: 'https://example.com/pdf-file.pdf',
         })
 
         ``` 
-    4. **Add event listener**
+    3. **Add event listener**
 
         Add event listeners to handle specific events. For example, you can listen to the **CHAT_ICON_CLICKED** event to get the selected text from the document when the chat icon is clicked.
 
@@ -155,7 +139,6 @@ info:
       The configuration parameters for the SDK.
 
       - **mount**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
-      - **url**: `string` - The URL of the page.
       - **fileUrl**: `string` (optional) - The URL of the PDF file.
       - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the token.
 
@@ -163,7 +146,6 @@ info:
         ```javascript
         const config: SdkConfig = {
           mount: '#pdf-viewer',
-          url: 'https://example.com/pdf-viewer',
           fileUrl: 'https://example.com/pdf-file.pdf',
         };
         ```
