@@ -66,7 +66,7 @@ info:
 
     ### Question
 
-    Namely chat, there can be [4 Ways to Make Queries](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7):
+    Namely message or chat, there can be [4 Ways to Make Queries](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7):
 
     * **Try our Suggested Queries**
     * **Ask About Full Text**
@@ -313,9 +313,11 @@ info:
     - **PAGE_RENDERED** - this event is dispatched after the document per page rendered, and return the `pageNumber`.
 
     - **CHAT_ICON_CLICKED** - after you clicked the chat icon in document, you can get the event, and return [`MaterialData`](#section/SDK-API/Types).    
-    
-
-  version: 0.1.0 
+  
+  
+    # 
+    # ChatDOC RESTful API
+  version: 0.1.0
 
 servers:
   - url: /api/v1/external
@@ -330,7 +332,7 @@ paths:
 
         **Params**:
 
-        `collection_id`: if provided, add document to the collection, collection can be created by `POST /documents/collections`
+        `collection_id`: if provided, add document to the collection, collection can be created by `POST /collections`
 
         **Response**:
 
@@ -514,156 +516,6 @@ paths:
       security:
         - HTTPBearer: []
         - HTTPBearer: []
-  /documents/{upload_id}/chat:
-    post:
-      tags:
-        - Documents
-      summary: Chat Stream
-      description: |-
-        Chat with the document, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode, which is also called `streaming` mode.
-
-        **Params**:
-
-        * `question`: question to ask
-
-        * `selected_meta`: When use **Ask About Selected Text**, this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/api_docs/#section/Getting-started) of our PdfViewerSdk.
-
-        * `history`: chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
-            * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
-            * history is question and answer pairs, which is a list of `ChatMessage` objects, sample parameters are as follows:
-
-            ```json
-            [
-                {"role": "user", "content": "Who won the world series in 2020?"},
-                {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-                {"role": "user", "content": "Where was it played?"}
-                {"role": "assistant", "content": "The 2020 World Series was played at Globe Life Field in Arlington, Texas."},
-            ]
-            ```
-
-        * `search_entire_doc`:
-            * if true: limit responses to current file' information
-            * else: responses go freely with knowledge of our AI
-
-        * `detailed_citation`: Whether to show the source at the end of each sentence or not. Requires enabling the `search_entire_doc` setting.
-
-        * `language`: preferred language of answer to the question, if not provided, we will try to detect the language automatically. But we can't promise, when AI can't answer your question well, it generally answers in English. It's strongly recommended to not pass this parameter, which is more flexible and works well.
-
-        **Response**:
-
-        structure is as follows:
-
-        ```json
-        {
-            "data": {
-                "answer": data,
-                "id": question_id,
-                "source_info": source_info
-            }
-        }
-        ```
-
-        * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables), [Links](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links).
-            * If the answer is empty, it means error occurred.
-
-        * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
-
-        **Attention**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
-
-        * `source_info`: only responses in the last chunk, and the structure is as follows:
-
-        ```json
-        [
-            {
-                # key: page number
-                # value: rects
-                '0': [[38.1063, 557.8058, 553.9003, 584.0043]]
-            },
-            {'1': [[38.0, 152.3994, 523.6151, 178.6392]]},
-            {'0': [[38.0, 758.0623, 537.0082, 784.0]]},
-            ...
-        ]
-        ```
-
-        Page number may not be ordered, you can use this information to highlight the source of the answer in your PDF viewer, by
-        calling [`drawSources`](/api_docs/#section/PdfViewerSdk/Methods) method of our PdfViewerSdk, and converting `source_info` to [`Source`](/api_docs/#section/PdfViewerSdk/Interface) parameter.
-      operationId: chat_stream_documents__upload_id__chat_post
-      parameters:
-        - required: true
-          schema:
-            title: Upload Id
-            type: string
-          name: upload_id
-          in: path
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/QuestionReq'
-        required: true
-      responses:
-        "200":
-          description: Successful Response
-          content:
-            application/json:
-              schema: {}
-        "422":
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-      security:
-        - HTTPBearer: []
-        - HTTPBearer: []
-        - HTTPBearer: []
-  /documents/{upload_id}/recommend-questions:
-    get:
-      tags:
-        - Documents
-      summary: Recommend
-      description: |-
-        Recommend questions for a document, defaults to 5 questions.
-
-        Response example:
-        ```json
-        [
-            "What is the name of the author?",
-            "What is the name of the book?",
-            "When was the book published?",
-            "What is the name of the publisher?",
-            "Where is the book published?"
-        ]
-        ```
-
-        Only when analysis of the document has succeeded(status=300), can questions be generated.
-      operationId: recommend_documents__upload_id__recommend_questions_get
-      parameters:
-        - required: true
-          schema:
-            title: Upload Id
-            type: string
-          name: upload_id
-          in: path
-      responses:
-        "200":
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                title: Response Recommend Documents  Upload Id  Recommend Questions Get
-                type: array
-                items:
-                  type: string
-        "422":
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-      security:
-        - HTTPBearer: []
-        - HTTPBearer: []
   /documents/{upload_id}/download:
     get:
       tags:
@@ -697,10 +549,194 @@ paths:
       security:
         - HTTPBearer: []
         - HTTPBearer: []
+  /collections:
+    post:
+      tags:
+        - Collections
+      summary: Create Collection
+      description: |-
+        Create an empty collection
+
+        **Response**:
+
+        Similar with `POST /documents/upload`, response `id` also called `upload_id`, which can be used for document related APIs:
+
+        * `GET /documents/{upload_id}`
+        * `DELETE /documents/{upload_id}`
+        * `POST /documents/{upload_id}/chat`
+
+        Upon created you can add sub documents to the collection by `POST /documents/upload?collection_id={upload_id}`.
+      operationId: create_collection_collections_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionReq'
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIUploadResp'
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - HTTPBearer: []
+        - HTTPBearer: []
+  /questions/suggested:
+    get:
+      tags:
+        - Questions
+      summary: Get Suggested Questions
+      description: |-
+        Recommend questions for a document, defaults to 5 questions.
+
+        Response example:
+        ```json
+        [
+            "What is the name of the author?",
+            "What is the name of the book?",
+            "When was the book published?",
+            "What is the name of the publisher?",
+            "Where is the book published?"
+        ]
+        ```
+
+        Only when analysis of the document has succeeded(status=300), can questions be generated.
+      operationId: get_suggested_questions_questions_suggested_get
+      parameters:
+        - required: true
+          schema:
+            title: Upload Id
+            type: string
+          name: upload_id
+          in: query
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Get Suggested Questions Questions Suggested Get
+                type: array
+                items:
+                  type: string
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - HTTPBearer: []
+        - HTTPBearer: []
+  /questions:
+    post:
+      tags:
+        - Questions
+      summary: Chat Stream
+      description: |-
+        Chat with the document, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode, which is also called `streaming` mode.
+
+        **Params**:
+
+        * `question`: question to ask
+
+        * `selected_meta`: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/api_docs/#section/Getting-started) of our PdfViewerSdk.
+
+        * `history`: chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
+            * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
+            * history is question and answer pairs, which is a list of `ChatMessage` objects, sample parameters are as follows:
+
+            ```json
+            [
+                {"role": "user", "content": "Who won the world series in 2020?"},
+                {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+                {"role": "user", "content": "Where was it played?"}
+                {"role": "assistant", "content": "The 2020 World Series was played at Globe Life Field in Arlington, Texas."},
+            ]
+            ```
+
+        * `search_entire_doc`:
+            * if true: limit responses to current file' information
+            * else: responses go freely with knowledge of our AI
+
+        * `detailed_citation`: Whether to show the source at the end of each sentence or not. Requires enabling the `search_entire_doc` setting.
+
+        * `language`: preferred language of answer to the question, if not provided, we will try to detect the language automatically. But we can't promise, when AI can't answer your question well, it generally answers in English. It's strongly recommended to not specific `language`, which is more flexible and works well.
+
+        **Response**:
+
+        structure is as follows:
+
+        ```json
+        {
+            "data": {
+                "answer": "answer to the question",
+                "id": question_id,
+                "source_info": [
+                    {
+                        # key: page number
+                        # value: rects
+                        '0': [[38.1063, 557.8058, 553.9003, 584.0043]]
+                    },
+                    {'1': [[38.0, 152.3994, 523.6151, 178.6392]]},
+                    {'0': [[38.0, 758.0623, 537.0082, 784.0]]},
+                    ...
+                ]
+            }
+        }
+        ```
+
+        * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables), [Links](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links).
+            * If the answer is empty, it means error occurred.
+
+        * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
+
+        **Attention**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
+
+        * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of the answer in your PDF viewer, by
+            calling [`drawSources`](/api_docs/#section/SDK-API/Methods) method of our PdfViewerSdk, and converting `source_info` to [`Source`](/api_docs/#section//SDK-API/Types) parameter.
+      operationId: chat_stream_questions_post
+      parameters:
+        - required: true
+          schema:
+            title: Upload Id
+            type: string
+          name: upload_id
+          in: query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionReq'
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - HTTPBearer: []
+        - HTTPBearer: []
+        - HTTPBearer: []
   /questions/{question_id}:
     get:
       tags:
-        - Question
+        - Questions
       summary: Get Question
       description: |-
         Get a question detail
