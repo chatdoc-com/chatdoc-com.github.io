@@ -476,46 +476,6 @@ paths:
       security:
         - HTTPBearer: []
         - HTTPBearer: []
-  /documents/collection:
-    post:
-      tags:
-        - Documents
-      summary: Create Collection
-      description: |-
-        Create an empty collection
-
-        **Response**:
-
-        Similar with `POST /documents/upload`, `id` also called `upload_id`, which can be used for document related APIs:
-
-        * `GET /documents/{upload_id}`
-        * `DELETE /documents/{upload_id}`
-        * `POST /documents/{upload_id}/chat`
-
-        Upon created you can add sub documents to the collection by `POST /documents/upload?collection_id={upload_id}`.
-      operationId: create_collection_documents_collection_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CollectionReq'
-        required: true
-      responses:
-        "200":
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/APIUploadResp'
-        "422":
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-      security:
-        - HTTPBearer: []
-        - HTTPBearer: []
   /documents/{upload_id}/download:
     get:
       tags:
