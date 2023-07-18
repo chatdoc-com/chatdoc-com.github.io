@@ -26,7 +26,7 @@ info:
 
     ## Conventions
 
-    The base URL to send all API requests is https://api.chatdoc.com/. HTTPS is required for all API requests.
+    The base URL to send all API requests is https://api.chatdoc.com. HTTPS is required for all API requests.
 
     The ChatDOC API follows RESTful conventions when possible, with most operations performed via GET, POST, PUT, and DELETE requests. Request and response bodies are encoded as JSON.
 
@@ -62,7 +62,7 @@ info:
     Requests use the HTTP `Authorization` header to both authenticate and authorize operations. The ChatDOC API accepts bearer tokens in this header. Bearer keys can be managed in our web site.
 
     ```curl
-    curl 'https://chatdoc.com/api/v1/external/documents/upload'   -H 'Authorization: Bearer '"$API_KEY"''
+    curl 'https://api.chatdoc.com/api/v1/documents/upload'   -H 'Authorization: Bearer '"$API_KEY"''
     ```
 
     Different keys of the same user are interoperable of each others' resource, they share common permission of the user.
@@ -585,7 +585,7 @@ paths:
 
         * `question`: question to ask
 
-        * `selected_meta`: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/api_docs/#section/Getting-started) of our PDFViewerSDK.
+        * `selected_meta`: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK.
 
         * `history`: chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
             * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
@@ -623,8 +623,8 @@ paths:
                         # value: rects
                         '0': [[38.1063, 557.8058, 553.9003, 584.0043]]
                     },
-                    {'1': [[38.0, 152.3994, 523.6151, 178.6392]]},
-                    {'0': [[38.0, 758.0623, 537.0082, 784.0]]},
+                    {'1': [[38.0, 152.3994, 523.6151, 178.6392]], 'upload_id': 'xxxx'},
+                    {'0': [[38.0, 758.0623, 537.0082, 784.0]], 'upload_id': 'xxxx'},
                     ...
                 ]
             }
@@ -633,17 +633,21 @@ paths:
 
         * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables).
             * If the answer is empty, it means error occurred.
+            * `detailed_citation` answer, the span tag chunk may be as follows:
+
+            ```
+            autobiography captured the pre-Nazi Europe[<span data-index="0">1</span>]
+            ```
+
+            The tag attr `data-index` is the index of the source in `source_info` array, which is used to highlight the source of the previous answer sentences in your PDF viewer. The highlighting method is same as `source_info`, and just use slice of `source_info` array as parameter.
 
         * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
 
         **Attention**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
-        * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of the answer in your PDF viewer, by
-
+        * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
             calling [`drawSources`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) parameter.
       operationId: ask_question_questions_post
-
-
       parameters:
         - required: true
           schema:
