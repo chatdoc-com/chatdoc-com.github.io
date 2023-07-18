@@ -659,7 +659,7 @@ paths:
         **Attention**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
         * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of the answer in your PDF viewer, by
-            calling [`(/#section/ChatDOC-Document-Viewer/PdfViewerSdk) method of our PdfViewerSdk, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PdfViewerSdk) parameter.
+            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/PdfViewerSdk) method of our PdfViewerSdk, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PdfViewerSdk) parameter.
       operationId: ask_question_questions_post
       parameters:
         - required: true
