@@ -4,12 +4,25 @@ info:
   description: |2
     # Introduction
 
-    ChatDOC helps you chat with documents, and get instant answers with cited sources. The reference is your key to a comprehensive understanding of the ChatDOC API.
+    ChatDOC is an SaaS AI product helps you chat with documents, and
+    get instant answers with cited sources. It has a set of API with
+    which developers can manipulate the documents and questions in the
+    system, and build interactive experiences for users outside
+    ChatDOC.
 
-    Developers can use the API to access ChatDOC's documents and questions, and build interactive experiences for users outside ChatDOC. Below you'll find details for objects and endpoints used in the API.
+    This reference is a comprehensive description of the ChatDOC
+    system and its API. In it you'll find details for objects and
+    endpoints used in the API. If you feel that something is missing
+    or wrong, tell us by filing an issue on
+    [Github](https://github.com/chatdoc-com/chatdoc-com.github.io/issues),
+    or open a pull request if you know how to fix that, we'll very
+    much appreciate your contribution.
 
 
-    > You need an API key to interact with the ChatDOC API. You can create keys after you buy the API package or membership plan.
+    > To interact with ChatDOC using its API, one needs an API
+      key. API keys could be created after one subscribes a proper
+      membership plan or purchase an API package on
+      [ChatDOC.com](https://chatdoc.com/).
 
     ## Conventions
 
@@ -60,18 +73,18 @@ info:
     - Use the `@chatdocai/chatdoc-sdk` to display PDF documents and retrieve data by calling the ChatDOC RESTful API.
 
       > Before using the API, you need to obtain an API Key from The [https://chatdoc.com/](https://chatdoc.com/)
-    
+
     You can download [ChatDOC-API-Demo](https://github.com/chatdoc-com/ChatDOC-API-Demo) to start your application.
-    
+
        > The  server folder is an node server, which request the ChatDOC RESTful API.
-    
+
        > The  client folder is a vue web app, which use `@chatdocai/chatdoc-sdk` to show the document, and request the node server.
-    
+
     Here are the steps to start the demo:
     1. run `pnpm install`
     2. Set the env variable **PROXY_API_KEY**.
      > **PROXY_API_KEY**  is the API key that you obtained after purchasing the API package or membership plan.
-        
+
     3. run `pnpm start`
 
     By following these steps, you will have a simple ChatDOC API application. If you need more specific information or have any other questions, feel free to ask!
@@ -83,7 +96,7 @@ info:
     If you want to view the document in the browser, you can use the `@chatdocai/chatdoc-sdk` npm package.
 
     The `@chatdocai/chatdoc-sdk` npm package is used to display PDF files and interact with them by selecting text and asking questions. Here are the steps to get started:
-    
+
     1. **Install `@chatdocai/chatdoc-sdk`**
 
        ```bash
@@ -93,10 +106,10 @@ info:
        ```
     2. **Init chatdoc-sdk**
 
-        Initialize the chatdoc-sdk by importing the **initSDK** function from `@chatdocai/chatdoc-sdk` and using it to create an instance of the [PdfViewerSdk](#section/ChatDOC-Document-Viewer/PdfViewerSdk). 
+        Initialize the chatdoc-sdk by importing the **initSDK** function from `@chatdocai/chatdoc-sdk` and using it to create an instance of the [PdfViewerSdk](#section/ChatDOC-Document-Viewer/PdfViewerSdk).
         Provide the mount element the DOM element where you want to mount the SDK, the URL of the PDF file.
 
-        Example 
+        Example
 
         ```js
         import { initSDK } from '@chatdocai/chatdoc-sdk';
@@ -106,7 +119,7 @@ info:
           fileUrl: 'https://example.com/pdf-file.pdf',
         })
 
-        ``` 
+        ```
     3. **Add event listener**
 
         Add event listeners to handle specific events. For example, you can listen to the **CHAT_ICON_CLICKED** event to get the selected text from the document when the chat icon is clicked.
@@ -142,7 +155,7 @@ info:
       - **fileUrl**: `string` (optional) - The URL of the PDF file.
       - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the token.
 
-        Example 
+        Example
         ```javascript
         const config: SdkConfig = {
           mount: '#pdf-viewer',
@@ -164,13 +177,13 @@ info:
         };
 
         ```
-    #### Rect 
+    #### Rect
     Type representing a rectangle in the PDF Viewer.
 
     - **pageNumber**: `number` - The page number of the rectangle.
 
     - **outline**: `number[]` - An array of numbers representing the outline coordinates of the rectangle.
-    
+
         Example
         ```
         const rect: Rect = {
@@ -272,12 +285,12 @@ info:
     Clears source annotations.
 
     ## EVENT_TYPES
-       
+
     - **PAGE_RENDERED** - this event is dispatched after the document per page rendered, and return the `pageNumber`.
 
-    - **CHAT_ICON_CLICKED** - after you clicked the chat icon in document, you can get the event, and return [`MaterialData`](#section/SDK-API/Types).    
-  
-  
+    - **CHAT_ICON_CLICKED** - after you clicked the chat icon in document, you can get the event, and return [`MaterialData`](#section/SDK-API/Types).
+
+
     # OBJECTS
 
     ## Document
@@ -289,7 +302,7 @@ info:
     Collection is just a special type of `document`, they have common properties like `name`, `status` etc. The difference is that as for questioning, a document can be standalone or grouped as a `collection`, each file collection is a customized database, and you can acquire knowledge effortlessly through conversation.
 
     ## Question
-    
+
     Namely message or chat, there can be [4 Ways to Make Queries](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7):
 
     * **Try our Suggested Queries**
