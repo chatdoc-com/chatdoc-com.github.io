@@ -366,8 +366,11 @@ paths:
         PDF_CONVERT_ERROR = -3     docx to pdf failed
         LINK_DOWNLOAD_ERROR = -4   file link download failed
         EXCEED_SIZE_ERROR = -5     file size exceed limit
+        EXCEED_TOKENS_ERROR = -6   exceed tokens limit
         PAGE_LIMIT_ERROR = -10     page limit error
         TITLE_COMPLETE_ERROR = -11 complete title failed
+        READ_TMP_FILE_ERROR = -12  read tmp file error
+        OCR_PAGE_LIMIT_ERROR = -13 ocr page limit error
         ```
       operationId: upload_document_documents_upload_post
       parameters:
@@ -594,7 +597,7 @@ paths:
     post:
       tags:
         - Questions
-      summary: Chat Stream
+      summary: Ask Question
       description: |-
         Chat with the document, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode, which is also called `streaming` mode.
 
@@ -602,7 +605,7 @@ paths:
 
         * `question`: question to ask
 
-        * `selected_meta`: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/api_docs/#section/Getting-started) of our PdfViewerSdk.
+        * `selected_meta`: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PdfViewerSdk.
 
         * `history`: chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
             * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
@@ -656,8 +659,8 @@ paths:
         **Attention**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
         * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of the answer in your PDF viewer, by
-            calling [`drawSources`](/api_docs/#section/SDK-API/Methods) method of our PdfViewerSdk, and converting `source_info` to [`Source`](/api_docs/#section//SDK-API/Types) parameter.
-      operationId: chat_stream_questions_post
+            calling [`(/#section/ChatDOC-Document-Viewer/PdfViewerSdk) method of our PdfViewerSdk, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PdfViewerSdk) parameter.
+      operationId: ask_question_questions_post
       parameters:
         - required: true
           schema:
