@@ -106,7 +106,8 @@ info:
        ```
     2. **Init chatdoc-sdk**
 
-        Initialize the chatdoc-sdk by importing the **initSDK** function from `@chatdocai/chatdoc-sdk` and using it to create an instance of the [PdfViewerSdk](#section/ChatDOC-Document-Viewer/PdfViewerSdk).
+        Initialize the chatdoc-sdk by importing the **initSDK** function from `@chatdocai/chatdoc-sdk` and using it to create an instance of the [PDFViewerSDK](#section/ChatDOC-Document-Viewer/PDFViewerSDK). 
+
         Provide the mount element the DOM element where you want to mount the SDK, the URL of the PDF file.
 
         Example
@@ -115,7 +116,7 @@ info:
         import { initSDK } from '@chatdocai/chatdoc-sdk';
 
         const sdk = initSDK({
-          mount: '#pdf-viewer',
+          el: '#pdf-viewer',
           fileUrl: 'https://example.com/pdf-file.pdf',
         })
 
@@ -138,27 +139,27 @@ info:
 
         ```
 
-    ## PdfViewerSdk
-    The PdfViewerSdk class provides a PDF viewer SDK with various methods and properties for interacting with the PDF viewer. Here are some key details about the class:
+    ## PDFViewerSDK
+    The PDFViewerSDK class provides a PDF viewer SDK with various methods and properties for interacting with the PDF viewer. Here are some key details about the class:
 
     ### Params
 
-    - **config**: [SdkConfig](#section/SDK-API/Types) - The configuration parameters for the SDK.
+    - **config**: [Config](#section/SDK-API/Types) - The configuration parameters for the SDK.
 
     ### Types
 
-    #### SdkConfig
+    #### Config
 
       The configuration parameters for the SDK.
 
-      - **mount**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
+      - **el**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
       - **fileUrl**: `string` (optional) - The URL of the PDF file.
       - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the token.
 
         Example
         ```javascript
-        const config: SdkConfig = {
-          mount: '#pdf-viewer',
+        const config: Config = {
+          el: '#pdf-viewer',
           fileUrl: 'https://example.com/pdf-file.pdf',
         };
         ```
@@ -215,20 +216,6 @@ info:
           };
           ```
 
-    ### Properties
-
-    #### iframe: HTMLIFrameElement
-
-    Gets the iframe element.
-
-    - Returns: `HTMLIFrameElement` - The iframe element.
-
-    ### mountEle: Element | null
-
-    Gets the mount element for rendering the PDF viewer.
-
-    - Returns: `Element | null` - The mount element.
-
     ### Methods
 
     #### ready(): Promise<void>
@@ -255,13 +242,6 @@ info:
     - **name**: `string` - The name of the event.
     - **handler**: `Func` - The event handler function.
 
-    #### emit(name: string, data?: any): void
-
-    Emits an event with optional data.
-
-    - **name**: `string` - The name of the event.
-    - **data**: `any` (optional) - The data to pass along with the event.
-
     #### getCurrentPageNumber(): any
 
     Gets the current page number.
@@ -280,7 +260,7 @@ info:
 
     - **sources**: `Source[]` - The source rectangles to draw.
 
-    #### clearSourceAnnotations(): void
+    #### clearSources(): void
 
     Clears source annotations.
 
@@ -605,7 +585,7 @@ paths:
 
         * `question`: question to ask
 
-        * `selected_meta`: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PdfViewerSdk.
+        * `selected_meta`: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/api_docs/#section/Getting-started) of our PDFViewerSDK.
 
         * `history`: chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
             * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
@@ -659,8 +639,11 @@ paths:
         **Attention**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
         * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of the answer in your PDF viewer, by
-            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/PdfViewerSdk) method of our PdfViewerSdk, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PdfViewerSdk) parameter.
+
+            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) parameter.
       operationId: ask_question_questions_post
+
+
       parameters:
         - required: true
           schema:
