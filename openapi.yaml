@@ -26,7 +26,7 @@ info:
 
     ## Conventions
 
-    The base URL to send all API requests is https://chatdoc.com/api. HTTPS is required for all API requests.
+    The base URL to send all API requests is https://api.chatdoc.com/. HTTPS is required for all API requests.
 
     The ChatDOC API follows RESTful conventions when possible, with most operations performed via GET, POST, PUT, and DELETE requests. Request and response bodies are encoded as JSON.
 
@@ -314,7 +314,7 @@ info:
   version: 0.1.0
 
 servers:
-  - url: /api/v1/external
+  - url: https://api.chatdoc.com/api/v1
 paths:
   /documents/upload:
     post:
@@ -651,7 +651,7 @@ paths:
         }
         ```
 
-        * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables), [Links](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links).
+        * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables).
             * If the answer is empty, it means error occurred.
 
         * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
