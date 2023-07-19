@@ -583,6 +583,8 @@ paths:
 
         **Params**:
 
+        * `upload_id`: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly, passed in url query. Other parameters below are passed in body.
+
         * `question`: question to ask
 
         * `selected_meta`: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK.
