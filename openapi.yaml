@@ -4,7 +4,7 @@ info:
   description: |2
     # Introduction
 
-    ChatDOC is an SaaS AI product helps you chat with documents, and
+    ChatDOC is an SaaS AI product that helps you chat with documents, and
     get instant answers with cited sources. It has a set of API with
     which developers can manipulate the documents and questions in the
     system, and build interactive experiences for users outside
@@ -26,7 +26,7 @@ info:
 
     ## Conventions
 
-    The base URL to send all API requests is https://api.chatdoc.com. HTTPS is required for all API requests.
+    The domain to send all API requests is `api.chatdoc.com`. HTTPS is required for all API requests.
 
     The ChatDOC API follows RESTful conventions when possible, with most operations performed via GET, POST, PUT, and DELETE requests. Request and response bodies are encoded as JSON.
 
