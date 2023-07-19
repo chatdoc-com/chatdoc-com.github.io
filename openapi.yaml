@@ -154,7 +154,7 @@ info:
 
       - **el**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
       - **fileUrl**: `string` (optional) - The URL of the PDF file.
-      - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the jwt token.
+      - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the JWT token.The token is encoded using an API key, and the payload is `{"upload_id": "xxx"}`.
 
         Example
         ```javascript
@@ -199,22 +199,22 @@ info:
     - **material**: `string` - The content of the material.
     - **rects**: `Rect[]` - An array of rectangles representing the outlines.
 
-          Example
-          ```
-          const material: MaterialData = {
-            material: 'content',
-            rects: [
-              {
-                pageNumber: 1,
-                outline: [10, 10, 50, 50],
-              },
-              {
-                pageNumber: 2,
-                outline: [60, 60, 100, 100],
-              },
-            ],
-          };
-          ```
+        Example
+        ```
+        const material: MaterialData = {
+          material: 'content',
+          rects: [
+            {
+              pageNumber: 1,
+              outline: [10, 10, 50, 50],
+            },
+            {
+              pageNumber: 2,
+              outline: [60, 60, 100, 100],
+            },
+          ],
+        };
+        ```
 
     ## Methods
 
@@ -258,7 +258,7 @@ info:
 
     Draws source rectangles on the PDF viewer.
 
-    - **sources**: `Source[]` - The source rectangles to draw.
+    - **sources**: [`Source[]`](#section/ChatDOC-Document-Viewer/Types) - The source rectangles to draw.
 
     #### clearSources(): void
 
