@@ -142,11 +142,11 @@ info:
     ## PDFViewerSDK
     The PDFViewerSDK class provides a PDF viewer SDK with various methods and properties for interacting with the PDF viewer. Here are some key details about the class:
 
-    ### Params
+    ## Params
 
-    - **config**: [Config](#section/SDK-API/Types) - The configuration parameters for the SDK.
+    - **config**: [Config](#section/ChatDOC-Document-Viewer/Types) - The configuration parameters for the SDK.
 
-    ### Types
+    ## Types
 
     #### Config
 
@@ -154,7 +154,7 @@ info:
 
       - **el**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
       - **fileUrl**: `string` (optional) - The URL of the PDF file.
-      - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the token.
+      - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the jwt token.
 
         Example
         ```javascript
@@ -216,7 +216,7 @@ info:
           };
           ```
 
-    ### Methods
+    ## Methods
 
     #### ready(): Promise<void>
 
@@ -268,7 +268,7 @@ info:
 
     - **PAGE_RENDERED** - this event is dispatched after the document per page rendered, and return the `pageNumber`.
 
-    - **CHAT_ICON_CLICKED** - after you clicked the chat icon in document, you can get the event, and return [`MaterialData`](#section/SDK-API/Types).
+    - **CHAT_ICON_CLICKED** - after you clicked the chat icon in document, you can get the event, and return [`MaterialData`](#section/ChatDOC-Document-Viewer/Types).
 
 
     # OBJECTS
