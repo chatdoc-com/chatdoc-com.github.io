@@ -500,7 +500,7 @@ paths:
 
         * `GET /documents/{upload_id}`
         * `DELETE /documents/{upload_id}`
-        * `POST /questions`
+        * `POST /questions?upload_id={upload_id}`
 
         Upon created you can add sub documents to the collection by `POST /documents/upload?collection_id={upload_id}`.
       operationId: create_collection_collections_post
