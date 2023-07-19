@@ -125,7 +125,7 @@ info:
 
         Add event listeners to handle specific events. For example, you can listen to the **CHAT_ICON_CLICKED** event to get the selected text from the document when the chat icon is clicked.
 
-        The `@chatdocai/chatdoc-sdk` package also exports the EVENT_TYPES object, which types the event name. [**here**](#section/SDK-API/Global) is the event types info
+        The `@chatdocai/chatdoc-sdk` package also exports the EVENT_TYPES object, which types the [event name](#section/ChatDOC-Document-Viewer/EVENT_TYPES).
 
         Example
         ```js
@@ -232,7 +232,7 @@ info:
 
     Adds an event listener for the specified event.
 
-    - **name**: `string` - The name of the event.
+    - **name**: `string` - The name of the event, you can get the event name from [EVENT_TYPES](#section/ChatDOC-Document-Viewer/EVENT_TYPES).
     - **handler**: `Func` - The event handler function.
 
     #### off(name: string, handler: Func): void
