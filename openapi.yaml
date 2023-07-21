@@ -72,7 +72,7 @@ info:
     - Directly call the ChatDOC RESTful API from your own service and custom the UI by yourself.
     - Use the `@chatdocai/chatdoc-sdk` to display PDF documents and retrieve data by calling the ChatDOC RESTful API.
 
-      > Before using the API, you need to obtain an API Key on [ChatDOC.com](https://chatdoc.com/)
+      > Before using the API, you need to obtain an API Key on [ChatDOC.com](https://chatdoc.com/).
 
     You can download [ChatDOC-API-Demo](https://github.com/chatdoc-com/ChatDOC-API-Demo) to start your application.
 
