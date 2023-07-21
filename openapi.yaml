@@ -156,13 +156,31 @@ info:
       - **fileUrl**: `string` (optional) - The URL of the PDF file.
       - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the [JWT](https://jwt.io/) token.The token is encoded using an API key, and the payload is `{"upload_id": "xxx"}`.
 
-        Example
-        ```javascript
-        const config: Config = {
-          el: '#pdf-viewer',
-          fileUrl: 'https://example.com/pdf-file.pdf',
-        };
-        ```
+      Example
+      ```javascript
+
+      // node server
+      import jwt from 'jsonwebtoken';
+      async getDocumentToken(ctx) {
+        const { id: uploadId } = ctx.params
+        const token = jwt.sign({ upload_id: uploadId }, 'API_KEY', { noTimestamp: true} );
+        ctx.body = {
+          status: 'ok',
+          data: {token}
+        }
+      }
+
+      // client
+      const getToken = async () => {
+        const { token } = await getDocumentToken('uploadId');
+        return token;
+      };
+      const config: Config = {
+        el: '#pdf-viewer',
+        fileUrl: 'https://example.com/pdf-file.pdf',
+        getToken
+      };
+      ```
     #### Source
     Type representing a source in the PDF Viewer.
 
@@ -170,14 +188,14 @@ info:
 
     - **rects**: `number[][]` -  An array of rectangles representing the coordinates of the source.
 
-        Example
-        ```
-        const source: Source = {
-          pageNumber: 1,
-          rects: [[10, 10, 50, 50], [60, 60, 100, 100]],
-        };
+    Example
+    ```
+    const source: Source = {
+      pageNumber: 1,
+      rects: [[10, 10, 50, 50], [60, 60, 100, 100]],
+    };
 
-        ```
+    ```
     #### Rect
     Type representing a rectangle in the PDF Viewer.
 
@@ -185,13 +203,13 @@ info:
 
     - **outline**: `number[]` - An array of numbers representing the outline coordinates of the rectangle.
 
-        Example
-        ```
-        const rect: Rect = {
-          pageNumber: 1,
-          outline: [10, 10, 50, 50],
-        };
-        ```
+    Example
+    ```
+    const rect: Rect = {
+      pageNumber: 1,
+      outline: [10, 10, 50, 50],
+    };
+    ```
 
     #### MaterialData
     Type representing material data in the PDF Viewer.
@@ -199,22 +217,22 @@ info:
     - **material**: `string` - The content of the material.
     - **rects**: `Rect[]` - An array of rectangles representing the outlines.
 
-        Example
-        ```
-        const material: MaterialData = {
-          material: 'content',
-          rects: [
-            {
-              pageNumber: 1,
-              outline: [10, 10, 50, 50],
-            },
-            {
-              pageNumber: 2,
-              outline: [60, 60, 100, 100],
-            },
-          ],
-        };
-        ```
+    Example
+    ```
+    const material: MaterialData = {
+      material: 'content',
+      rects: [
+        {
+          pageNumber: 1,
+          outline: [10, 10, 50, 50],
+        },
+        {
+          pageNumber: 2,
+          outline: [60, 60, 100, 100],
+        },
+      ],
+    };
+    ```
 
     ## Methods
 
