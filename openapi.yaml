@@ -639,7 +639,7 @@ paths:
 
         * `detailed_citation`: Whether to show the source at the end of each sentence or not. Requires enabling the `search_entire_doc` setting.
 
-        * `language`: preferred language of answer to the question, if not provided, we will try to detect the language automatically. But we can't promise, when AI can't answer your question well, it generally answers in English. It's strongly recommended to not specific `language`, which is more flexible and works well.
+        * `language`: preferred language of answer to the question, if not provided, we will try to detect the language automatically, which is flexible and also works well. You'd better use [ISO language name](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes?useskin=vector), such as English, Chinese. But we can't promise, when AI can't answer your question well, it generally answers in English. 
 
         **Response**:
 
