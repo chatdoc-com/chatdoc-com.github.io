@@ -154,7 +154,7 @@ info:
 
       - **el**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
       - **fileUrl**: `string` (optional) - The URL of the PDF file.
-      - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the JWT token.The token is encoded using an API key, and the payload is `{"upload_id": "xxx"}`.
+      - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the [JWT](https://jwt.io/) token.The token is encoded using an API key, and the payload is `{"upload_id": "xxx"}`.
 
         Example
         ```javascript
