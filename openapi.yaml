@@ -72,7 +72,7 @@ info:
     - Directly call the ChatDOC RESTful API from your own service and custom the UI by yourself.
     - Use the `@chatdocai/chatdoc-sdk` to display PDF documents and retrieve data by calling the ChatDOC RESTful API.
 
-      > Before using the API, you need to obtain an API Key from The [ChatDOC.com](https://chatdoc.com/)
+      > Before using the API, you need to obtain an API Key on [ChatDOC.com](https://chatdoc.com/)
 
     You can download [ChatDOC-API-Demo](https://github.com/chatdoc-com/ChatDOC-API-Demo) to start your application.
 
@@ -352,7 +352,7 @@ paths:
         READ_TMP_FILE_ERROR = -12  read tmp file error
         OCR_PAGE_LIMIT_ERROR = -13 ocr page limit error
         ```
-      operationId: upload_document_documents_upload_post
+      operationId: Upload_Document_documents_upload_post
       parameters:
         - required: false
           schema:
@@ -364,7 +364,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Body_upload_document_documents_upload_post'
+              $ref: '#/components/schemas/Body_Upload_Document_documents_upload_post'
         required: true
       responses:
         "200":
@@ -401,7 +401,7 @@ paths:
             * doc_of_collection: sub document of collection
 
         * `documents`: sub document list of collection, which only returns for collection
-      operationId: get_document_documents__upload_id__get
+      operationId: Get_Document_documents__upload_id__get
       parameters:
         - required: true
           schema:
@@ -430,7 +430,7 @@ paths:
         - Documents
       summary: Delete Document
       description: Delete a document
-      operationId: delete_document_documents__upload_id__delete
+      operationId: Delete_Document_documents__upload_id__delete
       parameters:
         - required: true
           schema:
@@ -463,7 +463,7 @@ paths:
 
         * If the document is of doc/docx format, then it's converted to pdf version, and the original version can't be downloaded.
         * If the document is of pdf format, it's recommended to use your local file to avoid unnecessary network traffic.
-      operationId: download_document_documents__upload_id__download_get
+      operationId: Download_Document_documents__upload_id__download_get
       parameters:
         - required: true
           schema:
@@ -503,7 +503,7 @@ paths:
         * `POST /questions?upload_id={upload_id}`
 
         Upon created you can add sub documents to the collection by `POST /documents/upload?collection_id={upload_id}`.
-      operationId: create_collection_collections_post
+      operationId: Create_Collection_collections_post
       requestBody:
         content:
           application/json:
@@ -517,6 +517,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/APIUploadResp'
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - HTTPBearer: []
+        - HTTPBearer: []
+  /collections/clone-documents:
+    post:
+      tags:
+        - Collections
+      summary: Clone Document To Collection
+      description: |-
+        Only parsed normal document(status=300）can be cloned to collection, max document count of collection is 30.
+
+        Cloned documents also occupy your document page quota.
+      operationId: clone_document_to_collection_collections_clone_documents_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloneReq'
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
         "422":
           description: Validation Error
           content:
@@ -546,7 +577,7 @@ paths:
         ```
 
         Only when analysis of the document has succeeded(status=300), can questions be generated.
-      operationId: get_suggested_questions_questions_suggested_get
+      operationId: Get_Suggested_Questions_questions_suggested_get
       parameters:
         - required: true
           schema:
@@ -649,7 +680,7 @@ paths:
 
         * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
             calling [`drawSources`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) parameter.
-      operationId: ask_question_questions_post
+      operationId: Ask_Question_questions_post
       parameters:
         - required: true
           schema:
@@ -696,7 +727,7 @@ paths:
             * select: Ask About Selected Text
 
         * `source_info`: source information of answer, same with `POST /questions`
-      operationId: get_question_questions__question_id__get
+      operationId: Get_Question_questions__question_id__get
       parameters:
         - required: true
           schema:
@@ -772,8 +803,8 @@ components:
           type: integer
         type:
           $ref: '#/components/schemas/UploadType'
-    Body_upload_document_documents_upload_post:
-      title: Body_upload_document_documents_upload_post
+    Body_Upload_Document_documents_upload_post:
+      title: Body_Upload_Document_documents_upload_post
       required:
         - file
       type: object
@@ -801,6 +832,22 @@ components:
         - user
       type: string
       description: An enumeration.
+    CloneReq:
+      title: CloneReq
+      required:
+        - collection_id
+        - upload_ids
+      type: object
+      properties:
+        collection_id:
+          title: Collection Id
+          minLength: 1
+          type: string
+        upload_ids:
+          title: Upload Ids
+          minLength: 1
+          type: string
+          description: comma separated upload id list
     CollectionReq:
       title: CollectionReq
       required:
