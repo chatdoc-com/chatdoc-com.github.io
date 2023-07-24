@@ -155,6 +155,11 @@ info:
       - **el**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
       - **fileUrl**: `string` (optional) - The URL of the PDF file.
       - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the [JWT](https://jwt.io/) token.The token is encoded using an API key, and the payload is `{"upload_id": "xxx"}`.
+         ```js
+          import jwt from 'jsonwebtoken';
+          // token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cGxvYWRfaWQiOiI2YjNmYzdlOS1kYzE3LTQwYjYtODI4Ny04MDM5N2JhMWU5MmEifQ.sXUbg6tGtF6KqFtCGALTcm7eG6H23dhrKW1wUAAAyus'
+          const token = jwt.sign({ upload_id: '6b3fc7e9-dc17-40b6-8287-80397ba1e92a' }, 'ak-ifypHN4we-v07xhp0pDKRG-znEb-5YQeFuhXgjt4byM', { noTimestamp: true} );
+         ```
 
       Example
       ```javascript
