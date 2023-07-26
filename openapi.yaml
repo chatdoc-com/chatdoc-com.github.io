@@ -335,7 +335,7 @@ paths:
 
         * `id`: document id, also called `upload_id`, you can use it to get the document by `GET /documents/{upload_id}`. It's of uuid format.
 
-        **Attention**: you should store `id` in your database, because we don't have a `GET /documents/list` API to list all documents for now.
+        **Please note**: you should store `id` in your database, because we don't have a `GET /documents/list` API to list all documents for now.
 
         * `status`: Once uploaded, the status is `UN_PARSED`, after a series of processing, the
         status would change by time, and finally to be one of the following two cases:
@@ -349,6 +349,8 @@ paths:
         So before the document status finalized, you can poll the status by
         `GET /documents/{upload_id}` at interval of 10s , generally it takes 1-2 minutes to
         finish depending on content length of the document. If error occurred, it doesn't occupy your quota.
+
+        **Please note**: We'll keep your uploaded file for one year. If you do not make another payment for the API after one year, the file will be permanently deleted.
 
         For reference, other statuses are as follows:
 
@@ -699,7 +701,7 @@ paths:
 
         * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
 
-        **Attention**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
+        **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
         * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
             calling [`drawSources`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) parameter.
