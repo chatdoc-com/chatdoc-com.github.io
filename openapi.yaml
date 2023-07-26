@@ -527,7 +527,10 @@ paths:
         * `DELETE /documents/{upload_id}`
         * `POST /questions?upload_id={upload_id}`
 
-        Upon created you can add sub documents to the collection by `POST /documents/upload?collection_id={upload_id}`.
+        Upon created you can add sub documents to the collection by:
+
+        * `POST /documents/upload?collection_id={upload_id}`
+        * `POST /collections/clone-documents`.
       operationId: Create_Collection_collections_post
       requestBody:
         content:
@@ -557,7 +560,7 @@ paths:
         - Collections
       summary: Clone Document To Collection
       description: |-
-        Only parsed normal document(status=300）can be cloned to collection, max document count of collection is 30.
+        Only parsed normal document (status=300) can be cloned to collection, max document count of collection is 30.
 
         Cloned documents also occupy your document page quota.
       operationId: clone_document_to_collection_collections_clone_documents_post
@@ -565,7 +568,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CloneReq'
+              $ref: '#/components/schemas/APICloneReq'
         required: true
       responses:
         "200":
@@ -580,6 +583,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
+        - HTTPBearer: []
         - HTTPBearer: []
         - HTTPBearer: []
   /questions/suggested:
@@ -664,7 +668,7 @@ paths:
 
         * `detailed_citation`: Whether to show the source at the end of each sentence or not. Requires enabling the `search_entire_doc` setting.
 
-        * `language`: preferred language of answer to the question, if not provided, we will try to detect the language automatically, which is flexible and also works well. You'd better use [ISO language name](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes?useskin=vector), such as English, Chinese. But we can't promise, when AI can't answer your question well, it generally answers in English. 
+        * `language`: preferred language of answer to the question, if not provided, we will try to detect the language automatically, which is flexible and also works well. You'd better use [ISO language name](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes?useskin=vector), such as English, Chinese. But we can't promise, when AI can't answer your question well, it generally answers in English.
 
         **Response**:
 
@@ -777,6 +781,28 @@ paths:
         - HTTPBearer: []
 components:
   schemas:
+    APICloneReq:
+      title: APICloneReq
+      required:
+        - collection_id
+        - upload_ids
+      type: object
+      properties:
+        collection_id:
+          title: Collection Id
+          maxLength: 36
+          minLength: 36
+          type: string
+        upload_ids:
+          title: Upload Ids
+          maxLength: 36
+          minLength: 36
+          type: array
+          items:
+            maxLength: 36
+            minLength: 36
+            type: string
+          description: upload id list
     APICollectionOrUploadResp:
       title: APICollectionOrUploadResp
       required:
@@ -857,22 +883,6 @@ components:
         - user
       type: string
       description: An enumeration.
-    CloneReq:
-      title: CloneReq
-      required:
-        - collection_id
-        - upload_ids
-      type: object
-      properties:
-        collection_id:
-          title: Collection Id
-          minLength: 1
-          type: string
-        upload_ids:
-          title: Upload Ids
-          minLength: 1
-          type: string
-          description: comma separated upload id list
     CollectionReq:
       title: CollectionReq
       required:
