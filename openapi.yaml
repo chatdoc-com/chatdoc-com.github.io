@@ -342,7 +342,7 @@ paths:
 
         * `id`: document id, also called `upload_id`, you can use it to get the document by `GET /documents/{upload_id}`. It's of uuid format.
 
-        **Attention**: you should store `id` in your database, because we don't have a `GET /documents/list` API to list all documents for now.
+        **Please note**: you should store `id` in your database, because we don't have a `GET /documents/list` API to list all documents for now.
 
         * `status`: Once uploaded, the status is `UN_PARSED`, after a series of processing, the
         status would change by time, and finally to be one of the following two cases:
@@ -356,6 +356,8 @@ paths:
         So before the document status finalized, you can poll the status by
         `GET /documents/{upload_id}` at interval of 10s , generally it takes 1-2 minutes to
         finish depending on content length of the document. If error occurred, it doesn't occupy your quota.
+
+        **Please note**: we'll keep your uploaded file for one year. If you do not make another payment for the API after one year, the file will be permanently deleted.
 
         For reference, other statuses are as follows:
 
@@ -527,7 +529,7 @@ paths:
 
         * If the document is of doc/docx format, then it's converted to pdf version, and the original version can't be downloaded.
         * If the document is of pdf format, it's recommended to use your local file to avoid unnecessary network traffic.
-      operationId: Download_Document_documents__upload_id__download_head
+      operationId: Head_Request_Of_Download_Document_documents__upload_id__download_head
       parameters:
         - required: true
           schema:
@@ -717,7 +719,7 @@ paths:
 
         * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
 
-        **Attention**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
+        **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
         * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
             calling [`drawSources`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) parameter.
@@ -783,7 +785,8 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: {}
+              schema:
+                $ref: '#/components/schemas/QuestionResp'
         "422":
           description: Validation Error
           content:
@@ -947,6 +950,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ValidationError'
+    InteractionType:
+      title: InteractionType
+      enum:
+        - select
+        - doc
+      type: string
+      description: An enumeration.
     PDFViewerRect:
       title: PDFViewerRect
       required:
@@ -978,7 +988,7 @@ components:
           title: Selected Meta
           allOf:
             - $ref: '#/components/schemas/SelectedMeta'
-          description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK.
+          description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK, and then filled with the document `upload_id`, when ask upon a collection, it's the sub document id of collection.
         history:
           title: History
           type: array
@@ -1014,15 +1024,56 @@ components:
           title: Language
           type: string
           description: preferred language of answer to the question, if not provided, we will try to detect the language automatically, which is flexible and also works well. You'd better use [ISO language name](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes?useskin=vector), such as English, Chinese. But we can't promise, when AI can't answer your question well, it generally answers in English.
+    QuestionResp:
+      title: QuestionResp
+      required:
+        - question
+        - answer
+        - created_at
+        - type
+        - source_info
+        - search_entire_doc
+        - detailed_citation
+        - id
+      type: object
+      properties:
+        question:
+          title: Question
+          type: string
+        answer:
+          title: Answer
+          type: string
+        created_at:
+          title: Created At
+          type: integer
+        type:
+          $ref: '#/components/schemas/InteractionType'
+        source_info:
+          title: Source Info
+          type: array
+          items: {}
+        search_entire_doc:
+          title: Search Entire Doc
+          type: boolean
+        detailed_citation:
+          title: Detailed Citation
+          type: boolean
+        id:
+          title: Id
+          type: integer
     SelectedMeta:
       title: SelectedMeta
       required:
         - material
+        - upload_id
         - rects
       type: object
       properties:
         material:
           title: Material
+          type: string
+        upload_id:
+          title: Upload Id
           type: string
         rects:
           title: Rects
