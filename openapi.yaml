@@ -653,6 +653,8 @@ paths:
           required: true
           schema:
             title: Upload Id
+            maxLength: 36
+            minLength: 36
             type: string
             description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
           name: upload_id
@@ -729,6 +731,8 @@ paths:
           required: true
           schema:
             title: Upload Id
+            maxLength: 36
+            minLength: 36
             type: string
             description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
           name: upload_id
@@ -1001,10 +1005,10 @@ components:
 
                     ```json
                     [
-                        {"role": "user", "content": "Who won the world series in 2020?"},
-                        {"role": "assistant", "content": "The Los Angeles Dodgers won the"},
+                        {"role": "user", "content": "Who won"},
+                        {"role": "assistant", "content": "The Los Angeles"},
                         {"role": "user", "content": "Where was it played?"}
-                        {"role": "assistant", "content": "The 2020 World Series was"},
+                        {"role": "assistant", "content": "The 2020 World"},
                     ]
                     ```
           default: []
@@ -1074,6 +1078,8 @@ components:
           type: string
         upload_id:
           title: Upload Id
+          maxLength: 36
+          minLength: 36
           type: string
         rects:
           title: Rects
