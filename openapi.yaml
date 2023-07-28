@@ -982,7 +982,7 @@ components:
           title: Search Entire Doc
           type: boolean
           description: |2-
-                    * if true: limit responses to current file' information
+                    * if true: limit responses to current file's information
                     * else: responses go freely with knowledge of our AI
           default: true
         detailed_citation:
