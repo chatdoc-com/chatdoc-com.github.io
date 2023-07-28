@@ -415,8 +415,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
         - HTTPBearer: []
-        - HTTPBearer: []
-        - HTTPBearer: []
   /documents/{upload_id}:
     get:
       tags:
@@ -458,7 +456,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
         - HTTPBearer: []
-        - HTTPBearer: []
     delete:
       tags:
         - Documents
@@ -485,7 +482,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
-        - HTTPBearer: []
         - HTTPBearer: []
   /documents/{upload_id}/download:
     get:
@@ -519,7 +515,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
         - HTTPBearer: []
-        - HTTPBearer: []
     head:
       tags:
         - Documents
@@ -550,7 +545,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
-        - HTTPBearer: []
         - HTTPBearer: []
   /collections:
     post:
@@ -594,7 +588,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
         - HTTPBearer: []
-        - HTTPBearer: []
   /collections/clone-documents:
     post:
       tags:
@@ -624,8 +617,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
-        - HTTPBearer: []
-        - HTTPBearer: []
         - HTTPBearer: []
   /questions/suggested:
     get:
@@ -676,7 +667,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
-        - HTTPBearer: []
         - HTTPBearer: []
   /questions:
     post:
@@ -757,8 +747,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
         - HTTPBearer: []
-        - HTTPBearer: []
-        - HTTPBearer: []
   /questions/{question_id}:
     get:
       tags:
@@ -798,7 +786,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
-        - HTTPBearer: []
         - HTTPBearer: []
 components:
   schemas:
