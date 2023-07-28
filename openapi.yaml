@@ -525,33 +525,14 @@ paths:
       tags:
         - Documents
       summary: Head Request Of Download Document
-      description: |-
-        Download content of the document with pdf format, support range request.
-
-        * If the document is of doc/docx format, then it's converted to pdf version, and the original version can't be downloaded.
-        * If the document is of pdf format, it's recommended to use your local file to avoid unnecessary network traffic.
+      description: Head request of `GET /documents/{upload_id}/download`, only to support CORS preflight request.
       operationId: Head_Request_Of_Download_Document_documents__upload_id__download_head
-      parameters:
-        - required: true
-          schema:
-            title: Upload Id
-            type: string
-          name: upload_id
-          in: path
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema: {}
-        "422":
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-      security:
-        - HTTPBearer: []
   /collections:
     post:
       tags:
