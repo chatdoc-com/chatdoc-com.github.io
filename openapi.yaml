@@ -80,12 +80,15 @@ info:
 
     # Quick Start
     To use the **ChatDOC API**, you have two options:
-    - Directly call the ChatDOC RESTful API from your own service and custom the UI by yourself.
+    - Directly call the [ChatDOC RESTful API](#section/ChatDOC-RESTful-API) from your own service and custom the UI by yourself.
     - Use the `@chatdocai/chatdoc-sdk` to display PDF documents and retrieve data by calling the ChatDOC RESTful API.
 
       > Before using the API, you need to obtain an API Key on [ChatDOC.com](https://chatdoc.com/).
 
     You can download [ChatDOC-API-Demo](https://github.com/chatdoc-com/ChatDOC-API-Demo) to start your application.
+    ```sh
+    git clone https://github.com/chatdoc-com/ChatDOC-API-Demo
+    ```
 
        > The  server folder is an node server, which request the ChatDOC RESTful API.
 
@@ -98,7 +101,19 @@ info:
 
     3. run `pnpm start`
 
-    By following these steps, you will have a simple ChatDOC API application. If you need more specific information or have any other questions, feel free to ask!
+    By following these steps, you will have a simple ChatDOC API application.
+
+    If you only want to know how to use the `@chatdocai/chatdoc-sdk`, you can refer to the [ChatDOC Document Viewer](#section/ChatDOC-Document-Viewer) section.
+
+    Here are some typical use cases of `@chatdocai/chatdoc-sdk` in the demo that you might be interested in:
+
+    1. When you select text on the PDF and click the chat icon, you can obtain the [`MaterialData`](#section/ChatDOC-Document-Viewer/MaterialData) from the callback handler of [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event. Then, you can post it to the [Ask Question API](#tag/Questions/operation/Ask_Question_questions_post).
+    
+    2. The response from the [Ask Question API](#tag/Questions/operation/Ask_Question_questions_post) contains the `source_info` field. You can convert the `source_info` to the data type of [Source](#section/ChatDOC-Document-Viewer/Source) and 
+     use the [drawSources](#section/ChatDOC-Document-Viewer/Methods) method of `@chatdocai/chatdoc-sdk` to navigate to the page of the sources and highlight them.
+
+    3. By using the [setFileUrl](#section/ChatDOC-Document-Viewer/Methods) method of @chatdocai/chatdoc-sdk, you can switch the displayed PDF file.
+    
 
 
 
@@ -113,13 +128,13 @@ info:
        ```bash
        pnpm install @chatdocai/chatdoc-sdk
        # npm install @chatdocai/chatdoc-sdk
-       # yarn install @chatdocai/chatdoc-sdk
+       # yarn add @chatdocai/chatdoc-sdk
        ```
     2. **Init chatdoc-sdk**
 
         Initialize the chatdoc-sdk by importing the **initSDK** function from `@chatdocai/chatdoc-sdk` and using it to create an instance of the [PDFViewerSDK](#section/ChatDOC-Document-Viewer/PDFViewerSDK). 
 
-        Provide the mount element the DOM element where you want to mount the SDK, the URL of the PDF file.
+        Please provide the DOM element or CSS selector string where you want to mount the SDK, as well as the URL of the PDF file. You can find detailed parameter information in the [Config](#section/ChatDOC-Document-Viewer/Config) section.
 
         Example
 
@@ -153,52 +168,50 @@ info:
     ## PDFViewerSDK
     The PDFViewerSDK class provides a PDF viewer SDK with various methods and properties for interacting with the PDF viewer. Here are some key details about the class:
 
-    ## Params
 
-    - **config**: [Config](#section/ChatDOC-Document-Viewer/Types) - The configuration parameters for the SDK.
+    ## Config
 
-    ## Types
+    The configuration parameters for the SDK.
 
-    #### Config
+    - **el**: `string | HTMLElement` - the DOM element or CSS selector string used for mounting and rendering the SDK.
 
-      The configuration parameters for the SDK.
+    - **fileUrl**: `string` (optional) - The URL of the PDF file.
 
-      - **el**: `string | HTMLElement` - The mount element for rendering the PDF viewer.
-      - **fileUrl**: `string` (optional) - The URL of the PDF file.
-      - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the [JWT](https://jwt.io/) token.The token is encoded using an API key, and the payload is `{"upload_id": "xxx"}`.
-         ```js
-          import jwt from 'jsonwebtoken';
-          // token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cGxvYWRfaWQiOiI2YjNmYzdlOS1kYzE3LTQwYjYtODI4Ny04MDM5N2JhMWU5MmEifQ.sXUbg6tGtF6KqFtCGALTcm7eG6H23dhrKW1wUAAAyus'
-          const token = jwt.sign({ upload_id: '6b3fc7e9-dc17-40b6-8287-80397ba1e92a' }, 'ak-ifypHN4we-v07xhp0pDKRG-znEb-5YQeFuhXgjt4byM', { noTimestamp: true} );
-         ```
+    - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the [JWT](https://jwt.io/) token.The token is encoded using an API key, and the payload is `{"upload_id": "xxx"}`.
+        ```js
+        import jwt from 'jsonwebtoken';
+        // token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cGxvYWRfaWQiOiI2YjNmYzdlOS1kYzE3LTQwYjYtODI4Ny04MDM5N2JhMWU5MmEifQ.sXUbg6tGtF6KqFtCGALTcm7eG6H23dhrKW1wUAAAyus'
+        const token = jwt.sign({ upload_id: '6b3fc7e9-dc17-40b6-8287-80397ba1e92a' }, 'ak-ifypHN4we-v07xhp0pDKRG-znEb-5YQeFuhXgjt4byM', { noTimestamp: true} );
+        ```
 
-      Example
-      ```javascript
+    Example
+    ```javascript
 
-      // node server
-      import jwt from 'jsonwebtoken';
-      async getDocumentToken(ctx) {
-        const { id: uploadId } = ctx.params
-        const token = jwt.sign({ upload_id: uploadId }, 'API_KEY', { noTimestamp: true} );
-        ctx.body = {
-          status: 'ok',
-          data: {token}
-        }
+    // node server
+    import jwt from 'jsonwebtoken';
+    async getDocumentToken(ctx) {
+      const { id: uploadId } = ctx.params
+      const token = jwt.sign({ upload_id: uploadId }, 'API_KEY', { noTimestamp: true} );
+      ctx.body = {
+        status: 'ok',
+        data: {token}
       }
+    }
 
-      // client
-      const getToken = async () => {
-        const { token } = await getDocumentToken('uploadId');
-        return token;
-      };
-      const config: Config = {
-        el: '#pdf-viewer',
-        fileUrl: 'https://example.com/pdf-file.pdf',
-        getToken
-      };
+    // client
+    const getToken = async () => {
+      const { token } = await getDocumentToken('uploadId');
+      return token;
+    };
+    const config: Config = {
+      el: '#pdf-viewer',
+      fileUrl: 'https://example.com/pdf-file.pdf',
+      getToken
+    };
       ```
-    #### Source
-    Type representing a source in the PDF Viewer.
+    ## Source
+
+    The Source type represents a source in the SDK, which is the parameter of the [drawSources](#section/ChatDOC-Document-Viewer/Methods) method.
 
     - **pageNumber**: `number` - The page number of the source.
 
@@ -210,28 +223,13 @@ info:
       pageNumber: 1,
       rects: [[10, 10, 50, 50], [60, 60, 100, 100]],
     };
-
-    ```
-    #### Rect
-    Type representing a rectangle in the PDF Viewer.
-
-    - **pageNumber**: `number` - The page number of the rectangle.
-
-    - **outline**: `number[]` - An array of numbers representing the outline coordinates of the rectangle.
-
-    Example
-    ```
-    const rect: Rect = {
-      pageNumber: 1,
-      outline: [10, 10, 50, 50],
-    };
     ```
 
-    #### MaterialData
-    Type representing material data in the PDF Viewer.
+    ## MaterialData
+    The MaterialData type contains the content of the material and the outlines from the selected text in the PDF File, which are obtained from the callback handler of the [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event.
 
     - **material**: `string` - The content of the material.
-    - **rects**: `Rect[]` - An array of rectangles representing the outlines.
+    - **rects**: [`Rect[]`](#section/ChatDOC-Document-Viewer/Rect) - An array of rectangles representing the outlines.
 
     Example
     ```
@@ -249,60 +247,68 @@ info:
       ],
     };
     ```
+    
+    ## Rect
+    The Rect type represents a rectangle in the PDF file, and it is a field in the [MaterialData](#section/ChatDOC-Document-Viewer/MaterialData) type.
 
+    - **pageNumber**: `number` - The page number of the rectangle.
+
+    - **outline**: `number[]` - An array of numbers representing the outline coordinates of the rectangle.
+
+    Example
+    ```
+    const rect: Rect = {
+      pageNumber: 1,
+      outline: [10, 10, 50, 50],
+    };
+    ```
     ## Methods
 
-    #### ready(): Promise<void>
+    ### setFileUrl(fileUrl: string): any
 
-    Waits for the app connection to be ready.
+    Sets the file URL.
 
-    - Returns: `Promise<void>` - A promise that resolves when the app connection is ready.
+    - **fileUrl**: `string` - The URL of the file to load.
 
-    #### destroy(): void
+    ### drawSources(sources: Source[]): Promise<void>
+
+    Draws source rectangles on the PDF viewer.
+
+    - **sources**: [`Source[]`](#section/ChatDOC-Document-Viewer/Source) - The source rectangles to draw.
+
+    ### clearSources(): void
+
+    Clears source annotations.
+
+    ### destroy(): void
 
     Destroys the PDF viewer SDK instance.
 
-    #### on(name: string, handler: Func): void
+    ### on(name: string, handler: Func): void
 
     Adds an event listener for the specified event.
 
     - **name**: `string` - The name of the event, you can get the event name from [EVENT_TYPES](#section/ChatDOC-Document-Viewer/EVENT_TYPES).
     - **handler**: `Func` - The event handler function.
 
-    #### off(name: string, handler: Func): void
+    ### off(name: string, handler: Func): void
 
     Removes an event listener for the specified event.
 
     - **name**: `string` - The name of the event.
     - **handler**: `Func` - The event handler function.
 
-    #### getCurrentPageNumber(): any
+    ### getCurrentPageNumber(): any
 
     Gets the current page number.
 
     - Returns: `any` - The current page number.
 
-    #### setFileUrl(fileUrl: string): any
-
-    Sets the file URL.
-
-    - **fileUrl**: `string` - The URL of the file to load.
-
-    #### drawSources(sources: Source[]): Promise<void>
-
-    Draws source rectangles on the PDF viewer.
-
-    - **sources**: [`Source[]`](#section/ChatDOC-Document-Viewer/Types) - The source rectangles to draw.
-
-    #### clearSources(): void
-
-    Clears source annotations.
-
     ## EVENT_TYPES
 
-    - **PAGE_RENDERED** - this event is dispatched after the document per page rendered, and return the `pageNumber`.
+    - **PAGE_RENDERED** - After each page is rendered, this event is dispatched, and you can obtain the current page number from the callback handler.
 
-    - **CHAT_ICON_CLICKED** - after you clicked the chat icon in document, you can get the event, and return [`MaterialData`](#section/ChatDOC-Document-Viewer/Types).
+    - **CHAT_ICON_CLICKED** - After you clicked the chat icon in document, and you can obtain the [`MaterialData`](#section/ChatDOC-Document-Viewer/MaterialData) from the callback handler.
 
 
     # OBJECTS
@@ -714,7 +720,7 @@ paths:
         **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
         * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
-            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) parameter.
+            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) method of our PDFViewerSDK, and converting `source_info` to [`Source`](#section/ChatDOC-Document-Viewer/Source) parameter.
       operationId: Ask_Question_questions_post
       parameters:
         - description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
