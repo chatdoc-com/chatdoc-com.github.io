@@ -332,7 +332,6 @@ info:
 
     # ChatDOC RESTful API
   version: 0.1.0
-
 servers:
   - url: https://api.chatdoc.com/api/v1
 paths:
@@ -495,7 +494,7 @@ paths:
         - Documents
       summary: Download Document
       description: |-
-        Download content of the document with pdf format, support range request.
+        Download content of the document with pdf format, support CORS and range request.
 
         * If the document is of doc/docx format, then it's converted to pdf version, and the original version can't be downloaded.
         * If the document is of pdf format, it's recommended to use your local file to avoid unnecessary network traffic.
@@ -521,18 +520,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
         - HTTPBearer: []
-    head:
-      tags:
-        - Documents
-      summary: Head Request Of Download Document
-      description: Head request of `GET /documents/{upload_id}/download`, only to support CORS preflight request.
-      operationId: Head_Request_Of_Download_Document_documents__upload_id__download_head
-      responses:
-        "200":
-          description: Successful Response
-          content:
-            application/json:
-              schema: {}
   /collections:
     post:
       tags:
@@ -701,7 +688,7 @@ paths:
         **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
         * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
-            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) method of our PDFViewerSDK, and converting `source_info` to [`Source`](#section/ChatDOC-Document-Viewer/Source) parameter.
+            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Source) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) parameter.
       operationId: Ask_Question_questions_post
       parameters:
         - description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
