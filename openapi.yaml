@@ -970,12 +970,17 @@ components:
       properties:
         pageNumber:
           title: Pagenumber
+          minimum: 1
           type: integer
         outline:
           title: Outline
+          exclusiveMinimum: 0
+          maxItems: 4
+          minItems: 4
           type: array
           items:
-            type: integer
+            exclusiveMinimum: 0
+            type: number
     QuestionReq:
       title: QuestionReq
       required:
