@@ -644,7 +644,7 @@ paths:
 
         * `question`: question to ask
 
-        * `selected_meta`: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK.
+        * `selected_meta`: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK, and then filled with the document `upload_id`, when ask upon a collection, it's the sub document id of collection.
 
         * `history`: chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
             * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
@@ -936,12 +936,17 @@ components:
       properties:
         pageNumber:
           title: Pagenumber
+          minimum: 1
           type: integer
         outline:
           title: Outline
+          exclusiveMinimum: 0
+          maxItems: 4
+          minItems: 4
           type: array
           items:
-            type: integer
+            exclusiveMinimum: 0
+            type: number
     QuestionReq:
       title: QuestionReq
       required:
@@ -976,11 +981,17 @@ components:
       title: SelectedMeta
       required:
         - material
+        - upload_id
         - rects
       type: object
       properties:
         material:
           title: Material
+          type: string
+        upload_id:
+          title: Upload Id
+          maxLength: 36
+          minLength: 36
           type: string
         rects:
           title: Rects
