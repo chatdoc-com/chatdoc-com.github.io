@@ -1128,6 +1128,7 @@ components:
       title: SelectedMeta
       required:
         - material
+        - upload_id
         - rects
       type: object
       properties:
