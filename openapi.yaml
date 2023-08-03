@@ -49,6 +49,17 @@ info:
 
         * `status` and `data` are common properties.
         * Object properties are contained directly in `data`, there is no extra model objects. (e.g. "document", "user", etc.)
+    * And failed response such as `400 Bad Request` may be:
+
+        ```json
+        {
+            "detail": "Error message"
+        }
+        ```
+
+        * `detail` is the error message.
+        * `status` is not returned.
+
     * Property names are in snake_case (not camelCase or kebab-case).
     * Time is stored as [Unix timestamps](https://www.unixtimestamp.com/) in seconds, and this point in time technically does not change no matter where you are located on the globe. You can convert it to datetime of your local timezone.
     * Optional properties are nullable, you can just ignore it sometimes.
@@ -321,7 +332,6 @@ info:
 
     # ChatDOC RESTful API
   version: 0.1.0
-
 servers:
   - url: https://api.chatdoc.com/api/v1
 paths:
@@ -332,10 +342,6 @@ paths:
       summary: Upload Document
       description: |-
         Upload a document
-
-        **Params**:
-
-        `collection_id`: if provided, add document to the collection, collection can be created by `POST /collections`
 
         **Response**:
 
@@ -385,10 +391,12 @@ paths:
         ```
       operationId: Upload_Document_documents_upload_post
       parameters:
-        - required: false
+        - description: if provided, add document to the collection, collection can be created by `POST /collections`
+          required: false
           schema:
             title: Collection Id
             type: string
+            description: if provided, add document to the collection, collection can be created by `POST /collections`
           name: collection_id
           in: query
       requestBody:
@@ -486,7 +494,7 @@ paths:
         - Documents
       summary: Download Document
       description: |-
-        Download content of the document with pdf format, support range request.
+        Download content of the document with pdf format, support CORS and range request.
 
         * If the document is of doc/docx format, then it's converted to pdf version, and the original version can't be downloaded.
         * If the document is of pdf format, it's recommended to use your local file to avoid unnecessary network traffic.
@@ -606,10 +614,14 @@ paths:
         Only when analysis of the document has succeeded(status=300), can questions be generated.
       operationId: Get_Suggested_Questions_questions_suggested_get
       parameters:
-        - required: true
+        - description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
+          required: true
           schema:
             title: Upload Id
+            maxLength: 36
+            minLength: 36
             type: string
+            description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
           name: upload_id
           in: query
       responses:
@@ -637,35 +649,6 @@ paths:
       summary: Ask Question
       description: |-
         Chat with the document, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode, which is also called `streaming` mode.
-
-        **Params**:
-
-        * `upload_id`: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly, passed in url query. Other parameters below are passed in body.
-
-        * `question`: question to ask
-
-        * `selected_meta`: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK, and then filled with the document `upload_id`, when ask upon a collection, it's the sub document id of collection.
-
-        * `history`: chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
-            * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
-            * history is question and answer pairs, which is a list of `ChatMessage` objects, sample parameters are as follows:
-
-            ```json
-            [
-                {"role": "user", "content": "Who won the world series in 2020?"},
-                {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-                {"role": "user", "content": "Where was it played?"}
-                {"role": "assistant", "content": "The 2020 World Series was played at Globe Life Field in Arlington, Texas."},
-            ]
-            ```
-
-        * `search_entire_doc`:
-            * if true: limit responses to current file' information
-            * else: responses go freely with knowledge of our AI
-
-        * `detailed_citation`: Whether to show the source at the end of each sentence or not. Requires enabling the `search_entire_doc` setting.
-
-        * `language`: preferred language of answer to the question, if not provided, we will try to detect the language automatically, which is flexible and also works well. You'd better use [ISO language name](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes?useskin=vector), such as English, Chinese. But we can't promise, when AI can't answer your question well, it generally answers in English.
 
         **Response**:
 
@@ -705,13 +688,17 @@ paths:
         **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
         * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
-            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) method of our PDFViewerSDK, and converting `source_info` to [`Source`](#section/ChatDOC-Document-Viewer/Source) parameter.
+            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Source) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) parameter.
       operationId: Ask_Question_questions_post
       parameters:
-        - required: true
+        - description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
+          required: true
           schema:
             title: Upload Id
+            maxLength: 36
+            minLength: 36
             type: string
+            description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
           name: upload_id
           in: query
       requestBody:
@@ -764,7 +751,8 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: {}
+              schema:
+                $ref: '#/components/schemas/QuestionResp'
         "422":
           description: Validation Error
           content:
@@ -927,6 +915,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ValidationError'
+    InteractionType:
+      title: InteractionType
+      enum:
+        - select
+        - doc
+      type: string
+      description: An enumeration.
     PDFViewerRect:
       title: PDFViewerRect
       required:
@@ -958,25 +953,84 @@ components:
           maxLength: 3000
           minLength: 1
           type: string
+          description: question to ask
         selected_meta:
-          $ref: '#/components/schemas/SelectedMeta'
+          title: Selected Meta
+          allOf:
+            - $ref: '#/components/schemas/SelectedMeta'
+          description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK, and then filled with the document `upload_id`, when ask upon a collection, it's the sub document id of collection.
         history:
           title: History
           type: array
           items:
             $ref: '#/components/schemas/ChatMessage'
+          description: |-
+            chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
+                    * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
+                    * history is question and answer pairs, which is a list of `ChatMessage` objects, sample parameters are as follows:
+
+                    ```json
+                    [
+                        {"role": "user", "content": "Who won"},
+                        {"role": "assistant", "content": "The Los Angeles"},
+                        {"role": "user", "content": "Where was it played?"}
+                        {"role": "assistant", "content": "The 2020 World"},
+                    ]
+                    ```
           default: []
         search_entire_doc:
           title: Search Entire Doc
           type: boolean
+          description: |2-
+                    * if true: limit responses to current file's information
+                    * else: responses go freely with knowledge of our AI
           default: true
         detailed_citation:
           title: Detailed Citation
           type: boolean
+          description: Whether to show the source at the end of each sentence or not. Requires enabling the `search_entire_doc` setting.
           default: true
         language:
           title: Language
           type: string
+          description: preferred language of answer to the question, if not provided, we will try to detect the language automatically, which is flexible and also works well. You'd better use [ISO language name](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes?useskin=vector), such as English, Chinese. But we can't promise, when AI can't answer your question well, it generally answers in English.
+    QuestionResp:
+      title: QuestionResp
+      required:
+        - question
+        - answer
+        - created_at
+        - type
+        - source_info
+        - search_entire_doc
+        - detailed_citation
+        - id
+      type: object
+      properties:
+        question:
+          title: Question
+          type: string
+        answer:
+          title: Answer
+          type: string
+        created_at:
+          title: Created At
+          type: integer
+        type:
+          $ref: '#/components/schemas/InteractionType'
+        source_info:
+          title: Source Info
+          type: array
+          items: {}
+        search_entire_doc:
+          title: Search Entire Doc
+          type: boolean
+        detailed_citation:
+          title: Detailed Citation
+          type: boolean
+        id:
+          title: Id
+          type: integer
     SelectedMeta:
       title: SelectedMeta
       required:
