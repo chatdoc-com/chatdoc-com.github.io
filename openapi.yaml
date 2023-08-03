@@ -674,7 +674,7 @@ paths:
         ```
 
         * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables).
-            * If the answer is empty, it means error occurred.
+            * If the answer is empty and `source_info` is not in response, it means error occurred.
             * `detailed_citation` answer, the span tag chunk may be as follows:
 
             ```
