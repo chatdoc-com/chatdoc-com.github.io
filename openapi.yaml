@@ -761,6 +761,38 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
         - HTTPBearer: []
+  /questions/multi-documents:
+    post:
+      tags:
+        - Questions
+      summary: Ask Question With Multiple Documents
+      description: |-
+        Chat with the documents, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode, which is also called `streaming` mode.
+
+        **Response**:
+
+        same as `POST /questions`.
+      operationId: Ask_Question_with_multiple_documents_questions_multi_documents_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionReqWithUploadIds'
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - HTTPBearer: []
 components:
   schemas:
     APICloneReq:
@@ -994,6 +1026,67 @@ components:
           title: Language
           type: string
           description: preferred language of answer to the question, if not provided, we will try to detect the language automatically, which is flexible and also works well. You'd better use [ISO language name](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes?useskin=vector), such as English, Chinese. But we can't promise, when AI can't answer your question well, it generally answers in English.
+    QuestionReqWithUploadIds:
+      title: QuestionReqWithUploadIds
+      required:
+        - question
+        - upload_ids
+      type: object
+      properties:
+        question:
+          title: Question
+          maxLength: 3000
+          minLength: 1
+          type: string
+          description: question to ask
+        selected_meta:
+          title: Selected Meta
+          allOf:
+            - $ref: '#/components/schemas/SelectedMetaWithUploadId'
+          description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK.
+        history:
+          title: History
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+          description: |-
+            chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
+                    * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
+                    * history is question and answer pairs, which is a list of `ChatMessage` objects, sample parameters are as follows:
+
+                    ```json
+                    [
+                        {"role": "user", "content": "Who won"},
+                        {"role": "assistant", "content": "The Los Angeles"},
+                        {"role": "user", "content": "Where was it played?"}
+                        {"role": "assistant", "content": "The 2020 World"},
+                    ]
+                    ```
+          default: []
+        search_entire_doc:
+          title: Search Entire Doc
+          type: boolean
+          description: |2-
+                    * if true: limit responses to current file's information
+                    * else: responses go freely with knowledge of our AI
+          default: true
+        detailed_citation:
+          title: Detailed Citation
+          type: boolean
+          description: Whether to show the source at the end of each sentence or not. Requires enabling the `search_entire_doc` setting.
+          default: true
+        language:
+          title: Language
+          type: string
+          description: preferred language of answer to the question, if not provided, we will try to detect the language automatically, which is flexible and also works well. You'd better use [ISO language name](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes?useskin=vector), such as English, Chinese. But we can't promise, when AI can't answer your question well, it generally answers in English.
+        upload_ids:
+          title: Upload Ids
+          maxItems: 30
+          minItems: 1
+          type: array
+          items:
+            type: string
+          description: Type must be a string list of upload ids
     QuestionResp:
       title: QuestionResp
       required:
@@ -1046,6 +1139,25 @@ components:
           title: Upload Id
           maxLength: 36
           minLength: 36
+          type: string
+        rects:
+          title: Rects
+          type: array
+          items:
+            $ref: '#/components/schemas/PDFViewerRect'
+    SelectedMetaWithUploadId:
+      title: SelectedMetaWithUploadId
+      required:
+        - material
+        - upload_id
+        - rects
+      type: object
+      properties:
+        material:
+          title: Material
+          type: string
+        upload_id:
+          title: Upload Id
           type: string
         rects:
           title: Rects
