@@ -4,7 +4,7 @@ info:
   description: |2
     # Introduction
 
-    ChatDOC is an SaaS AI product that helps you chat with documents, and
+    ChatDOC is a SaaS AI product that helps you chat with documents, and
     get instant answers with cited sources. It has a set of API with
     which developers can manipulate the documents and questions in the
     system, and build interactive experiences for users outside
