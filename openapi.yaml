@@ -78,6 +78,8 @@ info:
 
     Different keys of the same user are interoperable of each others' resource, they share common permission of the user.
 
+    **Please note**: keep your API keys confidential, and do not put them in any client code, including browser html and mobile client, API interactions should be done on the server side.
+  
     # Quick Start
     To use the **ChatDOC API**, you have two options:
     - Directly call the [ChatDOC RESTful API](#section/ChatDOC-RESTful-API) from your own service and custom the UI by yourself.
@@ -367,27 +369,28 @@ paths:
         For reference, other statuses are as follows:
 
         ```
-        UN_PARSED = 1              file uploaded or collection has no document
-        LINK_UN_PARSED = 10        file link submitted
-        PARSING = 12               parsing, mainly used for collection
-        LINK_DOWNLOADING = 15      file link downloading
-        PDF_CONVERTING = 20        docx to pdf converting
-        PDF_CONVERTED = 30         docx to pdf success
-        TEXT_PARSING = 40          text embedding（when element parse timeout 2min）
-        ELEMENT_PARSING = 50       element embedding
-        INSIGHT_CALLBACK = 70      element parse success
-        TEXT_PARSED = 210          text embedding success
-        ELEMENT_PARSED = 300       element embedding success
-        TEXT_PARSE_ERROR = -1      text embedding failed
-        ELEMENT_PARED_ERROR = -2   element embedding failed
-        PDF_CONVERT_ERROR = -3     docx to pdf failed
-        LINK_DOWNLOAD_ERROR = -4   file link download failed
-        EXCEED_SIZE_ERROR = -5     file size exceed limit
-        EXCEED_TOKENS_ERROR = -6   exceed tokens limit
-        PAGE_LIMIT_ERROR = -10     page limit error
-        TITLE_COMPLETE_ERROR = -11 complete title failed
-        READ_TMP_FILE_ERROR = -12  read tmp file error
-        OCR_PAGE_LIMIT_ERROR = -13 ocr page limit error
+        UN_PARSED = 1                      file uploaded or collection has no document
+        LINK_UN_PARSED = 10                file link submitted
+        PARSING = 12                       parsing, mainly used for collection
+        LINK_DOWNLOADING = 15              file link downloading
+        PDF_CONVERTING = 20                docx to pdf converting
+        PDF_CONVERTED = 30                 docx to pdf success
+        TEXT_PARSING = 40                  text embedding（when element parse timeout 2min）
+        ELEMENT_PARSING = 50               element embedding
+        INSIGHT_CALLBACK = 70              element parse success
+        TEXT_PARSED = 210                  text embedding success
+        ELEMENT_PARSED = 300               element embedding success
+        TEXT_PARSE_ERROR = -1              text embedding failed
+        ELEMENT_PARED_ERROR = -2           element embedding failed
+        PDF_CONVERT_ERROR = -3             docx to pdf failed
+        LINK_DOWNLOAD_ERROR = -4           file link download failed
+        EXCEED_SIZE_ERROR = -5             file size exceed limit
+        EXCEED_TOKENS_ERROR = -6           exceed tokens limit
+        PAGE_PACKAGE_NOT_ENOUGH_ERROR = -9 page package not enough
+        PAGE_LIMIT_ERROR = -10             page limit error
+        TITLE_COMPLETE_ERROR = -11         complete title failed
+        READ_TMP_FILE_ERROR = -12          read tmp file error
+        OCR_PAGE_LIMIT_ERROR = -13         ocr page limit error
         ```
       operationId: Upload_Document_documents_upload_post
       parameters:
@@ -932,6 +935,7 @@ components:
         - -4
         - -5
         - -6
+        - -9
         - -10
         - -11
         - -12
@@ -997,9 +1001,7 @@ components:
           items:
             $ref: '#/components/schemas/ChatMessage'
           description: |-
-            chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
-                    * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
-                    * history is question and answer pairs, which is a list of `ChatMessage` objects, sample parameters are as follows:
+            chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182), this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api). `history` is question and answer pairs, which is a list of `ChatMessage` objects, sample parameter is as follows:
 
                     ```json
                     [
@@ -1014,8 +1016,8 @@ components:
           title: Search Entire Doc
           type: boolean
           description: |2-
-                    * if true: limit responses to current file's information
-                    * else: responses go freely with knowledge of our AI
+                    if true: limit responses to current file's information
+                    else: responses go freely with knowledge of our AI
           default: true
         detailed_citation:
           title: Detailed Citation
@@ -1050,9 +1052,7 @@ components:
           items:
             $ref: '#/components/schemas/ChatMessage'
           description: |-
-            chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
-                    * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
-                    * history is question and answer pairs, which is a list of `ChatMessage` objects, sample parameters are as follows:
+            chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182), this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api). `history` is question and answer pairs, which is a list of `ChatMessage` objects, sample parameter is as follows:
 
                     ```json
                     [
@@ -1067,8 +1067,8 @@ components:
           title: Search Entire Doc
           type: boolean
           description: |2-
-                    * if true: limit responses to current file's information
-                    * else: responses go freely with knowledge of our AI
+                    if true: limit responses to current file's information
+                    else: responses go freely with knowledge of our AI
           default: true
         detailed_citation:
           title: Detailed Citation
@@ -1142,6 +1142,7 @@ components:
           type: string
         rects:
           title: Rects
+          minItems: 1
           type: array
           items:
             $ref: '#/components/schemas/PDFViewerRect'
@@ -1161,6 +1162,7 @@ components:
           type: string
         rects:
           title: Rects
+          minItems: 1
           type: array
           items:
             $ref: '#/components/schemas/PDFViewerRect'
