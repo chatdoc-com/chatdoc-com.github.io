@@ -100,6 +100,7 @@ info:
      > **API_KEY** is the API key that you obtained after purchasing the API package or membership plan.
 
     3. run `pnpm start`
+     > When using a self-signed certificate in your local development environment, you may encounter a browser prompt saying: 'This site can't provide a secure connection'. Please be aware that this is a specific situation in the local development environment and will not affect the use of your genuine SSL certificate when deployed online. For online deployment, you can use your own SSL certificate to ensure a secure connection.
 
     By following these steps, you will have a simple ChatDOC API application.
 
