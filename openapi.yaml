@@ -49,7 +49,9 @@ info:
 
         * `status` and `data` are common properties.
         * Object properties are contained directly in `data`, there is no extra model objects. (e.g. "document", "user", etc.)
-    * And failed response such as `400 Bad Request` may be:
+    * And failed response may be:
+
+        `400 Bad Request`
 
         ```json
         {
@@ -59,6 +61,17 @@ info:
 
         * `detail` is the error message.
         * `status` is not returned.
+
+        `404 Not Found`
+
+        ```json
+        {
+            "data": {},
+            "detail": "This page has expired, please refresh the page and try again."
+        }
+        ```
+
+        * `detail` of `404` is unified as above message, no matter which kind of resources you get.
 
     * Property names are in snake_case (not camelCase or kebab-case).
     * Time is stored as [Unix timestamps](https://www.unixtimestamp.com/) in seconds, and this point in time technically does not change no matter where you are located on the globe. You can convert it to datetime of your local timezone.
@@ -368,6 +381,7 @@ paths:
 
         ```
         UN_PARSED = 1              file uploaded or collection has no document
+        # final statuses
         ELEMENT_PARSED = 300       analysis of the document has succeeded
         ERROR_STATUSES (< 0)       error occurred during analysis
         ```
@@ -616,7 +630,7 @@ paths:
         - Questions
       summary: Get Suggested Questions
       description: |-
-        Recommend questions for a document, defaults to 5 questions.
+        Suggested questions for a document, defaults to 5 questions.
 
         Response example:
         ```json
@@ -708,7 +722,7 @@ paths:
         **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
         * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
-            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Source) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) parameter.
+            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK/Source) parameter.
       operationId: Ask_Question_questions_post
       parameters:
         - description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
