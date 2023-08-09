@@ -830,6 +830,41 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
         - HTTPBearer: []
+  /users/usage:
+    get:
+      tags:
+        - Users
+      summary: Get Usage
+      description: |-
+        Get usage of not expired package
+
+        Response example:
+        ```json
+        {
+          "data": {
+            "package": { # may be null
+              "page": { # may be null
+                "max_count": 3000,
+                "used_count": 1044
+              },
+              "question": { # may be null
+                "max_count": 3000,
+                "used_count": 11
+              }
+            }
+          }
+        }
+        ```
+      operationId: get_usage_users_usage_get
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageUsageResp'
+      security:
+        - HTTPBearer: []
 components:
   schemas:
     APICloneReq:
@@ -882,6 +917,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/APIUploadResp'
+    APIPackageInfoResp:
+      title: APIPackageInfoResp
+      type: object
+      properties:
+        page:
+          $ref: '#/components/schemas/PackageDataResp'
+        question:
+          $ref: '#/components/schemas/PackageDataResp'
     APIUploadResp:
       title: APIUploadResp
       required:
@@ -1012,6 +1055,27 @@ components:
           items:
             exclusiveMinimum: 0
             type: number
+    PackageDataResp:
+      title: PackageDataResp
+      required:
+        - max_count
+        - used_count
+      type: object
+      properties:
+        max_count:
+          title: Max Count
+          type: integer
+          description: Max count of not expired package
+        used_count:
+          title: Used Count
+          type: integer
+          description: Used count of not expired package
+    PackageUsageResp:
+      title: PackageUsageResp
+      type: object
+      properties:
+        package:
+          $ref: '#/components/schemas/APIPackageInfoResp'
     QuestionReq:
       title: QuestionReq
       required:
