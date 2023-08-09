@@ -49,7 +49,9 @@ info:
 
         * `status` and `data` are common properties.
         * Object properties are contained directly in `data`, there is no extra model objects. (e.g. "document", "user", etc.)
-    * And failed response such as `400 Bad Request` may be:
+    * And failed response may be:
+
+        `400 Bad Request`
 
         ```json
         {
@@ -59,6 +61,17 @@ info:
 
         * `detail` is the error message.
         * `status` is not returned.
+
+        `404 Not Found`
+
+        ```json
+        {
+            "data": {},
+            "detail": "This page has expired, please refresh the page and try again."
+        }
+        ```
+
+        * `detail` of `404` is unified as above message, no matter which kind of resources you get.
 
     * Property names are in snake_case (not camelCase or kebab-case).
     * Time is stored as [Unix timestamps](https://www.unixtimestamp.com/) in seconds, and this point in time technically does not change no matter where you are located on the globe. You can convert it to datetime of your local timezone.
@@ -78,6 +91,8 @@ info:
 
     Different keys of the same user are interoperable of each others' resource, they share common permission of the user.
 
+    **Please note**: keep your API keys confidential, and do not put them in any client code, including browser html and mobile client, API interactions should be done on the server side.
+  
     # Quick Start
     To use the **ChatDOC API**, you have two options:
     - Directly call the [ChatDOC RESTful API](#section/ChatDOC-RESTful-API) from your own service and custom the UI by yourself.
@@ -332,6 +347,18 @@ info:
     * **Query across multi docs**
 
     # ChatDOC RESTful API
+    
+    Occupy quota APIs:
+    
+    ### Document Pages
+    
+    * POST /documents/upload
+    * POST /collections/clone-documents
+    
+    ### Questions
+    
+    * POST /questions
+    * POST /questions/multi-documents
   version: 0.1.0
 servers:
   - url: https://api.chatdoc.com/api/v1
@@ -355,6 +382,7 @@ paths:
 
         ```
         UN_PARSED = 1              file uploaded or collection has no document
+        # final statuses
         ELEMENT_PARSED = 300       analysis of the document has succeeded
         ERROR_STATUSES (< 0)       error occurred during analysis
         ```
@@ -363,32 +391,36 @@ paths:
         `GET /documents/{upload_id}` at interval of 10s , generally it takes 1-2 minutes to
         finish depending on content length of the document. If error occurred, it doesn't occupy your quota.
 
-        **Please note**: we'll keep your uploaded file for one year. If you do not make another payment for the API after one year, the file will be permanently deleted.
+        **Please note**:
+
+        * Uploading files occupy your pages quota, and uploading same files again will still occupy quota.
+        * We'll keep your uploaded file for one year. If you do not make another payment for the API after one year, the file will be permanently deleted.
 
         For reference, other statuses are as follows:
 
         ```
-        UN_PARSED = 1              file uploaded or collection has no document
-        LINK_UN_PARSED = 10        file link submitted
-        PARSING = 12               parsing, mainly used for collection
-        LINK_DOWNLOADING = 15      file link downloading
-        PDF_CONVERTING = 20        docx to pdf converting
-        PDF_CONVERTED = 30         docx to pdf success
-        TEXT_PARSING = 40          text embedding（when element parse timeout 2min）
-        ELEMENT_PARSING = 50       element embedding
-        INSIGHT_CALLBACK = 70      element parse success
-        TEXT_PARSED = 210          text embedding success
-        ELEMENT_PARSED = 300       element embedding success
-        TEXT_PARSE_ERROR = -1      text embedding failed
-        ELEMENT_PARED_ERROR = -2   element embedding failed
-        PDF_CONVERT_ERROR = -3     docx to pdf failed
-        LINK_DOWNLOAD_ERROR = -4   file link download failed
-        EXCEED_SIZE_ERROR = -5     file size exceed limit
-        EXCEED_TOKENS_ERROR = -6   exceed tokens limit
-        PAGE_LIMIT_ERROR = -10     page limit error
-        TITLE_COMPLETE_ERROR = -11 complete title failed
-        READ_TMP_FILE_ERROR = -12  read tmp file error
-        OCR_PAGE_LIMIT_ERROR = -13 ocr page limit error
+        UN_PARSED = 1                      file uploaded or collection has no document
+        LINK_UN_PARSED = 10                file link submitted
+        PARSING = 12                       parsing, mainly used for collection
+        LINK_DOWNLOADING = 15              file link downloading
+        PDF_CONVERTING = 20                docx to pdf converting
+        PDF_CONVERTED = 30                 docx to pdf success
+        TEXT_PARSING = 40                  text embedding（when element parse timeout 2min）
+        ELEMENT_PARSING = 50               element embedding
+        INSIGHT_CALLBACK = 70              element parse success
+        TEXT_PARSED = 210                  text embedding success
+        ELEMENT_PARSED = 300               element embedding success
+        TEXT_PARSE_ERROR = -1              text embedding failed
+        ELEMENT_PARED_ERROR = -2           element embedding failed
+        PDF_CONVERT_ERROR = -3             docx to pdf failed
+        LINK_DOWNLOAD_ERROR = -4           file link download failed
+        EXCEED_SIZE_ERROR = -5             file size exceed limit
+        EXCEED_TOKENS_ERROR = -6           exceed tokens limit
+        PAGE_PACKAGE_NOT_ENOUGH_ERROR = -9 page package not enough
+        PAGE_LIMIT_ERROR = -10             page limit error
+        TITLE_COMPLETE_ERROR = -11         complete title failed
+        READ_TMP_FILE_ERROR = -12          read tmp file error
+        OCR_PAGE_LIMIT_ERROR = -13         ocr page limit error
         ```
       operationId: Upload_Document_documents_upload_post
       parameters:
@@ -599,7 +631,7 @@ paths:
         - Questions
       summary: Get Suggested Questions
       description: |-
-        Recommend questions for a document, defaults to 5 questions.
+        Suggested questions for a document, defaults to 5 questions.
 
         Response example:
         ```json
@@ -651,6 +683,8 @@ paths:
       description: |-
         Chat with the document, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode, which is also called `streaming` mode.
 
+        Occupy one question quota whether it's upon single document or collection.
+
         **Response**:
 
         structure is as follows:
@@ -675,7 +709,7 @@ paths:
         ```
 
         * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables).
-            * If the answer is empty, it means error occurred.
+            * If the answer is empty and `source_info` is not in response, it means error occurred.
             * `detailed_citation` answer, the span tag chunk may be as follows:
 
             ```
@@ -689,7 +723,7 @@ paths:
         **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
         * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
-            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Source) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/PDFViewerSDK) parameter.
+            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/Source) parameter.
       operationId: Ask_Question_questions_post
       parameters:
         - description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
@@ -769,6 +803,8 @@ paths:
       summary: Ask Question With Multiple Documents
       description: |-
         Chat with the documents, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode, which is also called `streaming` mode.
+
+        Occupy one question quota no matter how many documents you ask upon.
 
         **Response**:
 
@@ -933,6 +969,7 @@ components:
         - -4
         - -5
         - -6
+        - -9
         - -10
         - -11
         - -12
@@ -997,26 +1034,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ChatMessage'
-          description: |-
-            chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
-                    * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
-                    * history is question and answer pairs, which is a list of `ChatMessage` objects, sample parameters are as follows:
-
-                    ```json
-                    [
-                        {"role": "user", "content": "Who won"},
-                        {"role": "assistant", "content": "The Los Angeles"},
-                        {"role": "user", "content": "Where was it played?"}
-                        {"role": "assistant", "content": "The 2020 World"},
-                    ]
-                    ```
+          description: "chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182), this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api). `history` is question and answer pairs, which is a list of `ChatMessage` objects. The max input tokens of `history`, `selected_meta.material` and `question` is 8000, which is a little less than OpenAI's limit of [Embedding models](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings). Sample parameter is as follows:\n\n        [\n            {\"role\": \"user\", \"content\": \"Who won\"},\n            {\"role\": \"assistant\", \"content\": \"The Los Angeles\"},\n            {\"role\": \"user\", \"content\": \"Where was it played?\"}\n            {\"role\": \"assistant\", \"content\": \"The 2020 World\"},\n        ]\n        "
           default: []
         search_entire_doc:
           title: Search Entire Doc
           type: boolean
           description: |2-
-                    * if true: limit responses to current file's information
-                    * else: responses go freely with knowledge of our AI
+                    if true: limit responses to current file's information
+                    else: responses go freely with knowledge of our AI
           default: true
         detailed_citation:
           title: Detailed Citation
@@ -1050,26 +1075,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ChatMessage'
-          description: |-
-            chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182)
-                    * this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
-                    * history is question and answer pairs, which is a list of `ChatMessage` objects, sample parameters are as follows:
-
-                    ```json
-                    [
-                        {"role": "user", "content": "Who won"},
-                        {"role": "assistant", "content": "The Los Angeles"},
-                        {"role": "user", "content": "Where was it played?"}
-                        {"role": "assistant", "content": "The 2020 World"},
-                    ]
-                    ```
+          description: "chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182), this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api). `history` is question and answer pairs, which is a list of `ChatMessage` objects. The max input tokens of `history`, `selected_meta.material` and `question` is 8000, which is a little less than OpenAI's limit of [Embedding models](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings). Sample parameter is as follows:\n\n        [\n            {\"role\": \"user\", \"content\": \"Who won\"},\n            {\"role\": \"assistant\", \"content\": \"The Los Angeles\"},\n            {\"role\": \"user\", \"content\": \"Where was it played?\"}\n            {\"role\": \"assistant\", \"content\": \"The 2020 World\"},\n        ]\n        "
           default: []
         search_entire_doc:
           title: Search Entire Doc
           type: boolean
           description: |2-
-                    * if true: limit responses to current file's information
-                    * else: responses go freely with knowledge of our AI
+                    if true: limit responses to current file's information
+                    else: responses go freely with knowledge of our AI
           default: true
         detailed_citation:
           title: Detailed Citation
@@ -1143,6 +1156,7 @@ components:
           type: string
         rects:
           title: Rects
+          minItems: 1
           type: array
           items:
             $ref: '#/components/schemas/PDFViewerRect'
@@ -1162,6 +1176,7 @@ components:
           type: string
         rects:
           title: Rects
+          minItems: 1
           type: array
           items:
             $ref: '#/components/schemas/PDFViewerRect'
