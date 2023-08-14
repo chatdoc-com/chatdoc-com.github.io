@@ -348,7 +348,7 @@ info:
 
     # ChatDOC RESTful API
     
-    Occupy quota APIs:
+    Consuming quota APIs:
     
     ### Document Pages
     
@@ -389,11 +389,11 @@ paths:
 
         So before the document status finalized, you can poll the status by
         `GET /documents/{upload_id}` at interval of 10s , generally it takes 1-2 minutes to
-        finish depending on content length of the document. If error occurred, it doesn't occupy your quota.
+        finish depending on content length of the document. If error occurred, it doesn't consume your quota.
 
         **Please note**:
 
-        * Uploading files occupy your pages quota, and uploading same files again will still occupy quota.
+        * Uploading files consumes your pages quota, and uploading same files again will still consume quota.
         * We'll keep your uploaded file for one year. If you do not make another payment for the API after one year, the file will be permanently deleted.
 
         For reference, other statuses are as follows:
@@ -603,7 +603,7 @@ paths:
       description: |-
         Only parsed normal document (status=300) can be cloned to collection, max document count of collection is 30.
 
-        Cloned documents also occupy your document page quota.
+        Cloned documents also consume your document page quota.
       operationId: clone_document_to_collection_collections_clone_documents_post
       requestBody:
         content:
@@ -683,7 +683,7 @@ paths:
       description: |-
         Chat with the document, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode, which is also called `streaming` mode.
 
-        Occupy one question quota whether it's upon single document or collection.
+        Consume one question quota whether it's upon single document or collection.
 
         **Response**:
 
@@ -804,7 +804,7 @@ paths:
       description: |-
         Chat with the documents, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode, which is also called `streaming` mode.
 
-        Occupy one question quota no matter how many documents you ask upon.
+        Consume one question quota no matter how many documents you ask upon.
 
         **Response**:
 
