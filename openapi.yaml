@@ -834,9 +834,9 @@ paths:
     get:
       tags:
         - Users
-      summary: Get Usage
+      summary: Get Quota
       description: |-
-        Get usage of not expired package
+        Get quota of not expired package
 
         Response example:
         ```json
@@ -855,14 +855,14 @@ paths:
           }
         }
         ```
-      operationId: get_usage_users_usage_get
+      operationId: get_quota_users_quota_get
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PackageUsageResp'
+                $ref: '#/components/schemas/PackageQuotaResp'
       security:
         - HTTPBearer: []
 components:
@@ -1070,8 +1070,8 @@ components:
           title: Used Count
           type: integer
           description: Used count of not expired package
-    PackageUsageResp:
-      title: PackageUsageResp
+    PackageQuotaResp:
+      title: PackageQuotaResp
       type: object
       properties:
         package:
