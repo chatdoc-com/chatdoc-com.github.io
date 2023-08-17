@@ -830,7 +830,7 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
         - HTTPBearer: []
-  /users/usage:
+  /users/quota:
     get:
       tags:
         - Users
