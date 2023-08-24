@@ -231,7 +231,7 @@ info:
 
     - **pageNumber**: `number` - The page number of the source.
 
-    - **rects**: `number[][]` -  An array of rectangles representing the coordinates of the source.
+    - **rects**: `number[][]` -  An array of rectangles represented by four numbers `[left, top, right, bottom]` indicating their positions within the source coordinates.
 
     Example
     ```
@@ -269,7 +269,7 @@ info:
 
     - **pageNumber**: `number` - The page number of the rectangle.
 
-    - **outline**: `number[]` - An array of numbers representing the outline coordinates of the rectangle.
+    - **outline**: `number[]` - The outline array represents the rectangle's outline coordinates as four values: `left, top, right, and bottom`.
 
     Example
     ```
