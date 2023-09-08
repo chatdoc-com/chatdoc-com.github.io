@@ -86,7 +86,7 @@ info:
     Requests use the HTTP `Authorization` header to both authenticate and authorize operations. The ChatDOC API accepts bearer tokens in this header. Bearer keys can be managed in our web site.
 
     ```curl
-    curl 'https://api.chatdoc.com/api/v1/documents/upload'   -H 'Authorization: Bearer '"$API_KEY"''
+    curl 'https://api.chatdoc.com/api/v1/documents/upload'   -H 'Authorization: Bearer "$API_KEY"'
     ```
 
     Different keys of the same user are interoperable of each others' resource, they share common permission of the user.
