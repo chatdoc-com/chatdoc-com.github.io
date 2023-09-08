@@ -725,17 +725,6 @@ paths:
         * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
             calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/Source) parameter.
       operationId: Ask_Question_questions_post
-      parameters:
-        - description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
-          required: true
-          schema:
-            title: Upload Id
-            maxLength: 36
-            minLength: 36
-            type: string
-            description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
-          name: upload_id
-          in: query
       requestBody:
         content:
           application/json:
@@ -1003,6 +992,7 @@ components:
         - 50
         - 70
         - 120
+        - 90
         - 210
         - 300
         - 0
@@ -1017,6 +1007,12 @@ components:
         - -11
         - -12
         - -13
+        - -14
+        - -15
+        - -16
+        - -17
+        - -18
+        - -19
       type: integer
       description: An enumeration.
     HTTPValidationError:
@@ -1079,9 +1075,16 @@ components:
     QuestionReq:
       title: QuestionReq
       required:
+        - upload_id
         - question
       type: object
       properties:
+        upload_id:
+          title: Upload Id
+          maxLength: 36
+          minLength: 36
+          type: string
+          description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
         question:
           title: Question
           maxLength: 3000
@@ -1111,7 +1114,7 @@ components:
           title: Detailed Citation
           type: boolean
           description: Whether to show the source at the end of each sentence or not. Requires enabling the `search_entire_doc` setting.
-          default: true
+          default: false
         language:
           title: Language
           type: string
@@ -1152,7 +1155,7 @@ components:
           title: Detailed Citation
           type: boolean
           description: Whether to show the source at the end of each sentence or not. Requires enabling the `search_entire_doc` setting.
-          default: true
+          default: false
         language:
           title: Language
           type: string
