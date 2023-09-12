@@ -681,7 +681,7 @@ paths:
         - Questions
       summary: Ask Question
       description: |-
-        Chat with the document, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode, which is also called `streaming` mode.
+        Chat with the document, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode by default, you can change it through `stream` parameter.
 
         Consume one question quota whether it's upon single document or collection.
 
@@ -708,9 +708,7 @@ paths:
         }
         ```
 
-        * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables).
-            * If the answer is empty and `source_info` is not in response, it means error occurred.
-            * `detailed_citation` answer, the span tag chunk may be as follows:
+        * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables). For `detailed_citation` answer, the span tag chunk may be as follows:
 
             ```
             autobiography captured the pre-Nazi Europe[<span data-index="0">1</span>]
@@ -722,7 +720,7 @@ paths:
 
         **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
-        * `source_info`: only responses in the last chunk. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
+        * `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list. So if the last chunk doesn't contain `source_info` attr, it means error occurred. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
             calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/Source) parameter.
       operationId: Ask_Question_questions_post
       requestBody:
@@ -791,13 +789,13 @@ paths:
         - Questions
       summary: Ask Question With Multiple Documents
       description: |-
-        Chat with the documents, response in [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) mode, which is also called `streaming` mode.
+        Chat with multiple documents, similar with `POST /questions`.
 
         Consume one question quota no matter how many documents you ask upon.
 
         **Response**:
 
-        same as `POST /questions`.
+        Same as `POST /questions`.
       operationId: Ask_Question_with_multiple_documents_questions_multi_documents_post
       requestBody:
         content:
@@ -1091,6 +1089,11 @@ components:
           minLength: 1
           type: string
           description: question to ask
+        stream:
+          title: Stream
+          type: boolean
+          description: If set, partial message deltas will be sent, like in ChatGPT of [OpenAI](https://platform.openai.com/docs/api-reference/chat/create#stream). Tokens will be sent as data-only server-sent events as they become available.
+          default: true
         selected_meta:
           title: Selected Meta
           allOf:
@@ -1132,6 +1135,11 @@ components:
           minLength: 1
           type: string
           description: question to ask
+        stream:
+          title: Stream
+          type: boolean
+          description: If set, partial message deltas will be sent, like in ChatGPT of [OpenAI](https://platform.openai.com/docs/api-reference/chat/create#stream). Tokens will be sent as data-only server-sent events as they become available.
+          default: true
         selected_meta:
           title: Selected Meta
           allOf:
