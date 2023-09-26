@@ -912,9 +912,13 @@ components:
       title: APIPackageInfoResp
       type: object
       properties:
-        page:
-          $ref: '#/components/schemas/PackageDataResp'
         question:
+          $ref: '#/components/schemas/PackageDataResp'
+        lite_page:
+          $ref: '#/components/schemas/PackageDataResp'
+        basic_page:
+          $ref: '#/components/schemas/PackageDataResp'
+        elite_page:
           $ref: '#/components/schemas/PackageDataResp'
     APIUploadResp:
       title: APIUploadResp
