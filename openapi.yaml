@@ -31,7 +31,7 @@ info:
 
     HTTP status codes are used in accordance with industry standards. Successful requests return a 200 OK response, while failed requests produce 4xx or 5xx error codes.
 
-    Please note that this documentation pertains to ChatDOC API Version 0.2.0, which is not backward compatible with Version 1. While Version 1 remains functional, we strongly encourage users to migrate to Version 0.2.0 for the best experience.
+    Please note that this documentation pertains to ChatDOC API Version 0.2.0, which is not backward compatible with Version 0.1.0. While Version 0.1.0 remains functional, we strongly encourage users to migrate to Version 0.2.0 for the best experience.
 
     If you have any questions or need further assistance, please don't hesitate to reach out to our support team.
 
