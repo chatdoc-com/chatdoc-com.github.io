@@ -4,7 +4,7 @@ info:
   description: |2
     # Introduction
 
-    Welcome to ChatDOC API, Version 2!
+    Welcome to ChatDOC API, Version 0.2.0!
 
     ChatDOC is a powerful SaaS AI product that enables you to engage with documents,
     instantly retrieving answers along with cited sources. Our API provides developers
@@ -567,7 +567,7 @@ paths:
 
         Upon created you can add sub documents to the collection by:
 
-        * `POST /documents/upload?collection_id={upload_id}`
+        * `POST /documents/upload`
         * `POST /collections/clone-documents`.
       operationId: Create_Collection_collections_post
       requestBody:
