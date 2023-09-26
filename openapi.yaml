@@ -826,9 +826,17 @@ paths:
         {
           "data": {
             "package": { # may be null
-              "page": { # may be null
+              "basic_page": { # may be null
                 "max_count": 3000,
                 "used_count": 1044
+              },
+              "elite_page": { # may be null
+                "max_count": 3000,
+                "used_count": 1045
+              },
+              "lite_page": { # may be null
+                "max_count": 3000,
+                "used_count": 1046
               },
               "question": { # may be null
                 "max_count": 3000,
