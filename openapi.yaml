@@ -12,7 +12,7 @@ info:
     experiences for your users.
 
     This reference serves as a comprehensive guide to the ChatDOC system and
-    its Version 2 API. Here, you'll find detailed information on the objects and
+    its Version 0.2.0 API. Here, you'll find detailed information on the objects and
     endpoints used in the API. We greatly value your feedback. If you notice any
     missing or inaccurate information, please don't hesitate to open an issue on
     [GitHub](https://github.com/chatdoc-com/chatdoc-com.github.io/issues) or submit a
@@ -31,11 +31,11 @@ info:
 
     HTTP status codes are used in accordance with industry standards. Successful requests return a 200 OK response, while failed requests produce 4xx or 5xx error codes.
 
-    Please note that this documentation pertains to ChatDOC API Version 2, which is not backward compatible with Version 1. While Version 1 remains functional, we strongly encourage users to migrate to Version 2 for the best experience.
+    Please note that this documentation pertains to ChatDOC API Version 0.2.0, which is not backward compatible with Version 1. While Version 1 remains functional, we strongly encourage users to migrate to Version 0.2.0 for the best experience.
 
     If you have any questions or need further assistance, please don't hesitate to reach out to our support team.
 
-    This revised introduction reflects the transition to ChatDOC API Version 2 and highlights its features and benefits.
+    This revised introduction reflects the transition to ChatDOC API Version 0.2.0 and highlights its features and benefits.
 
     ## JSON conventions
 
@@ -364,7 +364,7 @@ info:
     
     * POST /questions
     * POST /questions/multi-documents
-  version: 0.2.0
+  version: 0.1.0
 servers:
   - url: https://api.chatdoc.com/api/v2
 paths:
