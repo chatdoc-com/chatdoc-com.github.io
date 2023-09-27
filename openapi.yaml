@@ -4,33 +4,38 @@ info:
   description: |2
     # Introduction
 
-    ChatDOC is a SaaS AI product that helps you chat with documents, and
-    get instant answers with cited sources. It has a set of API with
-    which developers can manipulate the documents and questions in the
-    system, and build interactive experiences for users outside
-    ChatDOC.
+    Welcome to ChatDOC API, Version 0.2.0!
 
-    This reference is a comprehensive description of the ChatDOC
-    system and its API. In it you'll find details for objects and
-    endpoints used in the API. If you feel that something is missing
-    or wrong, tell us by filing an issue on
-    [Github](https://github.com/chatdoc-com/chatdoc-com.github.io/issues),
-    or open a pull request if you know how to fix that, we'll very
-    much appreciate your contribution.
+    ChatDOC is a powerful SaaS AI product that enables you to engage with documents,
+    instantly retrieving answers along with cited sources. Our API provides developers
+    with the tools to interact with the ChatDOC system, allowing you to create immersive
+    experiences for your users.
+
+    This reference serves as a comprehensive guide to the ChatDOC system and
+    its Version 0.2.0 API. Here, you'll find detailed information on the objects and
+    endpoints used in the API. We greatly value your feedback. If you notice any
+    missing or inaccurate information, please don't hesitate to open an issue on
+    [GitHub](https://github.com/chatdoc-com/chatdoc-com.github.io/issues) or submit a
+    pull request to help improve our documentation.
 
 
-    > To interact with ChatDOC using its API, one needs an API
-      key. API keys could be created after one subscribes a proper
-      membership plan or purchase an API package on
+    > To leverage ChatDOC's API capabilities, you'll need an API key. API keys can be
+      created by subscribing to an appropriate membership plan or purchasing an API package on
       [ChatDOC.com](https://chatdoc.com/).
 
     ## Conventions
 
-    The domain to send all API requests is `api.chatdoc.com`. HTTPS is required for all API requests.
+    All API requests should be directed to the domain `api.chatdoc.com`. and secure HTTPS is mandatory for all interactions.
 
-    The ChatDOC API follows RESTful conventions when possible, with most operations performed via GET, POST, PUT, and DELETE requests. Request and response bodies are encoded as JSON.
+    Our ChatDOC API adheres to RESTful conventions where applicable, utilizing standard HTTP methods such as GET, POST, PUT, and DELETE. Request and response payloads are encoded in JSON format.
 
-    We follow HTTP standards for status codes. For example, a successful request returns a 200 OK response code, and a failed request returns a 4xx or 5xx error code.
+    HTTP status codes are used in accordance with industry standards. Successful requests return a 200 OK response, while failed requests produce 4xx or 5xx error codes.
+
+    Please note that this documentation pertains to ChatDOC API Version 0.2.0, which is not backward compatible with Version 0.1.0. While Version 0.1.0 remains functional, we strongly encourage users to migrate to Version 0.2.0 for the best experience.
+
+    If you have any questions or need further assistance, please don't hesitate to reach out to our support team.
+
+    This revised introduction reflects the transition to ChatDOC API Version 0.2.0 and highlights its features and benefits.
 
     ## JSON conventions
 
@@ -337,6 +342,8 @@ info:
 
     Collection is just a special type of `document`, they have common properties like `name`, `status` etc. The difference is that as for questioning, a document can be standalone or grouped as a `collection`, each file collection is a customized database, and you can acquire knowledge effortlessly through conversation.
 
+    ChatDOC offers three distinct page package types: Elite, Basic, and Lite. When you use one of these page packages to upload a file, the same page package type is automatically applied when you clone that file into a collection.
+
     ## Question
 
     Namely message or chat, there can be [4 Ways to Make Queries](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7):
@@ -359,7 +366,7 @@ info:
     
     * POST /questions
     * POST /questions/multi-documents
-  version: 0.1.0
+  version: 0.2.0
 servers:
   - url: https://api.chatdoc.com/api/v2
 paths:
@@ -423,15 +430,6 @@ paths:
         OCR_PAGE_LIMIT_ERROR = -13         ocr page limit error
         ```
       operationId: Upload_Document_documents_upload_post
-      parameters:
-        - description: if provided, add document to the collection, collection can be created by `POST /collections`
-          required: false
-          schema:
-            title: Collection Id
-            type: string
-            description: if provided, add document to the collection, collection can be created by `POST /collections`
-          name: collection_id
-          in: query
       requestBody:
         content:
           multipart/form-data:
@@ -571,7 +569,7 @@ paths:
 
         Upon created you can add sub documents to the collection by:
 
-        * `POST /documents/upload?collection_id={upload_id}`
+        * `POST /documents/upload`
         * `POST /collections/clone-documents`.
       operationId: Create_Collection_collections_post
       requestBody:
@@ -830,9 +828,17 @@ paths:
         {
           "data": {
             "package": { # may be null
-              "page": { # may be null
+              "basic_page": { # may be null
                 "max_count": 3000,
                 "used_count": 1044
+              },
+              "elite_page": { # may be null
+                "max_count": 3000,
+                "used_count": 1045
+              },
+              "lite_page": { # may be null
+                "max_count": 3000,
+                "used_count": 1046
               },
               "question": { # may be null
                 "max_count": 3000,
@@ -908,9 +914,13 @@ components:
       title: APIPackageInfoResp
       type: object
       properties:
-        page:
-          $ref: '#/components/schemas/PackageDataResp'
         question:
+          $ref: '#/components/schemas/PackageDataResp'
+        lite_page:
+          $ref: '#/components/schemas/PackageDataResp'
+        basic_page:
+          $ref: '#/components/schemas/PackageDataResp'
+        elite_page:
           $ref: '#/components/schemas/PackageDataResp'
     APIUploadResp:
       title: APIUploadResp
@@ -941,6 +951,17 @@ components:
         - file
       type: object
       properties:
+        package_type:
+          title: Package Type
+          anyOf:
+            - $ref: '#/components/schemas/UploadPackageType'
+            - type: string
+          description: if provided, use this package(lite, basic, elite) to upload
+          default: elite
+        collection_id:
+          title: Collection Id
+          type: string
+          description: if provided, add document to the collection, collection can be created by `POST /collections`
         file:
           title: File
           type: string
@@ -1255,6 +1276,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PDFViewerRect'
+    UploadPackageType:
+      title: UploadPackageType
+      enum:
+        - elite
+        - lite
+        - basic
+      type: string
+      description: An enumeration.
     UploadType:
       title: UploadType
       enum:
