@@ -525,10 +525,11 @@ paths:
         - Documents
       summary: Download Document
       description: |-
-        Download content of the document with pdf format, support CORS and range request.
+        Download content of the document, support CORS and range request.
 
         * If the document is of doc/docx format, then it's converted to pdf version, and the original version can't be downloaded.
         * If the document is of pdf format, it's recommended to use your local file to avoid unnecessary network traffic.
+        * If the document is of md/epub/txt/website format, then it's converted to html version, and the original version can't be downloaded.
       operationId: Download_Document_documents__upload_id__download_get
       parameters:
         - required: true
@@ -685,7 +686,7 @@ paths:
 
         **Response**:
 
-        structure is as follows:
+        if document is pdf/doc/docx format, structure is as follows:
 
         ```json
         {
@@ -705,6 +706,39 @@ paths:
             }
         }
         ```
+        
+        if document is md/epub/txt/website format, structure is as follows:
+        
+        ```json
+        {
+            "data": {
+                "answer": "answer to the question",
+                "id": question_id,
+                "source_info": [
+                    {
+                    # key: element data-index
+                    # value: element xpath
+                    198: [{xpath: "/html/body/div/div[199]"}]
+                    },
+                    {
+                    "material": "", # selected text with HTML tags
+                    "indexes": [
+                        3,
+                        4,
+                        5,
+                        6
+                    ],
+                    "focusNode": "div[1]/p[5]/text()[1]",
+                    "upload_id": "903d971d-8250-47cc-a649-4b6ca35032dc",
+                    "anchorNode": "div[1]/p[2]/text()[1]",
+                    "focusOffset": "225",
+                    "anchorOffset": "2"
+                }
+                    ...
+                ]
+            }
+        }
+        ```
 
         * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables). For `detailed_citation` answer, the span tag chunk may be as follows:
 
@@ -718,8 +752,9 @@ paths:
 
         **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
-        * `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list. So if the last chunk doesn't contain `source_info` attr, it means error occurred. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
+        * if document is pdf/doc/docx format, `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list. So if the last chunk doesn't contain `source_info` attr, it means error occurred. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
             calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/Source) parameter.
+        * if document is md/epub/txt/website format, `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list.
       operationId: Ask_Question_questions_post
       requestBody:
         content:
@@ -956,7 +991,7 @@ components:
           anyOf:
             - $ref: '#/components/schemas/UploadPackageType'
             - type: string
-          description: if provided, use this package(lite, basic, elite) to upload
+          description: if provided, use this package(lite, basic, elite) to upload, this parameter is only effective for PDF file. if upload file type is (md,epub,txt,website), this parameter will be ignore
           default: elite
         collection_id:
           title: Collection Id
@@ -966,6 +1001,11 @@ components:
           title: File
           type: string
           format: binary
+        website:
+          title: website url
+          type: string
+          format: url
+          description: if provided, will download html from web site.
     ChatMessage:
       title: ChatMessage
       required:
@@ -1119,6 +1159,7 @@ components:
           title: Selected Meta
           allOf:
             - $ref: '#/components/schemas/SelectedMeta'
+            - $ref: '#/components/schemas/HtmlSelectedMeta'
           description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK, and then filled with the document `upload_id`, when ask upon a collection, it's the sub document id of collection.
         history:
           title: History
@@ -1165,6 +1206,7 @@ components:
           title: Selected Meta
           allOf:
             - $ref: '#/components/schemas/SelectedMetaWithUploadId'
+            - $ref: '#/components/schemas/HtmlSelectedMeta'
           description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK.
         history:
           title: History
@@ -1256,6 +1298,44 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PDFViewerRect'
+    HtmlSelectedMeta:
+      title: HtmlSelectedMeta
+      required:
+        - material
+        - upload_id
+        - indexes
+        - focusNode
+        - anchorNode
+        - focusOffset
+        - anchorOffset
+      type: object
+      properties:
+        material:
+          title: Material
+          type: string
+        upload_id:
+          title: Upload Id
+          maxLength: 36
+          minLength: 36
+          type: string
+        indexes:
+          title: Data Indexes
+          minItems: 0
+          type: array
+          items:
+            type: integer
+        focusNode:
+          title: FocusNode
+          type: string
+        anchorNode:
+          title: AnchorNode
+          type: string
+        focusOffset:
+          title: FocusOffset
+          type: string
+        anchorOffset:
+          title: AnchorOffset
+          type: string
     SelectedMetaWithUploadId:
       title: SelectedMetaWithUploadId
       required:
