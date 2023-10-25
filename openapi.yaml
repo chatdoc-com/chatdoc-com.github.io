@@ -379,32 +379,32 @@ paths:
         Upload a document
 
         **Response**:
-
+    
         * `id`: document id, also called `upload_id`, you can use it to get the document by `GET /documents/{upload_id}`. It's of uuid format.
-
+    
         **Please note**: you should store `id` in your database, because we don't have a `GET /documents/list` API to list all documents for now.
-
+    
         * `status`: Once uploaded, the status is `UN_PARSED`, after a series of processing, the
         status would change by time, and finally to be one of the following two cases:
-
+    
         ```
         UN_PARSED = 1              file uploaded or collection has no document
         # final statuses
         ELEMENT_PARSED = 300       analysis of the document has succeeded
         ERROR_STATUSES (< 0)       error occurred during analysis
         ```
-
+    
         So before the document status finalized, you can poll the status by
         `GET /documents/{upload_id}` at interval of 10s , generally it takes 1-2 minutes to
         finish depending on content length of the document. If error occurred, it doesn't consume your quota.
-
+    
         **Please note**:
-
+    
         * Uploading files consumes your pages quota, and uploading same files again will still consume quota.
         * We'll keep your uploaded file for one year. If you do not make another payment for the API after one year, the file will be permanently deleted.
-
+    
         For reference, other statuses are as follows:
-
+    
         ```
         UN_PARSED = 1                      file uploaded or collection has no document
         LINK_UN_PARSED = 10                file link submitted
@@ -428,6 +428,13 @@ paths:
         TITLE_COMPLETE_ERROR = -11         complete title failed
         READ_TMP_FILE_ERROR = -12          read tmp file error
         OCR_PAGE_LIMIT_ERROR = -13         ocr page limit error
+        CONTENT_POLICY_ERROR = -14         content security check did not pass
+        CONTENT_DECODE_ERROR = -15         file content decode error
+        HTML_CONVERT_ERROR = -16           html convert error
+        HTML_EMPTY_BODY_ERROR = -17        content is empty
+        HTML_PARSE_ERROR = -18             html parse error
+        HTML_DOWNLOAD_ERROR = -19          html download error from website
+        PACKAGE_NOT_ENOUGH_ERROR = -25     package not enough
         ```
       operationId: Upload_Document_documents_upload_post
       requestBody:
@@ -451,6 +458,94 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
         - HTTPBearer: []
+  /documents/website:
+    post:
+      tags:
+        - Documents
+      summary: Upload Document
+      description: |-
+        Upload a document by website
+
+        **Response**:
+    
+        * `id`: document id, also called `upload_id`, you can use it to get the document by `GET /documents/{upload_id}`. It's of uuid format.
+    
+        **Please note**: you should store `id` in your database, because we don't have a `GET /documents/list` API to list all documents for now.
+    
+        * `status`: Once uploaded, the status is `UN_PARSED`, after a series of processing, the
+        status would change by time, and finally to be one of the following two cases:
+    
+        ```
+        UN_PARSED = 1              file uploaded or collection has no document
+        # final statuses
+        ELEMENT_PARSED = 300       analysis of the document has succeeded
+        ERROR_STATUSES (< 0)       error occurred during analysis
+        ```
+    
+        So before the document status finalized, you can poll the status by
+        `GET /documents/{upload_id}` at interval of 10s , generally it takes 1-2 minutes to
+        finish depending on content length of the document. If error occurred, it doesn't consume your quota.
+    
+        **Please note**:
+    
+        * Uploading files consumes your pages quota, and uploading same files again will still consume quota.
+        * We'll keep your uploaded file for one year. If you do not make another payment for the API after one year, the file will be permanently deleted.
+    
+        For reference, other statuses are as follows:
+    
+        ```
+        UN_PARSED = 1                      file uploaded or collection has no document
+        LINK_UN_PARSED = 10                file link submitted
+        PARSING = 12                       parsing, mainly used for collection
+        LINK_DOWNLOADING = 15              file link downloading
+        PDF_CONVERTING = 20                docx to pdf converting
+        PDF_CONVERTED = 30                 docx to pdf success
+        TEXT_PARSING = 40                  text embedding（when element parse timeout 2min）
+        ELEMENT_PARSING = 50               element embedding
+        INSIGHT_CALLBACK = 70              element parse success
+        TEXT_PARSED = 210                  text embedding success
+        ELEMENT_PARSED = 300               element embedding success
+        TEXT_PARSE_ERROR = -1              text embedding failed
+        ELEMENT_PARED_ERROR = -2           element embedding failed
+        PDF_CONVERT_ERROR = -3             docx to pdf failed
+        LINK_DOWNLOAD_ERROR = -4           file link download failed
+        EXCEED_SIZE_ERROR = -5             file size exceed limit
+        EXCEED_TOKENS_ERROR = -6           exceed tokens limit
+        PAGE_PACKAGE_NOT_ENOUGH_ERROR = -9 page package not enough
+        PAGE_LIMIT_ERROR = -10             page limit error
+        TITLE_COMPLETE_ERROR = -11         complete title failed
+        READ_TMP_FILE_ERROR = -12          read tmp file error
+        OCR_PAGE_LIMIT_ERROR = -13         ocr page limit error
+        CONTENT_POLICY_ERROR = -14         content security check did not pass
+        CONTENT_DECODE_ERROR = -15         file content decode error
+        HTML_CONVERT_ERROR = -16           html convert error
+        HTML_EMPTY_BODY_ERROR = -17        content is empty
+        HTML_PARSE_ERROR = -18             html parse error
+        HTML_DOWNLOAD_ERROR = -19          html download error from website
+        PACKAGE_NOT_ENOUGH_ERROR = -25     package not enough
+        ```
+      operationId: Upload_website_documents_upload_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_Upload_website_documents_upload_post'
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIUploadResp'
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - HTTPBearer: [ ]
   /documents/{upload_id}:
     get:
       tags:
@@ -957,6 +1052,8 @@ components:
           $ref: '#/components/schemas/PackageDataResp'
         elite_page:
           $ref: '#/components/schemas/PackageDataResp'
+        documents_tokens:
+          $ref: '#/components/schemas/PackageDataResp'
     APIUploadResp:
       title: APIUploadResp
       required:
@@ -991,7 +1088,7 @@ components:
           anyOf:
             - $ref: '#/components/schemas/UploadPackageType'
             - type: string
-          description: if provided, use this package(lite, basic, elite) to upload, this parameter is only effective for PDF file. if upload file type is (md,epub,txt,website), this parameter will be ignore
+          description: if provided, use this package(lite, basic, elite) to upload, this parameter is only effective for PDF file. if upload file type is (md,epub,txt), this parameter will be ignore
           default: elite
         collection_id:
           title: Collection Id
@@ -1001,11 +1098,21 @@ components:
           title: File
           type: string
           format: binary
+    Body_Upload_website_documents_upload_post:
+      title: Body_Upload_website_documents_upload_post
+      required:
+        - website
+      type: object
+      properties:
+        collection_id:
+          title: Collection Id
+          type: string
+          description: if provided, add document to the collection, collection can be created by `POST /collections`
         website:
           title: website url
           type: string
           format: url
-          description: if provided, will download html from web site.
+          description: upload document by website url
     ChatMessage:
       title: ChatMessage
       required:
@@ -1072,6 +1179,7 @@ components:
         - -17
         - -18
         - -19
+        - -25
       type: integer
       description: An enumeration.
     HTTPValidationError:
