@@ -379,32 +379,32 @@ paths:
         Upload a document
 
         **Response**:
-    
+
         * `id`: document id, also called `upload_id`, you can use it to get the document by `GET /documents/{upload_id}`. It's of uuid format.
-    
+
         **Please note**: you should store `id` in your database, because we don't have a `GET /documents/list` API to list all documents for now.
-    
+
         * `status`: Once uploaded, the status is `UN_PARSED`, after a series of processing, the
         status would change by time, and finally to be one of the following two cases:
-    
+
         ```
         UN_PARSED = 1              file uploaded or collection has no document
         # final statuses
         ELEMENT_PARSED = 300       analysis of the document has succeeded
         ERROR_STATUSES (< 0)       error occurred during analysis
         ```
-    
+
         So before the document status finalized, you can poll the status by
         `GET /documents/{upload_id}` at interval of 10s , generally it takes 1-2 minutes to
         finish depending on content length of the document. If error occurred, it doesn't consume your quota.
-    
+
         **Please note**:
-    
+
         * Uploading files consumes your pages quota, and uploading same files again will still consume quota.
         * We'll keep your uploaded file for one year. If you do not make another payment for the API after one year, the file will be permanently deleted.
-    
+
         For reference, other statuses are as follows:
-    
+
         ```
         UN_PARSED = 1                      file uploaded or collection has no document
         LINK_UN_PARSED = 10                file link submitted
@@ -467,32 +467,32 @@ paths:
         Upload a document by website
 
         **Response**:
-    
+
         * `id`: document id, also called `upload_id`, you can use it to get the document by `GET /documents/{upload_id}`. It's of uuid format.
-    
+
         **Please note**: you should store `id` in your database, because we don't have a `GET /documents/list` API to list all documents for now.
-    
+
         * `status`: Once uploaded, the status is `UN_PARSED`, after a series of processing, the
         status would change by time, and finally to be one of the following two cases:
-    
+
         ```
         UN_PARSED = 1              file uploaded or collection has no document
         # final statuses
         ELEMENT_PARSED = 300       analysis of the document has succeeded
         ERROR_STATUSES (< 0)       error occurred during analysis
         ```
-    
+
         So before the document status finalized, you can poll the status by
         `GET /documents/{upload_id}` at interval of 10s , generally it takes 1-2 minutes to
         finish depending on content length of the document. If error occurred, it doesn't consume your quota.
-    
+
         **Please note**:
-    
+
         * Uploading files consumes your pages quota, and uploading same files again will still consume quota.
         * We'll keep your uploaded file for one year. If you do not make another payment for the API after one year, the file will be permanently deleted.
-    
+
         For reference, other statuses are as follows:
-    
+
         ```
         UN_PARSED = 1                      file uploaded or collection has no document
         LINK_UN_PARSED = 10                file link submitted
@@ -524,12 +524,12 @@ paths:
         HTML_DOWNLOAD_ERROR = -19          html download error from website
         PACKAGE_NOT_ENOUGH_ERROR = -25     package not enough
         ```
-      operationId: Upload_website_documents_upload_post
+      operationId: Upload_Document_documents_website_post
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Body_Upload_website_documents_upload_post'
+              $ref: '#/components/schemas/WebsiteReq'
         required: true
       responses:
         "200":
@@ -545,7 +545,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
       security:
-        - HTTPBearer: [ ]
+        - HTTPBearer: []
   /documents/{upload_id}:
     get:
       tags:
@@ -783,73 +783,73 @@ paths:
 
         if document is pdf/doc/docx format, structure is as follows:
 
-        ```json
-        {
-            "data": {
-                "answer": "answer to the question",
-                "id": question_id,
-                "source_info": [
-                    {
-                        # key: page number
-                        # value: rects
-                        '0': [[38.1063, 557.8058, 553.9003, 584.0043]]
-                    },
-                    {'1': [[38.0, 152.3994, 523.6151, 178.6392]], 'upload_id': 'xxxx'},
-                    {'0': [[38.0, 758.0623, 537.0082, 784.0]], 'upload_id': 'xxxx'},
-                    ...
-                ]
-            }
-        }
-        ```
-        
-        if document is md/epub/txt/website format, structure is as follows:
-        
-        ```json
-        {
-            "data": {
-                "answer": "answer to the question",
-                "id": question_id,
-                "source_info": [
-                    {
-                    # key: element data-index
-                    # value: element xpath
-                    198: [{xpath: "/html/body/div/div[199]"}]
-                    },
-                    {
-                    "material": "", # selected text with HTML tags
-                    "indexes": [
-                        3,
-                        4,
-                        5,
-                        6
-                    ],
-                    "focusNode": "div[1]/p[5]/text()[1]",
-                    "upload_id": "903d971d-8250-47cc-a649-4b6ca35032dc",
-                    "anchorNode": "div[1]/p[2]/text()[1]",
-                    "focusOffset": "225",
-                    "anchorOffset": "2"
+            ```json
+            {
+                "data": {
+                    "answer": "answer to the question",
+                    "id": question_id,
+                    "source_info": [
+                        {
+                            # key: page number
+                            # value: rects
+                            '0': [[38.1063, 557.8058, 553.9003, 584.0043]]
+                        },
+                        {'1': [[38.0, 152.3994, 523.6151, 178.6392]], 'upload_id': 'xxxx'},
+                        {'0': [[38.0, 758.0623, 537.0082, 784.0]], 'upload_id': 'xxxx'},
+                        ...
+                    ]
                 }
-                    ...
-                ]
             }
-        }
-        ```
-
-        * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables). For `detailed_citation` answer, the span tag chunk may be as follows:
-
-            ```
-            autobiography captured the pre-Nazi Europe[<span data-index="0">1</span>]
             ```
 
-            The tag attr `data-index` is the index of the source in `source_info` array, which is used to highlight the source of the previous answer sentences in your PDF viewer. The highlighting method is same as `source_info`, and just use slice of `source_info` array as parameter.
+        if document is md/epub/txt/website format, structure is as follows:
 
-        * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
+            ```json
+            {
+                "data": {
+                    "answer": "answer to the question",
+                    "id": question_id,
+                    "source_info": [
+                        {
+                        # key: element data-index
+                        # value: element xpath
+                        198: [{xpath: "/html/body/div/div[199]"}]
+                        },
+                        {
+                        "material": "", # selected text with HTML tags
+                        "indexes": [
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "focusNode": "div[1]/p[5]/text()[1]",
+                        "upload_id": "903d971d-8250-47cc-a649-4b6ca35032dc",
+                        "anchorNode": "div[1]/p[2]/text()[1]",
+                        "focusOffset": "225",
+                        "anchorOffset": "2"
+                    }
+                        ...
+                    ]
+                }
+            }
+            ```
 
-        **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
+            * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables). For `detailed_citation` answer, the span tag chunk may be as follows:
 
-        * if document is pdf/doc/docx format, `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list. So if the last chunk doesn't contain `source_info` attr, it means error occurred. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
-            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/Source) parameter.
-        * if document is md/epub/txt/website format, `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list.
+                ```
+                autobiography captured the pre-Nazi Europe[<span data-index="0">1</span>]
+                ```
+
+                The tag attr `data-index` is the index of the source in `source_info` array, which is used to highlight the source of the previous answer sentences in your PDF viewer. The highlighting method is same as `source_info`, and just use slice of `source_info` array as parameter.
+
+            * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
+
+            **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
+
+            * if document is pdf/doc/docx format, `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list. So if the last chunk doesn't contain `source_info` attr, it means error occurred. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
+                calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/Source) parameter.
+            * if document is md/epub/txt/website format, `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list.
       operationId: Ask_Question_questions_post
       requestBody:
         content:
@@ -973,7 +973,11 @@ paths:
               "question": { # may be null
                 "max_count": 3000,
                 "used_count": 11
-              }
+              },
+              "documents_tokens": { # may be null
+                "max_count": 3000,
+                "used_count": 11
+              },
             }
           }
         }
@@ -1044,6 +1048,8 @@ components:
       title: APIPackageInfoResp
       type: object
       properties:
+        page:
+          $ref: '#/components/schemas/PackageDataResp'
         question:
           $ref: '#/components/schemas/PackageDataResp'
         lite_page:
@@ -1098,21 +1104,6 @@ components:
           title: File
           type: string
           format: binary
-    Body_Upload_website_documents_upload_post:
-      title: Body_Upload_website_documents_upload_post
-      required:
-        - website
-      type: object
-      properties:
-        collection_id:
-          title: Collection Id
-          type: string
-          description: if provided, add document to the collection, collection can be created by `POST /collections`
-        website:
-          title: website url
-          type: string
-          format: url
-          description: upload document by website url
     ChatMessage:
       title: ChatMessage
       required:
@@ -1191,6 +1182,43 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ValidationError'
+    HtmlSelectedMeta:
+      title: HtmlSelectedMeta
+      required:
+        - material
+        - indexes
+        - focusNode
+        - upload_id
+        - anchorNode
+        - focusOffset
+        - anchorOffset
+      type: object
+      properties:
+        material:
+          title: Material
+          type: string
+        indexes:
+          title: Indexes
+          type: array
+          items:
+            type: integer
+        focusNode:
+          title: Focusnode
+          type: string
+        upload_id:
+          title: Upload Id
+          maxLength: 36
+          minLength: 36
+          type: string
+        anchorNode:
+          title: Anchornode
+          type: string
+        focusOffset:
+          title: Focusoffset
+          type: string
+        anchorOffset:
+          title: Anchoroffset
+          type: string
     InteractionType:
       title: InteractionType
       enum:
@@ -1265,7 +1293,7 @@ components:
           default: true
         selected_meta:
           title: Selected Meta
-          allOf:
+          anyOf:
             - $ref: '#/components/schemas/SelectedMeta'
             - $ref: '#/components/schemas/HtmlSelectedMeta'
           description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK, and then filled with the document `upload_id`, when ask upon a collection, it's the sub document id of collection.
@@ -1312,7 +1340,7 @@ components:
           default: true
         selected_meta:
           title: Selected Meta
-          allOf:
+          anyOf:
             - $ref: '#/components/schemas/SelectedMetaWithUploadId'
             - $ref: '#/components/schemas/HtmlSelectedMeta'
           description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK.
@@ -1406,44 +1434,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PDFViewerRect'
-    HtmlSelectedMeta:
-      title: HtmlSelectedMeta
-      required:
-        - material
-        - upload_id
-        - indexes
-        - focusNode
-        - anchorNode
-        - focusOffset
-        - anchorOffset
-      type: object
-      properties:
-        material:
-          title: Material
-          type: string
-        upload_id:
-          title: Upload Id
-          maxLength: 36
-          minLength: 36
-          type: string
-        indexes:
-          title: Data Indexes
-          minItems: 0
-          type: array
-          items:
-            type: integer
-        focusNode:
-          title: FocusNode
-          type: string
-        anchorNode:
-          title: AnchorNode
-          type: string
-        focusOffset:
-          title: FocusOffset
-          type: string
-        anchorOffset:
-          title: AnchorOffset
-          type: string
     SelectedMetaWithUploadId:
       title: SelectedMetaWithUploadId
       required:
@@ -1501,6 +1491,25 @@ components:
         type:
           title: Error Type
           type: string
+    WebsiteReq:
+      title: WebsiteReq
+      required:
+        - website
+      type: object
+      properties:
+        website:
+          title: Website
+          maxLength: 65536
+          minLength: 1
+          type: string
+          description: upload document by website url
+          format: uri
+        collection_id:
+          title: Collection Id
+          maxLength: 36
+          minLength: 36
+          type: string
+          description: if provided, add document to the collection, collection can be created by `POST /collections`
   securitySchemes:
     HTTPBearer:
       type: http
