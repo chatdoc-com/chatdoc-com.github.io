@@ -101,7 +101,7 @@ info:
     # Quick Start
     To use the **ChatDOC API**, you have two options:
     - Directly call the [ChatDOC RESTful API](#section/ChatDOC-RESTful-API) from your own service and custom the UI by yourself.
-    - Use the `@chatdocai/chatdoc-sdk` to display PDF documents and retrieve data by calling the ChatDOC RESTful API.
+    - Use the `@chatdocai/chatdoc-sdk` to display documents(.pdf, .epub, .txt, .md, .html) and retrieve data by calling the ChatDOC RESTful API.
 
       > Before using the API, you need to obtain an API Key on [ChatDOC.com](https://chatdoc.com/).
 
@@ -128,12 +128,12 @@ info:
 
     Here are some typical use cases of `@chatdocai/chatdoc-sdk` in the demo that you might be interested in:
 
-    1. When you select text on the PDF and click the chat icon, you can obtain the [`MaterialData`](#section/ChatDOC-Document-Viewer/MaterialData) from the callback handler of [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event. Then, you can post it to the [Ask Question API](#tag/Questions/operation/Ask_Question_questions_post).
+    1. When you select text on the document and click the chat icon, you can obtain the [`MaterialData`](#section/ChatDOC-Document-Viewer/MaterialData) from the callback handler of [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event. Then, you can post it to the [Ask Question API](#tag/Questions/operation/Ask_Question_questions_post).
     
     2. The response from the [Ask Question API](#tag/Questions/operation/Ask_Question_questions_post) contains the `source_info` field. You can convert the `source_info` to the data type of [Source](#section/ChatDOC-Document-Viewer/Source) and 
      use the [drawSources](#section/ChatDOC-Document-Viewer/Methods) method of `@chatdocai/chatdoc-sdk` to navigate to the page of the sources and highlight them.
 
-    3. By using the [setFileUrl](#section/ChatDOC-Document-Viewer/Methods) method of @chatdocai/chatdoc-sdk, you can switch the displayed PDF file.
+    3. By using the [setFileUrl](#section/ChatDOC-Document-Viewer/Methods) method of @chatdocai/chatdoc-sdk, you can switch the displayed document.
     
 
 
@@ -142,7 +142,7 @@ info:
     # ChatDOC Document Viewer
     If you want to view the document in the browser, you can use the `@chatdocai/chatdoc-sdk` npm package.
 
-    The `@chatdocai/chatdoc-sdk` npm package is used to display PDF files and interact with them by selecting text and asking questions. Here are the steps to get started:
+    The `@chatdocai/chatdoc-sdk` npm package is used to display documents(.pdf, .epub, .txt, .md, .html) and interact with them by selecting text and asking questions. Here are the steps to get started:
 
     1. **Install `@chatdocai/chatdoc-sdk`**
 
@@ -153,28 +153,39 @@ info:
        ```
     2. **Init chatdoc-sdk**
 
-        Initialize the chatdoc-sdk by importing the **initSDK** function from `@chatdocai/chatdoc-sdk` and using it to create an instance of the [PDFViewerSDK](#section/ChatDOC-Document-Viewer/PDFViewerSDK). 
+        Initialize the chatdoc-sdk by importing the **initSDK** function from `@chatdocai/chatdoc-sdk` and using it to create an instance of the [DOCViewerSDK](#section/ChatDOC-Document-Viewer/DOCViewerSDK). 
 
-        Please provide the DOM element or CSS selector string where you want to mount the SDK, as well as the URL of the PDF file. You can find detailed parameter information in the [Config](#section/ChatDOC-Document-Viewer/Config) section.
+        Please provide the DOM element or CSS selector string where you want to mount the SDK. You can find detailed parameter information in the [Config](#section/ChatDOC-Document-Viewer/Config) section.
 
-        Example
+        **Usage Example:**
 
         ```js
         import { initSDK } from '@chatdocai/chatdoc-sdk';
 
         const sdk = initSDK({
-          el: '#pdf-viewer',
-          fileUrl: 'https://example.com/pdf-file.pdf',
+          el: '#doc-viewer',
         })
 
         ```
-    3. **Add event listener**
+    3. **Open document**
+
+        Use the `open` method of `@chatdocai/chatdoc-sdk` to open the document.
+
+        **Usage Example:**
+
+        ```js
+        sdk.open('https://example.com/pdf-file.pdf')
+
+        // If you want to view other documents (such as .epub, .html, .txt, .md), you should set the second parameter to `html`.
+        sdk.open('https://example.com/document.txt', 'html')
+        ```    
+    4. **Add event listener**
 
         Add event listeners to handle specific events. For example, you can listen to the **CHAT_ICON_CLICKED** event to get the selected text from the document when the chat icon is clicked.
 
         The `@chatdocai/chatdoc-sdk` package also exports the EVENT_TYPES object, which types the [event name](#section/ChatDOC-Document-Viewer/EVENT_TYPES).
 
-        Example
+        **Usage Example:**
         ```js
         import { EVENT_TYPES } from '@chatdocai/chatdoc-sdk';
 
@@ -186,26 +197,28 @@ info:
 
         ```
 
-    ## PDFViewerSDK
-    The PDFViewerSDK class provides a PDF viewer SDK with various methods and properties for interacting with the PDF viewer. Here are some key details about the class:
+    ## DOCViewerSDK
+    The DOCViewerSDK class provides a document viewer SDK with various methods and properties for interacting with the document viewer. Here are some key details about the class:
 
 
     ## Config
 
     The configuration parameters for the SDK.
 
-    - **el**: `string | HTMLElement` - the DOM element or CSS selector string used for mounting and rendering the SDK.
+     **Properties:**
 
-    - **fileUrl**: `string` (optional) - The URL of the PDF file.
+    - **el:** `string | HTMLElement` - the DOM element or CSS selector string used for mounting and rendering the SDK.
 
-    - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the [JWT](https://jwt.io/) token.The token is encoded using an API key, and the payload is `{"upload_id": "xxx"}`.
+    - **fileUrl:** `string` (optional) `Deprecated` - The URL of the document. (This field is no longer recommended for use in new code. Consider using the [open](#section/ChatDOC-Document-Viewer/Methods) method instead.)
+
+    - **getToken:** `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the [JWT](https://jwt.io/) token.The token is encoded using an API key, and the payload is `{"upload_id": "xxx"}`.
         ```js
         import jwt from 'jsonwebtoken';
         // token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cGxvYWRfaWQiOiI2YjNmYzdlOS1kYzE3LTQwYjYtODI4Ny04MDM5N2JhMWU5MmEifQ.sXUbg6tGtF6KqFtCGALTcm7eG6H23dhrKW1wUAAAyus'
         const token = jwt.sign({ upload_id: '6b3fc7e9-dc17-40b6-8287-80397ba1e92a' }, 'ak-ifypHN4we-v07xhp0pDKRG-znEb-5YQeFuhXgjt4byM', { noTimestamp: true} );
         ```
 
-    Example
+    **Usage Example:**
     ```javascript
 
     // node server
@@ -226,19 +239,45 @@ info:
     };
     const config: Config = {
       el: '#pdf-viewer',
-      fileUrl: 'https://example.com/pdf-file.pdf',
       getToken
     };
       ```
+    ## ViewType 
+
+    This type represents the available view types for a document. It is a union type that can have one of two values: `pdf` or `html`. This type is utilized to specify the desired view type when rendering or displaying a document.
+
+    - **pdf:** Set the view type to 'pdf' when you want to view files with the .pdf extension.
+    - **html:** Set the view type to 'html' when you want to view files with .txt, .md, .epub, or .html extensions.
+
+    ## FileOptions
+
+    The `FileOptions` type represents the options for opening a document.
+
+    **Properties:**
+
+    - **url:** `string` - The URL of the document.
+    - **viewerType:** [`ViewType`](#section/ChatDOC-Document-Viewer/ViewType) - The desired view type for rendering the document, which can be either `pdf` or `html`.
+
+    **Usage Example:**
+
+    ```javascript
+    const options = {
+      url: 'https://example.com/document.pdf',
+      viewerType: 'pdf',
+    };
+    ```
+
     ## Source
 
     The Source type represents a source in the SDK, which is the parameter of the [drawSources](#section/ChatDOC-Document-Viewer/Methods) method.
 
-    - **pageNumber**: `number` - The page number of the source.
+    **Properties:**
 
-    - **rects**: `number[][]` -  An array of rectangles represented by four numbers `[left, top, right, bottom]` indicating their positions within the source coordinates.
+    - **pageNumber:** `number` - The page number of the source.
 
-    Example
+    - **rects:** `number[][]` -  An array of rectangles represented by four numbers `[left, top, right, bottom]` indicating their positions within the source coordinates.
+
+    **Usage Example:**
     ```
     const source: Source = {
       pageNumber: 1,
@@ -246,13 +285,46 @@ info:
     };
     ```
 
-    ## MaterialData
-    The MaterialData type contains the content of the material and the outlines from the selected text in the PDF File, which are obtained from the callback handler of the [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event.
+    ## HTMLMaterialData
 
-    - **material**: `string` - The content of the material.
-    - **rects**: [`Rect[]`](#section/ChatDOC-Document-Viewer/Rect) - An array of rectangles representing the outlines.
+    The HTMLMaterialData type contains the content of the material and the selection in the document, which are obtained from the callback handler of the [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event.
 
-    Example
+    **Properties:**
+
+    - **material:** `string` - The selected text or HTML content.
+
+    - **indexes:** `number[]` - An array of indexes representing the selected text node index in the document.
+   
+    - **focusNode**: `string` - A XPath string of the selection's focusNode in the document.
+    
+    - **focusOffset**: `number` - The number of characters that the selection's focus is offset within the focusNode.
+   
+    - **anchorNode**: `string` - A XPath string of the selection's anchorNode in the document.
+   
+    - **anchorOffset**: `number` - The number of characters that the selection's anchor is offset within anchorNode.
+
+    **Usage Example:**
+    ```
+    const material: HTMLMaterialData = {
+      material: 'content',
+      indexes: [1, 2, 3],
+      focusNode: 'div/div[4]/text()',
+      focusOffset: 2,
+      anchorNode: 'div/div[2]/text()',
+      anchorOffset: 3,
+    };
+    ```
+    
+    ## PDFMaterialData
+    The MaterialData type contains the content of the material and the outlines from the selected text in the document, which are obtained from the callback handler of the [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event.
+
+    **Properties:**
+
+    - **material:** `string` - The content of the material.
+
+    - **rects:** [`Rect[]`](#section/ChatDOC-Document-Viewer/Rect) (optional) - An array of rectangles representing the outlines.
+
+    **Usage Example:**
     ```
     const material: MaterialData = {
       material: 'content',
@@ -270,13 +342,15 @@ info:
     ```
     
     ## Rect
-    The Rect type represents a rectangle in the PDF file, and it is a field in the [MaterialData](#section/ChatDOC-Document-Viewer/MaterialData) type.
+    The Rect type represents a rectangle in the document, and it is a field in the [MaterialData](#section/ChatDOC-Document-Viewer/MaterialData) type.
 
-    - **pageNumber**: `number` - The page number of the rectangle.
+    **Properties:**
 
-    - **outline**: `number[]` - The outline array represents the rectangle's outline coordinates as four values: `left, top, right, and bottom`.
+    - **pageNumber:** `number` - The page number of the rectangle.
 
-    Example
+    - **outline:** `number[]` - The outline array represents the rectangle's outline coordinates as four values: `left, top, right, and bottom`.
+
+    **Usage Example:**
     ```
     const rect: Rect = {
       pageNumber: 1,
@@ -285,17 +359,19 @@ info:
     ```
     ## Methods
 
-    ### setFileUrl(fileUrl: string): any
+    ### setFileUrl(fileUrl: string): any `Deprecated`
 
-    Sets the file URL.
+    This method is used to set the file URL for opening a document.
 
-    - **fileUrl**: `string` - The URL of the file to load.
+    - **fileUrl:** `string` - The URL of the file to load.
+
+    **`Deprecated Note:`**  It is recommended to use the `open` method instead for opening a document. The `setFileUrl` method is deprecated.
 
     ### drawSources(sources: Source[]): Promise<void>
 
-    Draws source rectangles on the PDF viewer.
+    Draws source rectangles on the document viewer.
 
-    - **sources**: [`Source[]`](#section/ChatDOC-Document-Viewer/Source) - The source rectangles to draw.
+    - **sources:** [`Source[]`](#section/ChatDOC-Document-Viewer/Source) - The source rectangles to draw.
 
     ### clearSources(): void
 
@@ -303,27 +379,32 @@ info:
 
     ### destroy(): void
 
-    Destroys the PDF viewer SDK instance.
+    Destroys the document viewer SDK instance.
 
     ### on(name: string, handler: Func): void
 
     Adds an event listener for the specified event.
 
-    - **name**: `string` - The name of the event, you can get the event name from [EVENT_TYPES](#section/ChatDOC-Document-Viewer/EVENT_TYPES).
-    - **handler**: `Func` - The event handler function.
+    - **name:** `string` - The name of the event, you can get the event name from [EVENT_TYPES](#section/ChatDOC-Document-Viewer/EVENT_TYPES).
+    - **handler:** `Func` - The event handler function.
 
     ### off(name: string, handler: Func): void
 
     Removes an event listener for the specified event.
 
-    - **name**: `string` - The name of the event.
-    - **handler**: `Func` - The event handler function.
+    - **name:** `string` - The name of the event.
+    - **handler:** `Func` - The event handler function.
 
     ### getCurrentPageNumber(): any
 
     Gets the current page number.
 
     - Returns: `any` - The current page number.
+
+    ### open(options: FileOptions): any
+    This method is used to open a document using the provided options.
+
+    - **options:** [`FileOptions`](#section/ChatDOC-Document-Viewer/FileOptions) - An object that specifies the options for opening the document.
 
     ## EVENT_TYPES
 
