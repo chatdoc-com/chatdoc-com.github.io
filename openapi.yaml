@@ -128,7 +128,7 @@ info:
 
     Here are some typical use cases of `@chatdocai/chatdoc-sdk` in the demo that you might be interested in:
 
-    1. When you select text on the document and click the chat icon, you can obtain the [`MaterialData`](#section/ChatDOC-Document-Viewer/MaterialData) from the callback handler of [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event. Then, you can post it to the [Ask Question API](#tag/Questions/operation/Ask_Question_questions_post).
+    1. When you select text on the document and click the chat icon, you can obtain the [`HTMLMaterialData`](#section/ChatDOC-Document-Viewer/HTMLMaterialData) or [`PDFMaterialData`](#section/ChatDOC-Document-Viewer/PDFMaterialData) from the callback handler of [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event. Then, you can post it to the [Ask Question API](#tag/Questions/operation/Ask_Question_questions_post).
     
     2. The response from the [Ask Question API](#tag/Questions/operation/Ask_Question_questions_post) contains the `source_info` field. You can convert the `source_info` to the data type of [Source](#section/ChatDOC-Document-Viewer/Source) and 
      use the [drawSources](#section/ChatDOC-Document-Viewer/Methods) method of `@chatdocai/chatdoc-sdk` to navigate to the page of the sources and highlight them.
@@ -174,10 +174,10 @@ info:
         **Usage Example:**
 
         ```js
-        sdk.open('https://example.com/pdf-file.pdf')
+        sdk.open({url: 'https://example.com/pdf-file.pdf'})
 
-        // If you want to view other documents (such as .epub, .html, .txt, .md), you should set the second parameter to `html`.
-        sdk.open('https://example.com/document.txt', 'html')
+        // If you want to view other documents (such as .epub, .html, .txt, .md), you need to set the viewerType to `html`.
+        sdk.open({url: 'https://example.com/document.txt', viewerType: ''html''})
         ```    
     4. **Add event listener**
 
@@ -191,7 +191,8 @@ info:
 
         // this event is dispatched after you clicked the chat icon in document
         sdk.on(EVENT_TYPES.CHAT_ICON_CLICKED, (data) => {
-          // data is the selected text info from document
+          // if your viewType is `pdf`, the data is `PDFMaterialData`
+          // if your viewType is `html`, the data is `HTMLMaterialData`
           console.log(data)
         });
 
@@ -287,7 +288,7 @@ info:
 
     ## HTMLMaterialData
 
-    The HTMLMaterialData type contains the content of the material and the selection in the document, which are obtained from the callback handler of the [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event.
+    The `HTMLMaterialData` type contains the material content and the document selection obtained from the callback handler of the EVENT_TYPES.CHAT_ICON_CLICKED event when the [FileOptions.viewType](#section/ChatDOC-Document-Viewer/ViewType) is set to `html`.
 
     **Properties:**
 
@@ -316,17 +317,17 @@ info:
     ```
     
     ## PDFMaterialData
-    The MaterialData type contains the content of the material and the outlines from the selected text in the document, which are obtained from the callback handler of the [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event.
+    The `PDFMaterialData` type contains the selected text and the outlines in the document obtained from the callback handler of the EVENT_TYPES.CHAT_ICON_CLICKED event when the [FileOptions.viewType](#section/ChatDOC-Document-Viewer/ViewType) is set to `pdf`.
 
     **Properties:**
 
-    - **material:** `string` - The content of the material.
+    - **material:** `string` - The selected text.
 
     - **rects:** [`Rect[]`](#section/ChatDOC-Document-Viewer/Rect) (optional) - An array of rectangles representing the outlines.
 
     **Usage Example:**
     ```
-    const material: MaterialData = {
+    const material: PDFMaterialData = {
       material: 'content',
       rects: [
         {
@@ -410,7 +411,7 @@ info:
 
     - **PAGE_RENDERED** - After each page is rendered, this event is dispatched, and you can obtain the current page number from the callback handler.
 
-    - **CHAT_ICON_CLICKED** - After you clicked the chat icon in document, and you can obtain the [`MaterialData`](#section/ChatDOC-Document-Viewer/MaterialData) from the callback handler.
+    - **CHAT_ICON_CLICKED** - After you clicked the chat icon in document, and you can obtain the [`HTMLMaterialData`](#section/ChatDOC-Document-Viewer/HTMLMaterialData) or [`PDFMaterialData`](#section/ChatDOC-Document-Viewer/PDFMaterialData) from the callback handler.
 
 
     # OBJECTS
