@@ -928,9 +928,8 @@ paths:
 
             **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
-            * if document is pdf/doc/docx format, `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list. So if the last chunk doesn't contain `source_info` attr, it means error occurred. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
-                calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/Source) parameter.
-            * if document is md/epub/txt/website format, `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list.
+            * `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list. So if the last chunk doesn't contain `source_info` attr, it means error occurred. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
+                calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our DOCViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/Source) parameter.
       operationId: Ask_Question_questions_post
       requestBody:
         content:
@@ -1278,28 +1277,35 @@ components:
         material:
           title: Material
           type: string
+          description: Select the html node text
         indexes:
           title: Indexes
           type: array
           items:
             type: integer
+          description: Select the collection of all data-index attributes of the html node
         focusNode:
           title: Focusnode
           type: string
+          description: The Node in which the selection ends. Can return null if selection never existed in the document (for example, in an iframe that was never clicked on)
         upload_id:
           title: Upload Id
           maxLength: 36
           minLength: 36
           type: string
+          description: Upload id
         anchorNode:
           title: Anchornode
           type: string
+          description: The Node in which the selection begins. Can return null if selection never existed in the document (e.g., an iframe that was never clicked on)
         focusOffset:
           title: Focusoffset
-          type: string
+          type: integer
+          description: Number representing the offset of the selection's anchor within the focusNode. If focusNode is a text node, this is the number of characters within focusNode preceding the focus. If focusNode is an element, this is the number of child nodes of the focusNode preceding the focus
         anchorOffset:
           title: Anchoroffset
-          type: string
+          type: integer
+          description: Number representing the offset of the selection's anchor within the anchorNode. If anchorNode is a text node, this is the number of characters within anchorNode preceding the anchor. If anchorNode is an element, this is the number of child nodes of the anchorNode preceding the anchor
     InteractionType:
       title: InteractionType
       enum:
@@ -1377,7 +1383,7 @@ components:
           anyOf:
             - $ref: '#/components/schemas/SelectedMeta'
             - $ref: '#/components/schemas/HtmlSelectedMeta'
-          description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK, and then filled with the document `upload_id`, when ask upon a collection, it's the sub document id of collection.
+          description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our DOCViewerSDK, and then filled with the document `upload_id`, when ask upon a collection, it's the sub document id of collection.
         history:
           title: History
           type: array
@@ -1424,7 +1430,7 @@ components:
           anyOf:
             - $ref: '#/components/schemas/SelectedMetaWithUploadId'
             - $ref: '#/components/schemas/HtmlSelectedMeta'
-          description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK.
+          description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our DOCViewerSDK.
         history:
           title: History
           type: array
