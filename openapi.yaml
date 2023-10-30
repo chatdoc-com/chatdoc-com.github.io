@@ -1391,14 +1391,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ChatMessage'
-          description: "chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182), this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api). `history` is question and answer pairs, which is a list of `ChatMessage` objects. The max input tokens of `history`, `selected_meta.material` and `question` is 8000, which is a little less than OpenAI's limit of [Embedding models](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings). Sample parameter is as follows:\n\n        [\n            {\"role\": \"user\", \"content\": \"Who won\"},\n            {\"role\": \"assistant\", \"content\": \"The Los Angeles\"},\n            {\"role\": \"user\", \"content\": \"Where was it played?\"}\n            {\"role\": \"assistant\", \"content\": \"The 2020 World\"},\n        ]\n        "
+          description: "chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182), this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api). `history` is question and answer pairs, which is a list of `ChatMessage` objects. The max input tokens of `history`, `selected_meta.material` and `question` is 8000, which is a little less than OpenAI's limit of [Embedding models](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings). Sample parameter is as follows:\n\n        [\n          {\"role\": \"user\", \"content\": \"Who...\"},\n          {\"role\": \"assistant\", \"content\": \"The...\"},\n          {\"role\": \"user\", \"content\": \"Where...\"}\n          {\"role\": \"assistant\", \"content\": \"The...\"},\n        ]\n        "
           default: []
         search_entire_doc:
           title: Search Entire Doc
           type: boolean
-          description: |2-
-                    if true: limit responses to current file's information
-                    else: responses go freely with knowledge of our AI
+          description: 'if true: limit responses to current file''s information, else: responses go freely with knowledge of our AI'
           default: true
         detailed_citation:
           title: Detailed Citation
@@ -1438,14 +1436,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ChatMessage'
-          description: "chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182), this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api). `history` is question and answer pairs, which is a list of `ChatMessage` objects. The max input tokens of `history`, `selected_meta.material` and `question` is 8000, which is a little less than OpenAI's limit of [Embedding models](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings). Sample parameter is as follows:\n\n        [\n            {\"role\": \"user\", \"content\": \"Who won\"},\n            {\"role\": \"assistant\", \"content\": \"The Los Angeles\"},\n            {\"role\": \"user\", \"content\": \"Where was it played?\"}\n            {\"role\": \"assistant\", \"content\": \"The 2020 World\"},\n        ]\n        "
+          description: "chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182), this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api). `history` is question and answer pairs, which is a list of `ChatMessage` objects. The max input tokens of `history`, `selected_meta.material` and `question` is 8000, which is a little less than OpenAI's limit of [Embedding models](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings). Sample parameter is as follows:\n\n        [\n          {\"role\": \"user\", \"content\": \"Who...\"},\n          {\"role\": \"assistant\", \"content\": \"The...\"},\n          {\"role\": \"user\", \"content\": \"Where...\"}\n          {\"role\": \"assistant\", \"content\": \"The...\"},\n        ]\n        "
           default: []
         search_entire_doc:
           title: Search Entire Doc
           type: boolean
-          description: |2-
-                    if true: limit responses to current file's information
-                    else: responses go freely with knowledge of our AI
+          description: 'if true: limit responses to current file''s information, else: responses go freely with knowledge of our AI'
           default: true
         detailed_citation:
           title: Detailed Citation
