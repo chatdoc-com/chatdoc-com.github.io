@@ -442,6 +442,7 @@ info:
     ### Document Pages
     
     * POST /documents/upload
+    * POST /documents/website
     * POST /collections/clone-documents
     
     ### Questions
