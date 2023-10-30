@@ -101,7 +101,7 @@ info:
     # Quick Start
     To use the **ChatDOC API**, you have two options:
     - Directly call the [ChatDOC RESTful API](#section/ChatDOC-RESTful-API) from your own service and custom the UI by yourself.
-    - Use the `@chatdocai/chatdoc-sdk` to display PDF documents and retrieve data by calling the ChatDOC RESTful API.
+    - Use the `@chatdocai/chatdoc-sdk` to display documents(.pdf, .epub, .txt, .md, .html) and retrieve data by calling the ChatDOC RESTful API.
 
       > Before using the API, you need to obtain an API Key on [ChatDOC.com](https://chatdoc.com/).
 
@@ -128,12 +128,12 @@ info:
 
     Here are some typical use cases of `@chatdocai/chatdoc-sdk` in the demo that you might be interested in:
 
-    1. When you select text on the PDF and click the chat icon, you can obtain the [`MaterialData`](#section/ChatDOC-Document-Viewer/MaterialData) from the callback handler of [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event. Then, you can post it to the [Ask Question API](#tag/Questions/operation/Ask_Question_questions_post).
+    1. When you select text on the document and click the chat icon, you can obtain the [`HTMLMaterialData`](#section/ChatDOC-Document-Viewer/HTMLMaterialData) or [`PDFMaterialData`](#section/ChatDOC-Document-Viewer/PDFMaterialData) from the callback handler of [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event. Then, you can post it to the [Ask Question API](#tag/Questions/operation/Ask_Question_questions_post).
     
     2. The response from the [Ask Question API](#tag/Questions/operation/Ask_Question_questions_post) contains the `source_info` field. You can convert the `source_info` to the data type of [Source](#section/ChatDOC-Document-Viewer/Source) and 
      use the [drawSources](#section/ChatDOC-Document-Viewer/Methods) method of `@chatdocai/chatdoc-sdk` to navigate to the page of the sources and highlight them.
 
-    3. By using the [setFileUrl](#section/ChatDOC-Document-Viewer/Methods) method of @chatdocai/chatdoc-sdk, you can switch the displayed PDF file.
+    3. By using the [setFileUrl](#section/ChatDOC-Document-Viewer/Methods) method of @chatdocai/chatdoc-sdk, you can switch the displayed document.
     
 
 
@@ -142,7 +142,7 @@ info:
     # ChatDOC Document Viewer
     If you want to view the document in the browser, you can use the `@chatdocai/chatdoc-sdk` npm package.
 
-    The `@chatdocai/chatdoc-sdk` npm package is used to display PDF files and interact with them by selecting text and asking questions. Here are the steps to get started:
+    The `@chatdocai/chatdoc-sdk` npm package is used to display documents(.pdf, .epub, .txt, .md, .html) and interact with them by selecting text and asking questions. Here are the steps to get started:
 
     1. **Install `@chatdocai/chatdoc-sdk`**
 
@@ -153,59 +153,73 @@ info:
        ```
     2. **Init chatdoc-sdk**
 
-        Initialize the chatdoc-sdk by importing the **initSDK** function from `@chatdocai/chatdoc-sdk` and using it to create an instance of the [PDFViewerSDK](#section/ChatDOC-Document-Viewer/PDFViewerSDK). 
+        Initialize the chatdoc-sdk by importing the **initSDK** function from `@chatdocai/chatdoc-sdk` and using it to create an instance of the [DOCViewerSDK](#section/ChatDOC-Document-Viewer/DOCViewerSDK). 
 
-        Please provide the DOM element or CSS selector string where you want to mount the SDK, as well as the URL of the PDF file. You can find detailed parameter information in the [Config](#section/ChatDOC-Document-Viewer/Config) section.
+        Please provide the DOM element or CSS selector string where you want to mount the SDK. You can find detailed parameter information in the [Config](#section/ChatDOC-Document-Viewer/Config) section.
 
-        Example
+        **Usage Example:**
 
         ```js
         import { initSDK } from '@chatdocai/chatdoc-sdk';
 
         const sdk = initSDK({
-          el: '#pdf-viewer',
-          fileUrl: 'https://example.com/pdf-file.pdf',
+          el: '#doc-viewer',
         })
 
         ```
-    3. **Add event listener**
+    3. **Open document**
+
+        Use the `open` method of `@chatdocai/chatdoc-sdk` to open the document.
+
+        **Usage Example:**
+
+        ```js
+        sdk.open({url: 'https://example.com/pdf-file.pdf'})
+
+        // If you want to view other documents (such as .epub, .html, .txt, .md), you need to set the viewerType to `html`.
+        sdk.open({url: 'https://example.com/document.txt', viewerType: ''html''})
+        ```    
+    4. **Add event listener**
 
         Add event listeners to handle specific events. For example, you can listen to the **CHAT_ICON_CLICKED** event to get the selected text from the document when the chat icon is clicked.
 
         The `@chatdocai/chatdoc-sdk` package also exports the EVENT_TYPES object, which types the [event name](#section/ChatDOC-Document-Viewer/EVENT_TYPES).
 
-        Example
+        **Usage Example:**
         ```js
         import { EVENT_TYPES } from '@chatdocai/chatdoc-sdk';
 
         // this event is dispatched after you clicked the chat icon in document
         sdk.on(EVENT_TYPES.CHAT_ICON_CLICKED, (data) => {
-          // data is the selected text info from document
+          // if your viewType is `pdf`, the data is `PDFMaterialData`
+          // if your viewType is `html`, the data is `HTMLMaterialData`
           console.log(data)
         });
 
         ```
 
-    ## PDFViewerSDK
-    The PDFViewerSDK class provides a PDF viewer SDK with various methods and properties for interacting with the PDF viewer. Here are some key details about the class:
+    ## DOCViewerSDK
+    The DOCViewerSDK class provides a document viewer SDK with various methods and properties for interacting with the document viewer. Here are some key details about the class:
 
 
     ## Config
 
     The configuration parameters for the SDK.
 
-    - **el**: `string | HTMLElement` - the DOM element or CSS selector string used for mounting and rendering the SDK.
+     **Properties:**
 
-    - **fileUrl**: `string` (optional) - The URL of the PDF file.
+    - **el:** `string | HTMLElement` - the DOM element or CSS selector string used for mounting and rendering the SDK.
 
-    - **getToken**: `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the [JWT](https://jwt.io/) token.The token is encoded using an API key, and the payload is `{"upload_id": "xxx"}`.
+    - **fileUrl:** `string` (optional) `Deprecated` - The URL of the document. (This field is no longer recommended for use in new code. Consider using the [open](#section/ChatDOC-Document-Viewer/Methods) method instead.)
+
+    - **getToken:** `() => Promise<string>` (optional) - An optional function that returns a Promise resolving to a string representing the [JWT](https://jwt.io/) token.The token is encoded using an API key, and the payload is `{"upload_id": "xxx"}`.
         ```js
         import jwt from 'jsonwebtoken';
         // token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cGxvYWRfaWQiOiI2YjNmYzdlOS1kYzE3LTQwYjYtODI4Ny04MDM5N2JhMWU5MmEifQ.sXUbg6tGtF6KqFtCGALTcm7eG6H23dhrKW1wUAAAyus'
         const token = jwt.sign({ upload_id: '6b3fc7e9-dc17-40b6-8287-80397ba1e92a' }, 'ak-ifypHN4we-v07xhp0pDKRG-znEb-5YQeFuhXgjt4byM', { noTimestamp: true} );
         ```
 
-    Example
+    **Usage Example:**
     ```javascript
 
     // node server
@@ -226,19 +240,45 @@ info:
     };
     const config: Config = {
       el: '#pdf-viewer',
-      fileUrl: 'https://example.com/pdf-file.pdf',
       getToken
     };
       ```
+    ## ViewType 
+
+    This type represents the available view types for a document. It is a union type that can have one of two values: `pdf` or `html`. This type is utilized to specify the desired view type when rendering or displaying a document.
+
+    - **pdf:** Set the view type to 'pdf' when you want to view files with the .pdf extension.
+    - **html:** Set the view type to 'html' when you want to view files with .txt, .md, .epub, or .html extensions.
+
+    ## FileOptions
+
+    The `FileOptions` type represents the options for opening a document.
+
+    **Properties:**
+
+    - **url:** `string` - The URL of the document.
+    - **viewerType:** [`ViewType`](#section/ChatDOC-Document-Viewer/ViewType) - The desired view type for rendering the document, which can be either `pdf` or `html`.
+
+    **Usage Example:**
+
+    ```javascript
+    const options = {
+      url: 'https://example.com/document.pdf',
+      viewerType: 'pdf',
+    };
+    ```
+
     ## Source
 
     The Source type represents a source in the SDK, which is the parameter of the [drawSources](#section/ChatDOC-Document-Viewer/Methods) method.
 
-    - **pageNumber**: `number` - The page number of the source.
+    **Properties:**
 
-    - **rects**: `number[][]` -  An array of rectangles represented by four numbers `[left, top, right, bottom]` indicating their positions within the source coordinates.
+    - **pageNumber:** `number` - The page number of the source.
 
-    Example
+    - **rects:** `number[][]` -  An array of rectangles represented by four numbers `[left, top, right, bottom]` indicating their positions within the source coordinates.
+
+    **Usage Example:**
     ```
     const source: Source = {
       pageNumber: 1,
@@ -246,15 +286,48 @@ info:
     };
     ```
 
-    ## MaterialData
-    The MaterialData type contains the content of the material and the outlines from the selected text in the PDF File, which are obtained from the callback handler of the [EVENT_TYPES.CHAT_ICON_CLICKED](#section/ChatDOC-Document-Viewer/EVENT_TYPES) event.
+    ## HTMLMaterialData
 
-    - **material**: `string` - The content of the material.
-    - **rects**: [`Rect[]`](#section/ChatDOC-Document-Viewer/Rect) - An array of rectangles representing the outlines.
+    The `HTMLMaterialData` type contains the material content and the document selection obtained from the callback handler of the EVENT_TYPES.CHAT_ICON_CLICKED event when the [FileOptions.viewType](#section/ChatDOC-Document-Viewer/ViewType) is set to `html`.
 
-    Example
+    **Properties:**
+
+    - **material:** `string` - The selected text or HTML content.
+
+    - **indexes:** `number[]` - An array of indexes representing the selected text node index in the document.
+   
+    - **focusNode**: `string` - A XPath string of the selection's focusNode in the document.
+    
+    - **focusOffset**: `number` - The number of characters that the selection's focus is offset within the focusNode.
+   
+    - **anchorNode**: `string` - A XPath string of the selection's anchorNode in the document.
+   
+    - **anchorOffset**: `number` - The number of characters that the selection's anchor is offset within anchorNode.
+
+    **Usage Example:**
     ```
-    const material: MaterialData = {
+    const material: HTMLMaterialData = {
+      material: 'content',
+      indexes: [1, 2, 3],
+      focusNode: 'div/div[4]/text()',
+      focusOffset: 2,
+      anchorNode: 'div/div[2]/text()',
+      anchorOffset: 3,
+    };
+    ```
+    
+    ## PDFMaterialData
+    The `PDFMaterialData` type contains the selected text and the outlines in the document obtained from the callback handler of the EVENT_TYPES.CHAT_ICON_CLICKED event when the [FileOptions.viewType](#section/ChatDOC-Document-Viewer/ViewType) is set to `pdf`.
+
+    **Properties:**
+
+    - **material:** `string` - The selected text.
+
+    - **rects:** [`Rect[]`](#section/ChatDOC-Document-Viewer/Rect) (optional) - An array of rectangles representing the outlines.
+
+    **Usage Example:**
+    ```
+    const material: PDFMaterialData = {
       material: 'content',
       rects: [
         {
@@ -270,13 +343,15 @@ info:
     ```
     
     ## Rect
-    The Rect type represents a rectangle in the PDF file, and it is a field in the [MaterialData](#section/ChatDOC-Document-Viewer/MaterialData) type.
+    The Rect type represents a rectangle in the document, and it is a field in the [MaterialData](#section/ChatDOC-Document-Viewer/MaterialData) type.
 
-    - **pageNumber**: `number` - The page number of the rectangle.
+    **Properties:**
 
-    - **outline**: `number[]` - The outline array represents the rectangle's outline coordinates as four values: `left, top, right, and bottom`.
+    - **pageNumber:** `number` - The page number of the rectangle.
 
-    Example
+    - **outline:** `number[]` - The outline array represents the rectangle's outline coordinates as four values: `left, top, right, and bottom`.
+
+    **Usage Example:**
     ```
     const rect: Rect = {
       pageNumber: 1,
@@ -285,17 +360,19 @@ info:
     ```
     ## Methods
 
-    ### setFileUrl(fileUrl: string): any
+    ### setFileUrl(fileUrl: string): any `Deprecated`
 
-    Sets the file URL.
+    This method is used to set the file URL for opening a document.
 
-    - **fileUrl**: `string` - The URL of the file to load.
+    - **fileUrl:** `string` - The URL of the file to load.
+
+    **`Deprecated Note:`**  It is recommended to use the `open` method instead for opening a document. The `setFileUrl` method is deprecated.
 
     ### drawSources(sources: Source[]): Promise<void>
 
-    Draws source rectangles on the PDF viewer.
+    Draws source rectangles on the document viewer.
 
-    - **sources**: [`Source[]`](#section/ChatDOC-Document-Viewer/Source) - The source rectangles to draw.
+    - **sources:** [`Source[]`](#section/ChatDOC-Document-Viewer/Source) - The source rectangles to draw.
 
     ### clearSources(): void
 
@@ -303,21 +380,21 @@ info:
 
     ### destroy(): void
 
-    Destroys the PDF viewer SDK instance.
+    Destroys the document viewer SDK instance.
 
     ### on(name: string, handler: Func): void
 
     Adds an event listener for the specified event.
 
-    - **name**: `string` - The name of the event, you can get the event name from [EVENT_TYPES](#section/ChatDOC-Document-Viewer/EVENT_TYPES).
-    - **handler**: `Func` - The event handler function.
+    - **name:** `string` - The name of the event, you can get the event name from [EVENT_TYPES](#section/ChatDOC-Document-Viewer/EVENT_TYPES).
+    - **handler:** `Func` - The event handler function.
 
     ### off(name: string, handler: Func): void
 
     Removes an event listener for the specified event.
 
-    - **name**: `string` - The name of the event.
-    - **handler**: `Func` - The event handler function.
+    - **name:** `string` - The name of the event.
+    - **handler:** `Func` - The event handler function.
 
     ### getCurrentPageNumber(): any
 
@@ -325,11 +402,16 @@ info:
 
     - Returns: `any` - The current page number.
 
+    ### open(options: FileOptions): any
+    This method is used to open a document using the provided options.
+
+    - **options:** [`FileOptions`](#section/ChatDOC-Document-Viewer/FileOptions) - An object that specifies the options for opening the document.
+
     ## EVENT_TYPES
 
     - **PAGE_RENDERED** - After each page is rendered, this event is dispatched, and you can obtain the current page number from the callback handler.
 
-    - **CHAT_ICON_CLICKED** - After you clicked the chat icon in document, and you can obtain the [`MaterialData`](#section/ChatDOC-Document-Viewer/MaterialData) from the callback handler.
+    - **CHAT_ICON_CLICKED** - After you clicked the chat icon in document, and you can obtain the [`HTMLMaterialData`](#section/ChatDOC-Document-Viewer/HTMLMaterialData) or [`PDFMaterialData`](#section/ChatDOC-Document-Viewer/PDFMaterialData) from the callback handler.
 
 
     # OBJECTS
@@ -360,6 +442,7 @@ info:
     ### Document Pages
     
     * POST /documents/upload
+    * POST /documents/website
     * POST /collections/clone-documents
     
     ### Questions
@@ -428,6 +511,13 @@ paths:
         TITLE_COMPLETE_ERROR = -11         complete title failed
         READ_TMP_FILE_ERROR = -12          read tmp file error
         OCR_PAGE_LIMIT_ERROR = -13         ocr page limit error
+        CONTENT_POLICY_ERROR = -14         content security check did not pass
+        CONTENT_DECODE_ERROR = -15         file content decode error
+        HTML_CONVERT_ERROR = -16           html convert error
+        HTML_EMPTY_BODY_ERROR = -17        content is empty
+        HTML_PARSE_ERROR = -18             html parse error
+        HTML_DOWNLOAD_ERROR = -19          html download error from website
+        PACKAGE_NOT_ENOUGH_ERROR = -25     package not enough
         ```
       operationId: Upload_Document_documents_upload_post
       requestBody:
@@ -435,6 +525,94 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/Body_Upload_Document_documents_upload_post'
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIUploadResp'
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - HTTPBearer: []
+  /documents/website:
+    post:
+      tags:
+        - Documents
+      summary: Upload Document
+      description: |-
+        Upload a document by website
+
+        **Response**:
+
+        * `id`: document id, also called `upload_id`, you can use it to get the document by `GET /documents/{upload_id}`. It's of uuid format.
+
+        **Please note**: you should store `id` in your database, because we don't have a `GET /documents/list` API to list all documents for now.
+
+        * `status`: Once uploaded, the status is `UN_PARSED`, after a series of processing, the
+        status would change by time, and finally to be one of the following two cases:
+
+        ```
+        UN_PARSED = 1              file uploaded or collection has no document
+        # final statuses
+        ELEMENT_PARSED = 300       analysis of the document has succeeded
+        ERROR_STATUSES (< 0)       error occurred during analysis
+        ```
+
+        So before the document status finalized, you can poll the status by
+        `GET /documents/{upload_id}` at interval of 10s , generally it takes 1-2 minutes to
+        finish depending on content length of the document. If error occurred, it doesn't consume your quota.
+
+        **Please note**:
+
+        * Uploading files consumes your pages quota, and uploading same files again will still consume quota.
+        * We'll keep your uploaded file for one year. If you do not make another payment for the API after one year, the file will be permanently deleted.
+
+        For reference, other statuses are as follows:
+
+        ```
+        UN_PARSED = 1                      file uploaded or collection has no document
+        LINK_UN_PARSED = 10                file link submitted
+        PARSING = 12                       parsing, mainly used for collection
+        LINK_DOWNLOADING = 15              file link downloading
+        PDF_CONVERTING = 20                docx to pdf converting
+        PDF_CONVERTED = 30                 docx to pdf success
+        TEXT_PARSING = 40                  text embedding（when element parse timeout 2min）
+        ELEMENT_PARSING = 50               element embedding
+        INSIGHT_CALLBACK = 70              element parse success
+        TEXT_PARSED = 210                  text embedding success
+        ELEMENT_PARSED = 300               element embedding success
+        TEXT_PARSE_ERROR = -1              text embedding failed
+        ELEMENT_PARED_ERROR = -2           element embedding failed
+        PDF_CONVERT_ERROR = -3             docx to pdf failed
+        LINK_DOWNLOAD_ERROR = -4           file link download failed
+        EXCEED_SIZE_ERROR = -5             file size exceed limit
+        EXCEED_TOKENS_ERROR = -6           exceed tokens limit
+        PAGE_PACKAGE_NOT_ENOUGH_ERROR = -9 page package not enough
+        PAGE_LIMIT_ERROR = -10             page limit error
+        TITLE_COMPLETE_ERROR = -11         complete title failed
+        READ_TMP_FILE_ERROR = -12          read tmp file error
+        OCR_PAGE_LIMIT_ERROR = -13         ocr page limit error
+        CONTENT_POLICY_ERROR = -14         content security check did not pass
+        CONTENT_DECODE_ERROR = -15         file content decode error
+        HTML_CONVERT_ERROR = -16           html convert error
+        HTML_EMPTY_BODY_ERROR = -17        content is empty
+        HTML_PARSE_ERROR = -18             html parse error
+        HTML_DOWNLOAD_ERROR = -19          html download error from website
+        PACKAGE_NOT_ENOUGH_ERROR = -25     package not enough
+        ```
+      operationId: Upload_Document_documents_website_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebsiteReq'
         required: true
       responses:
         "200":
@@ -525,10 +703,11 @@ paths:
         - Documents
       summary: Download Document
       description: |-
-        Download content of the document with pdf format, support CORS and range request.
+        Download content of the document, support CORS and range request.
 
         * If the document is of doc/docx format, then it's converted to pdf version, and the original version can't be downloaded.
         * If the document is of pdf format, it's recommended to use your local file to avoid unnecessary network traffic.
+        * If the document is of md/epub/txt/website format, then it's converted to html version, and the original version can't be downloaded.
       operationId: Download_Document_documents__upload_id__download_get
       parameters:
         - required: true
@@ -685,41 +864,74 @@ paths:
 
         **Response**:
 
-        structure is as follows:
+        if document is pdf/doc/docx format, structure is as follows:
 
-        ```json
-        {
-            "data": {
-                "answer": "answer to the question",
-                "id": question_id,
-                "source_info": [
-                    {
-                        # key: page number
-                        # value: rects
-                        '0': [[38.1063, 557.8058, 553.9003, 584.0043]]
-                    },
-                    {'1': [[38.0, 152.3994, 523.6151, 178.6392]], 'upload_id': 'xxxx'},
-                    {'0': [[38.0, 758.0623, 537.0082, 784.0]], 'upload_id': 'xxxx'},
-                    ...
-                ]
+            ```json
+            {
+                "data": {
+                    "answer": "answer to the question",
+                    "id": question_id,
+                    "source_info": [
+                        {
+                            # key: page number
+                            # value: rects
+                            '0': [[38.1063, 557.8058, 553.9003, 584.0043]]
+                        },
+                        {'1': [[38.0, 152.3994, 523.6151, 178.6392]], 'upload_id': 'xxxx'},
+                        {'0': [[38.0, 758.0623, 537.0082, 784.0]], 'upload_id': 'xxxx'},
+                        ...
+                    ]
+                }
             }
-        }
-        ```
-
-        * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables). For `detailed_citation` answer, the span tag chunk may be as follows:
-
-            ```
-            autobiography captured the pre-Nazi Europe[<span data-index="0">1</span>]
             ```
 
-            The tag attr `data-index` is the index of the source in `source_info` array, which is used to highlight the source of the previous answer sentences in your PDF viewer. The highlighting method is same as `source_info`, and just use slice of `source_info` array as parameter.
+        if document is md/epub/txt/website format, structure is as follows:
 
-        * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
+            ```json
+            {
+                "data": {
+                    "answer": "answer to the question",
+                    "id": question_id,
+                    "source_info": [
+                        {
+                        # key: element data-index
+                        # value: element xpath
+                        198: [{xpath: "/html/body/div/div[199]"}]
+                        },
+                        {
+                        "material": "", # selected text with HTML tags
+                        "indexes": [
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "focusNode": "div[1]/p[5]/text()[1]",
+                        "upload_id": "903d971d-8250-47cc-a649-4b6ca35032dc",
+                        "anchorNode": "div[1]/p[2]/text()[1]",
+                        "focusOffset": "225",
+                        "anchorOffset": "2"
+                    }
+                        ...
+                    ]
+                }
+            }
+            ```
 
-        **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
+            * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables). For `detailed_citation` answer, the span tag chunk may be as follows:
 
-        * `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list. So if the last chunk doesn't contain `source_info` attr, it means error occurred. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
-            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our PDFViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/Source) parameter.
+                ```
+                autobiography captured the pre-Nazi Europe[<span data-index="0">1</span>]
+                ```
+
+                The tag attr `data-index` is the index of the source in `source_info` array, which is used to highlight the source of the previous answer sentences in your PDF viewer. The highlighting method is same as `source_info`, and just use slice of `source_info` array as parameter.
+
+            * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
+
+            **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
+
+            * `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list. So if the last chunk doesn't contain `source_info` attr, it means error occurred. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
+                calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our DOCViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/Source) parameter.
       operationId: Ask_Question_questions_post
       requestBody:
         content:
@@ -843,7 +1055,11 @@ paths:
               "question": { # may be null
                 "max_count": 3000,
                 "used_count": 11
-              }
+              },
+              "documents_tokens": { # may be null
+                "max_count": 3000,
+                "used_count": 11
+              },
             }
           }
         }
@@ -914,6 +1130,8 @@ components:
       title: APIPackageInfoResp
       type: object
       properties:
+        page:
+          $ref: '#/components/schemas/PackageDataResp'
         question:
           $ref: '#/components/schemas/PackageDataResp'
         lite_page:
@@ -921,6 +1139,8 @@ components:
         basic_page:
           $ref: '#/components/schemas/PackageDataResp'
         elite_page:
+          $ref: '#/components/schemas/PackageDataResp'
+        documents_tokens:
           $ref: '#/components/schemas/PackageDataResp'
     APIUploadResp:
       title: APIUploadResp
@@ -956,7 +1176,7 @@ components:
           anyOf:
             - $ref: '#/components/schemas/UploadPackageType'
             - type: string
-          description: if provided, use this package(lite, basic, elite) to upload
+          description: if provided, use this package(lite, basic, elite) to upload, this parameter is only effective for PDF file. if upload file type is (md,epub,txt), this parameter will be ignore
           default: elite
         collection_id:
           title: Collection Id
@@ -1032,6 +1252,7 @@ components:
         - -17
         - -18
         - -19
+        - -25
       type: integer
       description: An enumeration.
     HTTPValidationError:
@@ -1043,6 +1264,50 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ValidationError'
+    HtmlSelectedMeta:
+      title: HtmlSelectedMeta
+      required:
+        - material
+        - indexes
+        - focusNode
+        - upload_id
+        - anchorNode
+        - focusOffset
+        - anchorOffset
+      type: object
+      properties:
+        material:
+          title: Material
+          type: string
+          description: Select the html node text
+        indexes:
+          title: Indexes
+          type: array
+          items:
+            type: integer
+          description: Select the collection of all data-index attributes of the html node
+        focusNode:
+          title: Focusnode
+          type: string
+          description: The Node in which the selection ends. Can return null if selection never existed in the document (for example, in an iframe that was never clicked on)
+        upload_id:
+          title: Upload Id
+          maxLength: 36
+          minLength: 36
+          type: string
+          description: Upload id
+        anchorNode:
+          title: Anchornode
+          type: string
+          description: The Node in which the selection begins. Can return null if selection never existed in the document (e.g., an iframe that was never clicked on)
+        focusOffset:
+          title: Focusoffset
+          type: integer
+          description: Number representing the offset of the selection's anchor within the focusNode. If focusNode is a text node, this is the number of characters within focusNode preceding the focus. If focusNode is an element, this is the number of child nodes of the focusNode preceding the focus
+        anchorOffset:
+          title: Anchoroffset
+          type: integer
+          description: Number representing the offset of the selection's anchor within the anchorNode. If anchorNode is a text node, this is the number of characters within anchorNode preceding the anchor. If anchorNode is an element, this is the number of child nodes of the anchorNode preceding the anchor
     InteractionType:
       title: InteractionType
       enum:
@@ -1117,9 +1382,10 @@ components:
           default: true
         selected_meta:
           title: Selected Meta
-          allOf:
+          anyOf:
             - $ref: '#/components/schemas/SelectedMeta'
-          description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK, and then filled with the document `upload_id`, when ask upon a collection, it's the sub document id of collection.
+            - $ref: '#/components/schemas/HtmlSelectedMeta'
+          description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our DOCViewerSDK, and then filled with the document `upload_id`, when ask upon a collection, it's the sub document id of collection.
         history:
           title: History
           type: array
@@ -1161,9 +1427,10 @@ components:
           default: true
         selected_meta:
           title: Selected Meta
-          allOf:
+          anyOf:
             - $ref: '#/components/schemas/SelectedMetaWithUploadId'
-          description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our PDFViewerSDK.
+            - $ref: '#/components/schemas/HtmlSelectedMeta'
+          description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our DOCViewerSDK.
         history:
           title: History
           type: array
@@ -1309,6 +1576,25 @@ components:
         type:
           title: Error Type
           type: string
+    WebsiteReq:
+      title: WebsiteReq
+      required:
+        - website
+      type: object
+      properties:
+        website:
+          title: Website
+          maxLength: 65536
+          minLength: 1
+          type: string
+          description: upload document by website url
+          format: uri
+        collection_id:
+          title: Collection Id
+          maxLength: 36
+          minLength: 36
+          type: string
+          description: if provided, add document to the collection, collection can be created by `POST /collections`
   securitySchemes:
     HTTPBearer:
       type: http
