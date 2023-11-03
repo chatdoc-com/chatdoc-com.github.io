@@ -174,6 +174,7 @@ info:
         **Usage Example:**
 
         ```js
+        // Please replace the URL with your own file URL.
         sdk.open({url: 'https://example.com/pdf-file.pdf'})
 
         // If you want to view other documents (such as .epub, .html, .txt, .md), you need to set the viewerType to `html`.
