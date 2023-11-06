@@ -1127,6 +1127,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/APIUploadResp'
+        error_msg:
+          $ref: '#/components/schemas/DocumentErrorMessage'
+        ocr_type:
+          $ref: '#/components/schemas/UploadOcrType'
     APIPackageInfoResp:
       title: APIPackageInfoResp
       type: object
@@ -1183,6 +1187,11 @@ components:
           title: Collection Id
           type: string
           description: if provided, add document to the collection, collection can be created by `POST /collections`
+        ocr:
+          allOf:
+            - $ref: '#/components/schemas/UploadOcrType'
+          description: if provided, use this OCR type to upload
+          default: disable
         file:
           title: File
           type: string
@@ -1217,6 +1226,22 @@ components:
           maxLength: 80
           minLength: 1
           type: string
+    DocumentErrorMessage:
+      title: DocumentErrorMessage
+      type: object
+      properties:
+        error_code:
+          title: Error Code
+          type: integer
+        error_msg:
+          title: Error Msg
+          type: string
+        page_num:
+          title: Page Num
+          type: integer
+        ocr_page_num:
+          title: Ocr Page Num
+          type: integer
     DocumentStatus:
       title: DocumentStatus
       enum:
@@ -1540,6 +1565,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PDFViewerRect'
+    UploadOcrType:
+      title: UploadOcrType
+      enum:
+        - disable
+        - auto
+        - force
+      type: string
+      description: OCR type enum.
     UploadPackageType:
       title: UploadPackageType
       enum:
