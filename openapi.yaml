@@ -175,10 +175,10 @@ info:
 
         ```js
         // Please replace the URL with your own file URL.
-        sdk.open({url: 'https://example.com/pdf-file.pdf'})
+        sdk.open({url: 'https://example.com/pdf-file.pdf', viewerType: 'pdf'})
 
         // If you want to view other documents (such as .epub, .html, .txt, .md), you need to set the viewerType to `html`.
-        sdk.open({url: 'https://example.com/document.txt', viewerType: ''html''})
+        sdk.open({url: 'https://example.com/document.txt', viewerType: 'html'})
         ```    
     4. **Add event listener**
 
