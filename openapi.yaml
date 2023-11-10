@@ -1061,6 +1061,10 @@ paths:
                 "max_count": 3000,
                 "used_count": 11
               },
+              "ocr_page": { # may be null
+                "max_count": 3000,
+                "used_count": 11
+              }
             }
           }
         }
@@ -1146,6 +1150,8 @@ components:
         elite_page:
           $ref: '#/components/schemas/PackageDataResp'
         documents_tokens:
+          $ref: '#/components/schemas/PackageDataResp'
+        ocr_page:
           $ref: '#/components/schemas/PackageDataResp'
     APIUploadResp:
       title: APIUploadResp
