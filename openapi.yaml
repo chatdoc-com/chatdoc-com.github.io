@@ -486,6 +486,10 @@ paths:
 
         * Uploading files consumes your pages quota, and uploading same files again will still consume quota.
         * We'll keep your uploaded file for one year. If you do not make another payment for the API after one year, the file will be permanently deleted.
+        * Usage instructions for the OCR field:
+            > OCR Pages Package must be used in conjunction with PDF Pages Package; both packages are deducted equally.
+            > Three parameters are available: defaults to disable, with optional values auto or force.
+            > When OCR is set to force, it allows OCR Pages Package usage for Word documents. However, for other document types like ePub and Markdown, it won't take effect.
 
         For reference, other statuses are as follows:
 
