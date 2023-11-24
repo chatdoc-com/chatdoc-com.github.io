@@ -871,72 +871,72 @@ paths:
 
         if document is pdf/doc/docx format, structure is as follows:
 
-            ```json
-            {
-                "data": {
-                    "answer": "answer to the question",
-                    "id": question_id,
-                    "source_info": [
-                        {
-                            # key: page number
-                            # value: rects
-                            '0': [[38.1063, 557.8058, 553.9003, 584.0043]]
-                        },
-                        {'1': [[38.0, 152.3994, 523.6151, 178.6392]], 'upload_id': 'xxxx'},
-                        {'0': [[38.0, 758.0623, 537.0082, 784.0]], 'upload_id': 'xxxx'},
-                        ...
-                    ]
-                }
+        ```json
+        {
+            "data": {
+                "answer": "answer to the question",
+                "id": question_id,
+                "source_info": [
+                    {
+                        # key: page number
+                        # value: rects
+                        '0': [[38.1063, 557.8058, 553.9003, 584.0043]]
+                    },
+                    {'1': [[38.0, 152.3994, 523.6151, 178.6392]], 'upload_id': 'xxxx'},
+                    {'0': [[38.0, 758.0623, 537.0082, 784.0]], 'upload_id': 'xxxx'},
+                    ...
+                ]
             }
-            ```
+        }
+        ```
 
         if document is md/epub/txt/website format, structure is as follows:
 
-            ```json
-            {
-                "data": {
-                    "answer": "answer to the question",
-                    "id": question_id,
-                    "source_info": [
-                        {
-                        # key: element data-index
-                        # value: element xpath
-                        198: [{xpath: "/html/body/div/div[199]"}]
-                        },
-                        {
-                        "material": "", # selected text with HTML tags
-                        "indexes": [
-                            3,
-                            4,
-                            5,
-                            6
-                        ],
-                        "focusNode": "div[1]/p[5]/text()[1]",
-                        "upload_id": "903d971d-8250-47cc-a649-4b6ca35032dc",
-                        "anchorNode": "div[1]/p[2]/text()[1]",
-                        "focusOffset": "225",
-                        "anchorOffset": "2"
-                    }
-                        ...
-                    ]
+        ```json
+        {
+            "data": {
+                "answer": "answer to the question",
+                "id": question_id,
+                "source_info": [
+                    {
+                    # key: element data-index
+                    # value: element xpath
+                    198: [{xpath: "/html/body/div/div[199]"}]
+                    },
+                    {
+                    "material": "", # selected text with HTML tags
+                    "indexes": [
+                        3,
+                        4,
+                        5,
+                        6
+                    ],
+                    "focusNode": "div[1]/p[5]/text()[1]",
+                    "upload_id": "903d971d-8250-47cc-a649-4b6ca35032dc",
+                    "anchorNode": "div[1]/p[2]/text()[1]",
+                    "focusOffset": "225",
+                    "anchorOffset": "2"
                 }
+                    ...
+                ]
             }
+        }
+        ```
+
+        * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables). For `detailed_citation` answer, the span tag chunk may be as follows:
+
+            ```
+            autobiography captured the pre-Nazi Europe[<span data-index="0">1</span>]
             ```
 
-            * `answer`: chunks of answer, may be Markdown format to support rich text, for example: [Tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables). For `detailed_citation` answer, the span tag chunk may be as follows:
+            The tag attr `data-index` is the index of the source in `source_info` array, which is used to highlight the source of the previous answer sentences in your PDF viewer. The highlighting method is same as `source_info`, and just use slice of `source_info` array as parameter.
 
-                ```
-                autobiography captured the pre-Nazi Europe[<span data-index="0">1</span>]
-                ```
+        * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
 
-                The tag attr `data-index` is the index of the source in `source_info` array, which is used to highlight the source of the previous answer sentences in your PDF viewer. The highlighting method is same as `source_info`, and just use slice of `source_info` array as parameter.
+        **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
 
-            * `id`: id of the question, you can use it to `GET /questions/{question_id}` later.
-
-            **Please note**: you should store `id` in your database, because we don't have a `GET /questions/list` API to list all questions for now.
-
-            * `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list. So if the last chunk doesn't contain `source_info` attr, it means error occurred. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
-                calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our DOCViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/Source) parameter.
+        * `source_info`: only responses in the last chunk of server-sent events mode, may be an empty list. So if the last chunk doesn't contain `source_info` attr, it means error occurred. Page number may not be ordered, you can use this information to highlight the source of specific `upload_id` document of the answer in your PDF viewer, by
+            calling [`drawSources`](/#section/ChatDOC-Document-Viewer/Methods) method of our DOCViewerSDK, and converting `source_info` to [`Source`](/#section/ChatDOC-Document-Viewer/Source) parameter.
       operationId: Ask_Question_questions_post
       requestBody:
         content:
