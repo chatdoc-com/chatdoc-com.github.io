@@ -1068,6 +1068,10 @@ paths:
               "ocr_page": { # may be null
                 "max_count": 3000,
                 "used_count": 11
+              },
+              "gpt4_question": { # may be null
+                "max_count": 3000,
+                "used_count": 11
               }
             }
           }
@@ -1161,6 +1165,8 @@ components:
         elite_page:
           $ref: '#/components/schemas/PackageDataResp'
         documents_tokens:
+          $ref: '#/components/schemas/PackageDataResp'
+        gpt4_question:
           $ref: '#/components/schemas/PackageDataResp'
         ocr_page:
           $ref: '#/components/schemas/PackageDataResp'
