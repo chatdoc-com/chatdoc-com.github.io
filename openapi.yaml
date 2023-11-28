@@ -1085,6 +1085,13 @@ paths:
         - HTTPBearer: []
 components:
   schemas:
+    APIAIModelEnum:
+      title: APIAIModelEnum
+      enum:
+        - gpt-3.5-turbo
+        - gpt-4
+      type: string
+      description: Supported LLM enumeration.
     APICloneReq:
       title: APICloneReq
       required:
@@ -1443,6 +1450,10 @@ components:
           title: Language
           type: string
           description: preferred language of answer to the question, if not provided, we will try to detect the language automatically, which is flexible and also works well. You'd better use [ISO language name](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes?useskin=vector), such as English, Chinese. But we can't promise, when AI can't answer your question well, it generally answers in English.
+        model_type:
+          allOf:
+            - $ref: '#/components/schemas/APIAIModelEnum'
+          default: gpt-3.5-turbo
     QuestionReqWithUploadIds:
       title: QuestionReqWithUploadIds
       required:
@@ -1488,6 +1499,10 @@ components:
           title: Language
           type: string
           description: preferred language of answer to the question, if not provided, we will try to detect the language automatically, which is flexible and also works well. You'd better use [ISO language name](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes?useskin=vector), such as English, Chinese. But we can't promise, when AI can't answer your question well, it generally answers in English.
+        model_type:
+          allOf:
+            - $ref: '#/components/schemas/APIAIModelEnum'
+          default: gpt-3.5-turbo
         upload_ids:
           title: Upload Ids
           maxItems: 30
@@ -1507,6 +1522,7 @@ components:
         - search_entire_doc
         - detailed_citation
         - id
+        - model_type
       type: object
       properties:
         question:
@@ -1533,6 +1549,8 @@ components:
         id:
           title: Id
           type: integer
+        model_type:
+          $ref: '#/components/schemas/APIAIModelEnum'
     SelectedMeta:
       title: SelectedMeta
       required:
