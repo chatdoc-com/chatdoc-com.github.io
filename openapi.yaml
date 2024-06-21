@@ -46,7 +46,7 @@ info:
           "status": "ok",
           "data": {
             "id": 160,
-            "name": "Bo",
+            "name": "Sube",
             ...
           }
         }
@@ -97,7 +97,7 @@ info:
     Different keys of the same user are interoperable of each others' resource, they share common permission of the user.
 
     **Please note**: keep your API keys confidential, and do not put them in any client code, including browser html and mobile client, API interactions should be done on the server side.
-  
+
     # Quick Start
     To use the **ChatDOC API**, you have two options:
     - Directly call the [ChatDOC RESTful API](#section/ChatDOC-RESTful-API) from your own service and custom the UI by yourself.
@@ -296,13 +296,13 @@ info:
     - **material:** `string` - The selected text or HTML content.
 
     - **indexes:** `number[]` - An array of indexes representing the selected text node index in the document.
-   
+
     - **focusNode**: `string` - A XPath string of the selection's focusNode in the document.
     
     - **focusOffset**: `number` - The number of characters that the selection's focus is offset within the focusNode.
-   
+
     - **anchorNode**: `string` - A XPath string of the selection's anchorNode in the document.
-   
+
     - **anchorOffset**: `number` - The number of characters that the selection's anchor is offset within anchorNode.
 
     **Usage Example:**
@@ -529,7 +529,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Body_Upload_Document_documents_upload_post'
+              $ref: "#/components/schemas/Body_Upload_Document_documents_upload_post"
         required: true
       responses:
         "200":
@@ -537,13 +537,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/APIUploadResp'
+                $ref: "#/components/schemas/APIUploadResp"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
   /documents/website:
@@ -617,7 +617,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WebsiteReq'
+              $ref: "#/components/schemas/WebsiteReq"
         required: true
       responses:
         "200":
@@ -625,13 +625,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/APIUploadResp'
+                $ref: "#/components/schemas/APIUploadResp"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
   /documents/{upload_id}:
@@ -666,13 +666,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/APICollectionOrUploadResp'
+                $ref: "#/components/schemas/APICollectionOrUploadResp"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
     delete:
@@ -699,7 +699,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
   /documents/{upload_id}/download:
@@ -732,7 +732,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
   /collections:
@@ -760,7 +760,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CollectionReq'
+              $ref: "#/components/schemas/CollectionReq"
         required: true
       responses:
         "200":
@@ -768,13 +768,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/APIUploadResp'
+                $ref: "#/components/schemas/APIUploadResp"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
   /collections/clone-documents:
@@ -791,7 +791,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/APICloneReq'
+              $ref: "#/components/schemas/APICloneReq"
         required: true
       responses:
         "200":
@@ -804,7 +804,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
   /questions/suggested:
@@ -854,7 +854,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
   /questions:
@@ -942,7 +942,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/QuestionReq'
+              $ref: "#/components/schemas/QuestionReq"
         required: true
       responses:
         "200":
@@ -955,7 +955,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
   /questions/{question_id}:
@@ -989,13 +989,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QuestionResp'
+                $ref: "#/components/schemas/QuestionResp"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
   /questions/multi-documents:
@@ -1016,7 +1016,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/QuestionReqWithUploadIds'
+              $ref: "#/components/schemas/QuestionReqWithUploadIds"
         required: true
       responses:
         "200":
@@ -1029,7 +1029,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+                $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
   /users/quota:
@@ -1072,6 +1072,10 @@ paths:
               "gpt4_question": { # may be null
                 "max_count": 3000,
                 "used_count": 11
+              },
+              "gpt4o_question": { # may be null
+                "max_count": 3000,
+                "used_count": 11
               }
             }
           }
@@ -1084,7 +1088,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PackageQuotaResp'
+                $ref: "#/components/schemas/PackageQuotaResp"
       security:
         - HTTPBearer: []
 components:
@@ -1094,6 +1098,7 @@ components:
       enum:
         - gpt-3.5-turbo
         - gpt-4
+        - gpt-4o
       type: string
       description: Supported LLM enumeration.
     APICloneReq:
@@ -1132,7 +1137,7 @@ components:
           title: Id
           type: string
         status:
-          $ref: '#/components/schemas/DocumentStatus'
+          $ref: "#/components/schemas/DocumentStatus"
         name:
           title: Name
           type: string
@@ -1140,36 +1145,38 @@ components:
           title: Created At
           type: integer
         type:
-          $ref: '#/components/schemas/UploadType'
+          $ref: "#/components/schemas/UploadType"
         documents:
           title: Documents
           type: array
           items:
-            $ref: '#/components/schemas/APIUploadResp'
+            $ref: "#/components/schemas/APIUploadResp"
         error_msg:
-          $ref: '#/components/schemas/DocumentErrorMessage'
+          $ref: "#/components/schemas/DocumentErrorMessage"
         ocr_type:
-          $ref: '#/components/schemas/UploadOcrType'
+          $ref: "#/components/schemas/UploadOcrType"
     APIPackageInfoResp:
       title: APIPackageInfoResp
       type: object
       properties:
         page:
-          $ref: '#/components/schemas/PackageDataResp'
+          $ref: "#/components/schemas/PackageDataResp"
         question:
-          $ref: '#/components/schemas/PackageDataResp'
+          $ref: "#/components/schemas/PackageDataResp"
         lite_page:
-          $ref: '#/components/schemas/PackageDataResp'
+          $ref: "#/components/schemas/PackageDataResp"
         basic_page:
-          $ref: '#/components/schemas/PackageDataResp'
+          $ref: "#/components/schemas/PackageDataResp"
         elite_page:
-          $ref: '#/components/schemas/PackageDataResp'
+          $ref: "#/components/schemas/PackageDataResp"
         documents_tokens:
-          $ref: '#/components/schemas/PackageDataResp'
+          $ref: "#/components/schemas/PackageDataResp"
         gpt4_question:
-          $ref: '#/components/schemas/PackageDataResp'
+          $ref: "#/components/schemas/PackageDataResp"
+        gpt4o_question:
+          $ref: "#/components/schemas/PackageDataResp"
         ocr_page:
-          $ref: '#/components/schemas/PackageDataResp'
+          $ref: "#/components/schemas/PackageDataResp"
     APIUploadResp:
       title: APIUploadResp
       required:
@@ -1184,7 +1191,7 @@ components:
           title: Id
           type: string
         status:
-          $ref: '#/components/schemas/DocumentStatus'
+          $ref: "#/components/schemas/DocumentStatus"
         name:
           title: Name
           type: string
@@ -1192,7 +1199,7 @@ components:
           title: Created At
           type: integer
         type:
-          $ref: '#/components/schemas/UploadType'
+          $ref: "#/components/schemas/UploadType"
     Body_Upload_Document_documents_upload_post:
       title: Body_Upload_Document_documents_upload_post
       required:
@@ -1202,7 +1209,7 @@ components:
         package_type:
           title: Package Type
           anyOf:
-            - $ref: '#/components/schemas/UploadPackageType'
+            - $ref: "#/components/schemas/UploadPackageType"
             - type: string
           description: if provided, use this package(lite, basic, elite) to upload, this parameter is only effective for PDF file. if upload file type is (md,epub,txt), this parameter will be ignore
           default: elite
@@ -1212,7 +1219,7 @@ components:
           description: if provided, add document to the collection, collection can be created by `POST /collections`
         ocr:
           allOf:
-            - $ref: '#/components/schemas/UploadOcrType'
+            - $ref: "#/components/schemas/UploadOcrType"
           description: if provided, use this OCR type to upload
           default: disable
         file:
@@ -1227,7 +1234,7 @@ components:
       type: object
       properties:
         role:
-          $ref: '#/components/schemas/ChatRoleEnum'
+          $ref: "#/components/schemas/ChatRoleEnum"
         content:
           title: Content
           type: string
@@ -1312,7 +1319,7 @@ components:
           title: Detail
           type: array
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: "#/components/schemas/ValidationError"
     HtmlSelectedMeta:
       title: HtmlSelectedMeta
       required:
@@ -1404,7 +1411,7 @@ components:
       type: object
       properties:
         package:
-          $ref: '#/components/schemas/APIPackageInfoResp'
+          $ref: "#/components/schemas/APIPackageInfoResp"
     QuestionReq:
       title: QuestionReq
       required:
@@ -1432,20 +1439,20 @@ components:
         selected_meta:
           title: Selected Meta
           anyOf:
-            - $ref: '#/components/schemas/SelectedMeta'
-            - $ref: '#/components/schemas/HtmlSelectedMeta'
+            - $ref: "#/components/schemas/SelectedMeta"
+            - $ref: "#/components/schemas/HtmlSelectedMeta"
           description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our DOCViewerSDK, and then filled with the document `upload_id`, when ask upon a collection, it's the sub document id of collection.
         history:
           title: History
           type: array
           items:
-            $ref: '#/components/schemas/ChatMessage'
+            $ref: "#/components/schemas/ChatMessage"
           description: "chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182), this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api). `history` is question and answer pairs, which is a list of `ChatMessage` objects. The max input tokens of `history`, `selected_meta.material` and `question` is 8000, which is a little less than OpenAI's limit of [Embedding models](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings). Sample parameter is as follows:\n\n        [\n          {\"role\": \"user\", \"content\": \"Who...\"},\n          {\"role\": \"assistant\", \"content\": \"The...\"},\n          {\"role\": \"user\", \"content\": \"Where...\"}\n          {\"role\": \"assistant\", \"content\": \"The...\"},\n        ]\n        "
           default: []
         search_entire_doc:
           title: Search Entire Doc
           type: boolean
-          description: 'if true: limit responses to current file''s information, else: responses go freely with knowledge of our AI'
+          description: "if true: limit responses to current file's information, else: responses go freely with knowledge of our AI"
           default: true
         detailed_citation:
           title: Detailed Citation
@@ -1458,7 +1465,7 @@ components:
           description: preferred language of answer to the question, if not provided, we will try to detect the language automatically, which is flexible and also works well. You'd better use [ISO language name](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes?useskin=vector), such as English, Chinese. But we can't promise, when AI can't answer your question well, it generally answers in English.
         model_type:
           allOf:
-            - $ref: '#/components/schemas/APIAIModelEnum'
+            - $ref: "#/components/schemas/APIAIModelEnum"
           default: gpt-3.5-turbo
     QuestionReqWithUploadIds:
       title: QuestionReqWithUploadIds
@@ -1481,20 +1488,20 @@ components:
         selected_meta:
           title: Selected Meta
           anyOf:
-            - $ref: '#/components/schemas/SelectedMetaWithUploadId'
-            - $ref: '#/components/schemas/HtmlSelectedMeta'
+            - $ref: "#/components/schemas/SelectedMetaWithUploadId"
+            - $ref: "#/components/schemas/HtmlSelectedMeta"
           description: When use [**Ask About Selected Text**](https://chatdoc.notion.site/4-Ways-to-Make-Queries-3d8d6d36060b4c7eb1d69e6a32405dd7), this field is acquired from [EVENT_TYPES.CHAT_ICON_CLICKED](/#section/ChatDOC-Document-Viewer/EVENT_TYPES) of our DOCViewerSDK.
         history:
           title: History
           type: array
           items:
-            $ref: '#/components/schemas/ChatMessage'
+            $ref: "#/components/schemas/ChatMessage"
           description: "chat history, used for [Threaded Chat](https://chatdoc.notion.site/2-Ways-to-Dive-Deeper-1f2e3a8705e744a6872da0d39254f182), this parameter simulates [OpenAI' API](https://platform.openai.com/docs/guides/gpt/chat-completions-api). `history` is question and answer pairs, which is a list of `ChatMessage` objects. The max input tokens of `history`, `selected_meta.material` and `question` is 8000, which is a little less than OpenAI's limit of [Embedding models](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings). Sample parameter is as follows:\n\n        [\n          {\"role\": \"user\", \"content\": \"Who...\"},\n          {\"role\": \"assistant\", \"content\": \"The...\"},\n          {\"role\": \"user\", \"content\": \"Where...\"}\n          {\"role\": \"assistant\", \"content\": \"The...\"},\n        ]\n        "
           default: []
         search_entire_doc:
           title: Search Entire Doc
           type: boolean
-          description: 'if true: limit responses to current file''s information, else: responses go freely with knowledge of our AI'
+          description: "if true: limit responses to current file's information, else: responses go freely with knowledge of our AI"
           default: true
         detailed_citation:
           title: Detailed Citation
@@ -1507,7 +1514,7 @@ components:
           description: preferred language of answer to the question, if not provided, we will try to detect the language automatically, which is flexible and also works well. You'd better use [ISO language name](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes?useskin=vector), such as English, Chinese. But we can't promise, when AI can't answer your question well, it generally answers in English.
         model_type:
           allOf:
-            - $ref: '#/components/schemas/APIAIModelEnum'
+            - $ref: "#/components/schemas/APIAIModelEnum"
           default: gpt-3.5-turbo
         upload_ids:
           title: Upload Ids
@@ -1541,7 +1548,7 @@ components:
           title: Created At
           type: integer
         type:
-          $ref: '#/components/schemas/InteractionType'
+          $ref: "#/components/schemas/InteractionType"
         source_info:
           title: Source Info
           type: array
@@ -1556,7 +1563,7 @@ components:
           title: Id
           type: integer
         model_type:
-          $ref: '#/components/schemas/APIAIModelEnum'
+          $ref: "#/components/schemas/APIAIModelEnum"
     SelectedMeta:
       title: SelectedMeta
       required:
@@ -1578,7 +1585,7 @@ components:
           minItems: 1
           type: array
           items:
-            $ref: '#/components/schemas/PDFViewerRect'
+            $ref: "#/components/schemas/PDFViewerRect"
     SelectedMetaWithUploadId:
       title: SelectedMetaWithUploadId
       required:
@@ -1598,7 +1605,7 @@ components:
           minItems: 1
           type: array
           items:
-            $ref: '#/components/schemas/PDFViewerRect'
+            $ref: "#/components/schemas/PDFViewerRect"
     UploadOcrType:
       title: UploadOcrType
       enum:
