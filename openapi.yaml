@@ -171,6 +171,8 @@ info:
 
         Use the `open` method of `@chatdocai/chatdoc-sdk` to open the document.
 
+        The `@chatdocai/chatdoc-sdk` cannot directly display documents other than PDFs. Therefore, you need to use the [Upload API](#tag/Documents/operation/Upload_Document_documents_upload_post) to upload your file. After the upload is complete, you'll receive an upload ID, which you can use to construct the [Download URL](#tag/Documents/operation/Download_Document_documents__upload_id__download_get). Pass this URL into the sdk.open method.
+
         **Usage Example:**
 
         ```js
@@ -178,7 +180,7 @@ info:
         sdk.open({url: 'https://example.com/pdf-file.pdf', viewerType: 'pdf'})
 
         // If you want to view other documents (such as .epub, .html, .txt, .md), you need to set the viewerType to `html`.
-        sdk.open({url: 'https://example.com/document.txt', viewerType: 'html'})
+        sdk.open({url: `https://your-service.com/documents/${uploadId}/download`, viewerType: 'html'})
         ```    
     4. **Add event listener**
 
