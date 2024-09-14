@@ -1096,8 +1096,7 @@ components:
     APIAIModelEnum:
       title: APIAIModelEnum
       enum:
-        - gpt-4o-mini
-        - gpt-3.5-turbo
+        - default
         - gpt-4
         - gpt-4o
       type: string
@@ -1467,7 +1466,7 @@ components:
         model_type:
           allOf:
             - $ref: "#/components/schemas/APIAIModelEnum"
-          default: gpt-4o-mini
+          default: default
     QuestionReqWithUploadIds:
       title: QuestionReqWithUploadIds
       required:
@@ -1516,7 +1515,7 @@ components:
         model_type:
           allOf:
             - $ref: "#/components/schemas/APIAIModelEnum"
-          default: gpt-4o-mini
+          default: default
         upload_ids:
           title: Upload Ids
           maxItems: 30
