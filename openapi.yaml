@@ -1097,12 +1097,11 @@ paths:
         - PDF Parser
       summary: Pdf Parser
       description: |-
-        Get pdf parser result from document
-            only support PDF file
+        Get pdf parser result from document, only support PDF file
         
-            **Response**
+        **Response**
         
-            * Page type:
+        * Page type:
 
             | parameter   | description |
             |--------|------|
@@ -1112,196 +1111,195 @@ paths:
             | PAGE_HEADER  | element type: page header  |
             | PAGE_FOOTER  | element type: page footer  |
 
-            * Response example:
-            ```json
-            {
-            "status": "ok",
-            "data": {
-                "id": "cf598f49-a3ec-4dd1-9d4c-bd4f4e52b535",               // element upload id
-                "name": "xxxxxx.pdf",                                       // element name
-                "page_type": "page",
-                "ocr_type": "auto",
-                "create_time": 1727322676,
-                "data": [
-                    {
-                        "page": 0,                                          // page number
-                        "content": {                                        // document page parser result
-                            "page": 0,
-                            "text": "xxxxxxxxxxxxxxxxx",                    // page text content
-                            "type": "PARAGRAPH_2",                          // page element type，paragraph
-                            "index": 0,                                     // element index
-                            "outline": [                                    // element outline. [Left, Top, Right, Bottom]
-                                53.1779,                                    // Left
-                                46.626,                                     // Top
-                                560.9923,                                   // Right
-                                67.7836                                     // Bottom
-                            ],
-                            "position": [                                   // Position
-                                0,
-                                0
-                            ],
-                            "rotation": 0,
-                            "syllabus": -1,                                 // is syllabus
-                            "continued": false,
-                            "outline_score": 0.02282804250717163,
-                            "page_merged_paragraph": null
-                        }
-                    },
-                    {
+        * Response example:
+        ```json
+        {
+        "status": "ok",
+        "data": {
+            "id": "cf598f49-a3ec-4dd1-9d4c-bd4f4e52b535",               // element upload id
+            "name": "xxxxxx.pdf",                                       // element name
+            "page_type": "page",
+            "ocr_type": "auto",
+            "create_time": 1727322676,
+            "data": [
+                {
+                    "page": 0,                                          // page number
+                    "content": {                                        // document page parser result
+                        "page": 0,
+                        "text": "xxxxxxxxxxxxxxxxx",                    // page text content
+                        "type": "PARAGRAPH_2",                          // page element type，paragraph
+                        "index": 0,                                     // element index
+                        "outline": [                                    // element outline. [Left, Top, Right, Bottom]
+                            53.1779,                                    // Left
+                            46.626,                                     // Top
+                            560.9923,                                   // Right
+                            67.7836                                     // Bottom
+                        ],
+                        "position": [                                   // Position
+                            0,
+                            0
+                        ],
+                        "rotation": 0,
+                        "syllabus": -1,                                 // is syllabus
+                        "continued": false,
+                        "outline_score": 0.02282804250717163,
+                        "page_merged_paragraph": null
+                    }
+                },
+                {
+                    "page": 1,
+                    "content": {
                         "page": 1,
-                        "content": {
-                            "page": 1,
-                            "type": "IMAGE",                                // page element type, image
-                            "index": 21,
-                            "outline": [
-                                70,
-                                244,
-                                273,
-                                457
+                        "type": "IMAGE",                                // page element type, image
+                        "index": 21,
+                        "outline": [
+                            70,
+                            244,
+                            273,
+                            457
+                        ],
+                        "position": [
+                            1,
+                            0
+                        ],
+                        "rotation": 0,
+                        "syllabus": 17,
+                        "outline_score": 1
+                    }
+                },
+                {
+                    "page": 1,
+                    "content": {
+                        "page": 6,
+                        "type": "TABLE",                                // page element type, table
+                        "grid": {
+                            "rows": [
+                                20.976999999999975,
+                                40.51164999999992
                             ],
-                            "position": [
-                                1,
-                                0
-                            ],
-                            "rotation": 0,
-                            "syllabus": 17,
-                            "outline_score": 1
-                        }
-                    },
-                    {
-                        "page": 1,
-                        "content": {
-                            "page": 6,
-                            "type": "TABLE",                                // page element type, table
-                            "grid": {
-                                "rows": [
-                                    20.976999999999975,
-                                    40.51164999999992
-                                ],
-                                "columns": [
-                                    78.6737,
-                                    160.49965,
-                                    242.2957,
-                                    324.11170000000004
-                                ]
+                            "columns": [
+                                78.6737,
+                                160.49965,
+                                242.2957,
+                                324.11170000000004
+                            ]
+                        },
+                        "cells": {                                      // table cell info
+                            "0_0": {                                    // cell coordinate, x_y
+                                "text": "财务指标"
                             },
-                            "cells": {                                      // table cell info
-                                "0_0": {                                    // cell coordinate, x_y
-                                    "text": "财务指标"
+                            ...
+                        },
+                        "index": 85,
+                        "title": "xxxxx",                               // table title
+                        "merged": [],
+                        "outline": [
+                            61.7908,
+                            706.1276,
+                            468.4481,
+                            766.6573
+                        ],
+                        "position": null,
+                        "syllabus": 74,
+                        "continued": true,
+                        "docx_meta": {
+                            "xpath": "/w:document[1]/w:body[1]/w:tbl[5]"
+                        },
+                        "title_index": 84,
+                        "combo_table_idx": 2,
+                        "page_merged_table": {                          // table merged info
+                            "cells_idx": {
+                                "85": {
+                                    "0_0": "0_0",
+                                    "0_1": "0_1",
+                                    ...
                                 },
-                                ...
-                            },
-                            "index": 85,
-                            "title": "xxxxx",                               // table title
-                            "merged": [],
-                            "outline": [
-                                61.7908,
-                                706.1276,
-                                468.4481,
-                                766.6573
-                            ],
-                            "position": null,
-                            "syllabus": 74,
-                            "continued": true,
-                            "docx_meta": {
-                                "xpath": "/w:document[1]/w:body[1]/w:tbl[5]"
-                            },
-                            "title_index": 84,
-                            "combo_table_idx": 2,
-                            "page_merged_table": {                          // table merged info
-                                "cells_idx": {
-                                    "85": {
-                                        "0_0": "0_0",
-                                        "0_1": "0_1",
-                                        ...
-                                    },
-                                    "86": {
-                                        "3_0": "0_0",
-                                        "3_1": "0_1",
-                                        ...
-                                    }
+                                "86": {
+                                    "3_0": "0_0",
+                                    "3_1": "0_1",
+                                    ...
                                 }
                             }
                         }
-                    },
-                    {
-                        "page": 1,
-                        "text": "xxxxxx",                                   // page header text
-                        "type": "PAGE_HEADER",                              // page type: page header
-                        "chars": [                                          // page header chars info
-                            {
-                                "box": [                                    // char box
-                                    108.59,                                 // char left
-                                    30.26,                                  // char top
-                                    113.93,                                 // char right
-                                    36.1779                                 // char bottom
-                                ],
-                                "page": 1,                                  // page index
-                                "text": "P"                                 // char text
-                            },
-                            {
-                                "box": [
-                                    113.9,
-                                    32.23,
-                                    118.61,
-                                    36.78
-                                ],
-                                "page": 1,
-                                "text": "u"
-                            },
-                           ...
-                        ],
-                        "index": 11,
-                        "outline": [
-                            108.58999633789062,
-                            29.764999389648438,
-                            292.90500259399414,
-                            38.920000076293945
-                        ],
-                        "position": [
-                            0,
-                            0
-                        ],
-                        "rotation": 0.08139999955892563,
-                        "syllabus": 0,
-                        "outline_score": 0.005198657512664795
-                    },
-                    {
-                        "page": 2,
-                        "text": "3",
-                        "type": "PAGE_FOOTER",                              // page type: page footer
-                        "chars": [
-                            {
-                                "box": [
-                                    303.73,
-                                    752.73,
-                                    307.5,
-                                    759.5
-                                ],
-                                "page": 2,
-                                "text": "3"
-                            }
-                        ],
-                        "index": 32,
-                        "outline": [
-                            303.7250061035156,
-                            752.7349853515625,
-                            307.50000619888306,
-                            759.0
-                        ],
-                        "position": [
-                            0,
-                            0
-                        ],
-                        "rotation": 0.0,
-                        "syllabus": 6,
-                        "outline_score": 0.04728192090988159
-                    },
-                    ...
-                ]
-            }
+                    }
+                },
+                {
+                    "page": 1,
+                    "text": "xxxxxx",                                   // page header text
+                    "type": "PAGE_HEADER",                              // page type: page header
+                    "chars": [                                          // page header chars info
+                        {
+                            "box": [                                    // char box
+                                108.59,                                 // char left
+                                30.26,                                  // char top
+                                113.93,                                 // char right
+                                36.1779                                 // char bottom
+                            ],
+                            "page": 1,                                  // page index
+                            "text": "P"                                 // char text
+                        },
+                        {
+                            "box": [
+                                113.9,
+                                32.23,
+                                118.61,
+                                36.78
+                            ],
+                            "page": 1,
+                            "text": "u"
+                        },
+                       ...
+                    ],
+                    "index": 11,
+                    "outline": [
+                        108.58999633789062,
+                        29.764999389648438,
+                        292.90500259399414,
+                        38.920000076293945
+                    ],
+                    "position": [
+                        0,
+                        0
+                    ],
+                    "rotation": 0.08139999955892563,
+                    "syllabus": 0,
+                    "outline_score": 0.005198657512664795
+                },
+                {
+                    "page": 2,
+                    "text": "3",
+                    "type": "PAGE_FOOTER",                              // page type: page footer
+                    "chars": [
+                        {
+                            "box": [
+                                303.73,
+                                752.73,
+                                307.5,
+                                759.5
+                            ],
+                            "page": 2,
+                            "text": "3"
+                        }
+                    ],
+                    "index": 32,
+                    "outline": [
+                        303.7250061035156,
+                        752.7349853515625,
+                        307.50000619888306,
+                        759.0
+                    ],
+                    "position": [
+                        0,
+                        0
+                    ],
+                    "rotation": 0.0,
+                    "syllabus": 6,
+                    "outline_score": 0.04728192090988159
+                },
+                ...
+            ]
         }
-            ```
+        ```
       operationId: PDF_Parser_pdf_parser_post
       requestBody:
         content:
