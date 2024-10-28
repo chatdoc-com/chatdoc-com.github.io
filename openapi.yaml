@@ -1032,65 +1032,6 @@ paths:
                 $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
-  /users/quota:
-    get:
-      tags:
-        - Users
-      summary: Get Quota
-      description: |-
-        Get quota of not expired package
-
-        Response example:
-        ```json
-        {
-          "data": {
-            "package": { # may be null
-              "basic_page": { # may be null
-                "max_count": 3000,
-                "used_count": 1044
-              },
-              "elite_page": { # may be null
-                "max_count": 3000,
-                "used_count": 1045
-              },
-              "lite_page": { # may be null
-                "max_count": 3000,
-                "used_count": 1046
-              },
-              "question": { # may be null
-                "max_count": 3000,
-                "used_count": 11
-              },
-              "documents_tokens": { # may be null
-                "max_count": 3000,
-                "used_count": 11
-              },
-              "ocr_page": { # may be null
-                "max_count": 3000,
-                "used_count": 11
-              },
-              "gpt4_question": { # may be null
-                "max_count": 3000,
-                "used_count": 11
-              },
-              "gpt4o_question": { # may be null
-                "max_count": 3000,
-                "used_count": 11
-              }
-            }
-          }
-        }
-        ```
-      operationId: get_quota_users_quota_get
-      responses:
-        "200":
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PackageQuotaResp"
-      security:
-        - HTTPBearer: []
   /pdf_parser:
     post:
       tags:
@@ -1320,6 +1261,65 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - HTTPBearer: []
+  /users/quota:
+    get:
+      tags:
+        - Users
+      summary: Get Quota
+      description: |-
+        Get quota of not expired package
+
+        Response example:
+        ```json
+        {
+          "data": {
+            "package": { # may be null
+              "basic_page": { # may be null
+                "max_count": 3000,
+                "used_count": 1044
+              },
+              "elite_page": { # may be null
+                "max_count": 3000,
+                "used_count": 1045
+              },
+              "lite_page": { # may be null
+                "max_count": 3000,
+                "used_count": 1046
+              },
+              "question": { # may be null
+                "max_count": 3000,
+                "used_count": 11
+              },
+              "documents_tokens": { # may be null
+                "max_count": 3000,
+                "used_count": 11
+              },
+              "ocr_page": { # may be null
+                "max_count": 3000,
+                "used_count": 11
+              },
+              "gpt4_question": { # may be null
+                "max_count": 3000,
+                "used_count": 11
+              },
+              "gpt4o_question": { # may be null
+                "max_count": 3000,
+                "used_count": 11
+              }
+            }
+          }
+        }
+        ```
+      operationId: get_quota_users_quota_get
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PackageQuotaResp"
       security:
         - HTTPBearer: []
 components:
