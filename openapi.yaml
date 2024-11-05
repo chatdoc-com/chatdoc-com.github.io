@@ -1046,200 +1046,229 @@ paths:
 
             | parameter   | description |
             |--------|------|
-            | PARAGRAPH_1/PARAGRAPH_2  | element type: paragraph   |
-            | TABLE   |  element type: table  |
-            | MAGE/FIGURE  | element type: image  |
-            | PAGE_HEADER  | element type: page header  |
-            | PAGE_FOOTER  | element type: page footer  |
+            | paragraph  | element type: paragraph   |
+            | table   |  element type: table  |
+            | image  | element type: image  |
+            | shape  | element type: shape  |
+            | figure  | element type: figure  |
+            | algorithm  | element type: algorithm  |
+            | page_header  | element type: page header  |
+            | page_footer | element type: page footer  |
 
         * Response example:
         ```json
         {
-        "status": "ok",
-        "data": {
-            "id": "cf598f49-a3ec-4dd1-9d4c-bd4f4e52b535",               // element upload id
-            "name": "xxxxxx.pdf",                                       // element name
-            "page_type": "page",
-            "ocr_type": "auto",
-            "create_time": 1727322676,
-            "data": [
-                {
-                    "page": 0,                                          // page number
-                    "content": {                                        // document page parser result
-                        "page": 0,
-                        "text": "xxxxxxxxxxxxxxxxx",                    // page text content
-                        "type": "PARAGRAPH_2",                          // page element type，paragraph
-                        "index": 0,                                     // element index
-                        "outline": [                                    // element outline. [Left, Top, Right, Bottom]
-                            53.1779,                                    // Left
-                            46.626,                                     // Top
-                            560.9923,                                   // Right
-                            67.7836                                     // Bottom
+            "status": "ok",
+            "data": {
+                "document": {                                                        // document info
+                    "id": "26a08207-0c8e-4c6b-9600-08a6bb4b6789",                    // upload id
+                    "name": "xxxxxx.pdf",                                            // document name
+                    "page_type": "lite",                                            // page type
+                    "ocr_type": "auto",                                                // ocr type
+                    "page_count": 5,                                                // page count
+                    "create_time": 1730089519                                        // create timestamp
+                },
+                "syllabus": [                                                        // syllabus info 
+                    {
+                        "index": 16,                                                // syllabus index
+                        "element": 16,                                                // element index
+                        "parent": -1,                                                // syllabus parent index, -1: no parent
+                        "title": "1 智能家居系统总体设计方案",                            // syllabus title
+                        "level": 1,                                                    // syllabus level
+                        "children": [],                                                // syllabus children index
+                        "dest": {                                                    // syllabus position
+                            "box": [
+                                316.82696533203125,
+                                729.0306396484375,
+                                477.0464172363281,
+                                739.8184814453125
+                            ],
+                            "page_index": 0
+                        },
+                        "range": [                                                    // element range
+                            16,
+                            36
+                        ]
+                    },
+                    ...
+                ],
+                "elements": [                                                        // elements info
+                    {
+                        "page": 0,                                                    // element page
+                        "text": "xxxxxxxxxx",                                        // element text
+                        "type": "page_header",                                        // element type: page_header
+                        "index": 0,                                                    // element index
+                        "outline": [                                                // element outline
+                            54.15061242580414,                                        // element outline: left
+                            46.73454988598824,                                        // element outline: top
+                            558.0768379211426,                                        // element outline: right
+                            67.44403215646744                                        // element outline: bottom
                         ],
-                        "position": [                                   // Position
+                        "rotation": 0,                                                // angle of rotation
+                        "syllabus": -1                                                // syllabus index
+                    },
+                    {
+                        "page": 0,
+                        "text": "XXXXXXXXX",                                        
+                        "type": "paragraph",                                        // element type: paragraph
+                        "index": 8,
+                        "outline": [
+                            88.8379647731781,
+                            339.749862742424,
+                            541.4502785682678,
+                            348.09281425476075
+                        ],
+                        "rotation": 0,
+                        "syllabus": -1
+                    },
+                    {
+                        "page": 3,
+                        "type": "table",                                            // element type: table
+                        "grid": {                                                    // table grid info 
+                            "rows": [                                                // row line 
+                                7.860376572608942,
+                                36.0364997625351,
+                                58.635456681251526,
+                                81.14922146797178,
+                                98.57856769561769
+                            ],
+                            "columns": [                                            // col line
+                                14.636069440841673,
+                                61.14946856498718,
+                                106.51888520717623
+                            ]
+                        },
+                        "cells": {                                                    // cells info 
+                            "0_0": {                                                // cells index, format: {row_index}_{col_index}
+                                "text": "说明"
+                            },
+                            "0_2": {
+                                "text": "长度/B"
+                            },
+                            ...
+                        },
+                        "index": 68,                                                // element indeex
+                        "title": "表 1 串口与协调器协议格式",                            // table title
+                        "merged": [                                                    // table cell merge info
+                            [
+                                [                                                    
+                                    0,
+                                    0
+                                ],
+                                [
+                                    0,
+                                    1
+                                ]
+                            ],
+                            ...
+                        ],
+                        "outline": [
+                            62.470155930519105,
+                            171.8411531686783,
+                            282.46920719146726,
+                            296.70778369903564
+                        ],
+                        "position": null,
+                        "rotation": 0,
+                        "syllabus": 57,
+                        "title_index": 67
+                    },
+                    {
+                        "page": 8,
+                        "type": "image",                                            // element type: image
+                        "index": 104,
+                        "outline": [
+                            35.0,
+                            45.0,
+                            577.0,
+                            254.0
+                        ],
+                        "position": [
                             0,
                             0
                         ],
                         "rotation": 0,
-                        "syllabus": -1,                                 // is syllabus
-                        "continued": false,
-                        "outline_score": 0.02282804250717163,
-                        "page_merged_paragraph": null
-                    }
-                },
-                {
-                    "page": 1,
-                    "content": {
-                        "page": 1,
-                        "type": "IMAGE",                                // page element type, image
-                        "index": 21,
+                        "syllabus": 76
+                    },
+                    {
+                        "page": 5,                    
+                        "text": "xxxxxxx",
+                        "type": "shape",                                            // element type: shape
+                        "index": 49,
                         "outline": [
-                            70,
-                            244,
-                            273,
-                            457
+                            206.7656,
+                            98.4073,
+                            379.5701,
+                            202.0085
                         ],
                         "position": [
-                            1,
+                            0,
                             0
                         ],
                         "rotation": 0,
-                        "syllabus": 17,
-                        "outline_score": 1
-                    }
-                },
-                {
-                    "page": 1,
-                    "content": {
-                        "page": 6,
-                        "type": "TABLE",                                // page element type, table
-                        "grid": {
-                            "rows": [
-                                20.976999999999975,
-                                40.51164999999992
-                            ],
-                            "columns": [
-                                78.6737,
-                                160.49965,
-                                242.2957,
-                                324.11170000000004
+                        "syllabus": 21
+                    },
+                    {
+                        "page": 25,
+                        "type": "figure",                                            // element type: figure
+                        "index": 406,
+                        "caption": {                                                // caption info
+                            "text": "Figure B.6: xxxx.",                            // caption text
+                            "outline": [
+                                145.65978624544093,
+                                755.3886497876921,
+                                449.41304623092736,
+                                765.8235573110002
                             ]
                         },
-                        "cells": {                                      // table cell info
-                            "0_0": {                                    // cell coordinate, x_y
-                                "text": "财务指标"
-                            },
-                            ...
-                        },
-                        "index": 85,
-                        "title": "xxxxx",                               // table title
-                        "merged": [],
                         "outline": [
-                            61.7908,
-                            706.1276,
-                            468.4481,
-                            766.6573
+                            70.94628075868386,
+                            73.55555940069547,
+                            523.8772810625109,
+                            765.8235573110002
                         ],
-                        "position": null,
-                        "syllabus": 74,
-                        "continued": true,
-                        "docx_meta": {
-                            "xpath": "/w:document[1]/w:body[1]/w:tbl[5]"
+                        "rotation": 0
+                    },
+                    {
+                        "page": 3,
+                        "type": "algorithm",                                        // element type: algorithm
+                        "index": 73,
+                        "caption": {
+                            "text": "Algorithm 1: xxxx",                    
+                            "outline": [
+                                320.0706,
+                                255.0245,
+                                502.8495,
+                                264.061
+                            ]
                         },
-                        "title_index": 84,
-                        "combo_table_idx": 2,
-                        "page_merged_table": {                          // table merged info
-                            "cells_idx": {
-                                "85": {
-                                    "0_0": "0_0",
-                                    "0_1": "0_1",
-                                    ...
-                                },
-                                "86": {
-                                    "3_0": "0_0",
-                                    "3_1": "0_1",
-                                    ...
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    "page": 1,
-                    "text": "xxxxxx",                                   // page header text
-                    "type": "PAGE_HEADER",                              // page type: page header
-                    "chars": [                                          // page header chars info
-                        {
-                            "box": [                                    // char box
-                                108.59,                                 // char left
-                                30.26,                                  // char top
-                                113.93,                                 // char right
-                                36.1779                                 // char bottom
-                            ],
-                            "page": 1,                                  // page index
-                            "text": "P"                                 // char text
-                        },
-                        {
-                            "box": [
-                                113.9,
-                                32.23,
-                                118.61,
-                                36.78
-                            ],
-                            "page": 1,
-                            "text": "u"
-                        },
-                       ...
-                    ],
-                    "index": 11,
-                    "outline": [
-                        108.58999633789062,
-                        29.764999389648438,
-                        292.90500259399414,
-                        38.920000076293945
-                    ],
-                    "position": [
-                        0,
-                        0
-                    ],
-                    "rotation": 0.08139999955892563,
-                    "syllabus": 0,
-                    "outline_score": 0.005198657512664795
-                },
-                {
-                    "page": 2,
-                    "text": "3",
-                    "type": "PAGE_FOOTER",                              // page type: page footer
-                    "chars": [
-                        {
-                            "box": [
-                                303.73,
-                                752.73,
-                                307.5,
-                                759.5
-                            ],
-                            "page": 2,
-                            "text": "3"
-                        }
-                    ],
-                    "index": 32,
-                    "outline": [
-                        303.7250061035156,
-                        752.7349853515625,
-                        307.50000619888306,
-                        759.0
-                    ],
-                    "position": [
-                        0,
-                        0
-                    ],
-                    "rotation": 0.0,
-                    "syllabus": 6,
-                    "outline_score": 0.04728192090988159
-                },
-                ...
-            ]
-        }
+                        "outline": [
+                            313.24894318900124,
+                            250.66168745308545,
+                            559.1750454329962,
+                            519.9234423149098
+                        ],
+                        "rotation": 0
+                    },
+                    {
+                        "page": 3,
+                        "text": "",
+                        "type": "page_footer",                                        // element type: page_footer
+                        "index": 80,
+                        "outline": [
+                            1.752224612236023,
+                            810.1005857467651,
+                            531.8912698745728,
+                            851.934254360199
+                        ],
+                        "rotation": 0,
+                        "syllabus": 75
+                    },
+                    ...
+                ],
+                "stamps": []
+            }
+        }        
         ```
       operationId: PDF_Parser_pdf_parser_post
       requestBody:
@@ -1609,7 +1638,7 @@ components:
           maxLength: 36
           minLength: 36
           title: Upload Id
-          description: document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly.
+          description: document id, created by `POST /documents/upload` API accordingly.
       type: object
       title: PDFParseReq
     PDFParseResp:
@@ -1644,23 +1673,9 @@ components:
     ResourcePackageType:
       type: string
       enum:
-        - interface_document_page
-        - interface_document_ocr_page
-        - document
-        - page
-        - question
-        - page_and_question
-        - lite_page_and_question
-        - lite_page
-        - basic_page_and_question
-        - basic_page
-        - token
-        - gpt_4_question
-        - gpt_4o_question
-        - api_gpt_4_question
-        - document_ocr_page
-        - api_gpt_4o_question
-        - api_pdf_parser
+        - lite
+        - elite
+        - basic
       title: ResourcePackageType
     PDFViewerRect:
       title: PDFViewerRect
