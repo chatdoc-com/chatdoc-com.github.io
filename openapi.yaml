@@ -1643,6 +1643,32 @@ components:
       title: PDFParseReq
     PDFParseResp:
       properties:
+        document:
+          $ref: '#/components/schemas/PDFParserDocument'
+        syllabus:
+          items:
+            type: object
+          type: array
+          title: Syllabus
+        elements:
+          items:
+            type: object
+          type: array
+          title: Elements
+        stamps:
+          items:
+            type: object
+          type: array
+          title: Stamps
+      type: object
+      required:
+          - document
+          - syllabus
+          - elements
+          - stamps
+      title: PDFParseResp
+    PDFParserDocument:
+      properties:
         id:
           type: string
           title: Id
@@ -1653,23 +1679,21 @@ components:
           $ref: '#/components/schemas/ResourcePackageType'
         ocr_type:
           $ref: '#/components/schemas/UploadOcrType'
+        page_count:
+          type: integer
+          title: Page Count
         create_time:
           type: integer
           title: Create Time
-        data:
-          items:
-            type: object
-          type: array
-          title: Data
       type: object
       required:
         - id
         - name
         - page_type
         - ocr_type
+        - page_count
         - create_time
-        - data
-      title: PDFParseResp
+      title: PDFParserDocument
     ResourcePackageType:
       type: string
       enum:
