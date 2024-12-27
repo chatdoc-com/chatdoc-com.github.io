@@ -1032,8 +1032,8 @@ paths:
                 $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
-  /pdf_parser:
-    post:
+  /pdf_parser/{upload_id}:
+    get:
       tags:
         - PDF Parser
       summary: Pdf Parser
@@ -1270,13 +1270,18 @@ paths:
             }
         }        
         ```
-      operationId: PDF_Parser_pdf_parser_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PDFParseReq'
-        required: true
+      "operationId": PDF_Parser_pdf_parser__upload_id__get,
+      "parameters":
+          - "name": "upload_id"
+            "in": "path"
+            "required": true
+            "schema":
+              "type": "string"
+              "minLength": 36
+              "maxLength": 36
+              "description": "document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly."
+              "title": "Upload Id"
+            "description": "document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly."
       responses:
         "200":
           description: Successful Response
@@ -1631,16 +1636,6 @@ components:
         - doc
       type: string
       description: An enumeration.
-    PDFParseReq:
-      properties:
-        upload_id:
-          type: string
-          maxLength: 36
-          minLength: 36
-          title: Upload Id
-          description: document id, created by `POST /documents/upload` API accordingly.
-      type: object
-      title: PDFParseReq
     PDFParseResp:
       properties:
         document:
