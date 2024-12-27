@@ -1270,7 +1270,7 @@ paths:
             }
         }        
         ```
-      "operationId": PDF_Parser_pdf_parser__upload_id__get,
+      "operationId": PDF_Parser_pdf_parser__upload_id__get
       "parameters":
           - "name": "upload_id"
             "in": "path"
