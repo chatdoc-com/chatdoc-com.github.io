@@ -1042,6 +1042,8 @@ paths:
         
         Please note: to upload documents, you need to use the `Upload Document` API; for scanned files, please specify UploadOcrType to parse.
         
+        **Response**
+        
         `Document`: 
         
         | parameter   | description |
@@ -1070,20 +1072,6 @@ paths:
 
         For more detailed information, please refer to the Response example.
         
-        **Response**
-        
-        * Page type:
-
-            | parameter   | description |
-            |--------|------|
-            | paragraph  | element type: paragraph   |
-            | table   |  element type: table  |
-            | image  | element type: image  |
-            | shape  | element type: shape  |
-            | figure  | element type: figure  |
-            | page_header  | element type: page header  |
-            | page_footer | element type: page footer  |
-
         * Response example:
         ```json
         {
@@ -1286,9 +1274,9 @@ paths:
               "type": "string"
               "minLength": 36
               "maxLength": 36
-              "description": "document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly."
+              "description": "document id, created by `POST /documents/upload` API accordingly."
               "title": "Upload Id"
-            "description": "document id or collection id, created by `POST /documents/upload` or `POST /collections` APIs accordingly."
+            "description": "document id, created by `POST /documents/upload` API accordingly."
       responses:
         "200":
           description: Successful Response
