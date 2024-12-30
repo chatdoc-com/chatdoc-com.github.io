@@ -1038,7 +1038,37 @@ paths:
         - PDF Parser
       summary: Pdf Parser
       description: |-
-        Get pdf parser result from document, only support PDF file
+        Get the parsed results of your uploaded PDFs.
+        
+        Please note: to upload documents, you need to use the `Upload Document` API; for scanned files, please specify UploadOcrType to parse.
+        
+        `Document`: 
+        
+        | parameter   | description |
+        |--------|------|
+        | id  | upload_id   |
+        | name  | document_name   |
+        | page_type  | page_type, according to the `page_type` used when uploading the document.   |
+        | ocr_type  | ocr_type, according to the `ocr_type` used when uploading the document.   |
+        | page_count  | total pages of the document, which is also the total pages consumed in this parsing.   |
+        | create_time  | document_upload time   |
+        
+        `sysllabus`: 
+
+        * Table of Contents structure of the document.
+
+        `elements`:The document's  elements chunk information, including specific locations and text.
+
+        * The main types of elements are:
+
+          * paragraph
+          * table
+          * figure
+          * page_header
+          * page_footer
+
+
+        For more detailed information, please refer to the Response example.
         
         **Response**
         
