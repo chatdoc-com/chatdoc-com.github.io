@@ -1055,7 +1055,7 @@ paths:
         | page_count  | total pages of the document, which is also the total pages consumed in this parsing.   |
         | create_time  | document_upload time   |
         
-        `sysllabus`: 
+        `syllabus`: 
 
         * Table of Contents structure of the document.
 
