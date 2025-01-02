@@ -1427,6 +1427,8 @@ components:
           $ref: "#/components/schemas/PackageDataResp"
         elite_page:
           $ref: "#/components/schemas/PackageDataResp"
+        lite_page:
+          $ref: "#/components/schemas/PackageDataResp"
         documents_tokens:
           $ref: "#/components/schemas/PackageDataResp"
         gpt4_question:
