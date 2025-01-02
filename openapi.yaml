@@ -425,7 +425,7 @@ info:
 
     Collection is just a special type of `document`, they have common properties like `name`, `status` etc. The difference is that as for questioning, a document can be standalone or grouped as a `collection`, each file collection is a customized database, and you can acquire knowledge effortlessly through conversation.
 
-    ChatDOC offers three distinct page package types: Elite, Basic, and Lite. When you use one of these page packages to upload a file, the same page package type is automatically applied when you clone that file into a collection.
+    ChatDOC offers two distinct page package types: Elite and Basic. When you use one of these page packages to upload a file, the same page package type is automatically applied when you clone that file into a collection.
 
     ## Question
 
@@ -1313,10 +1313,6 @@ paths:
                 "max_count": 3000,
                 "used_count": 1045
               },
-              "lite_page": { # may be null
-                "max_count": 3000,
-                "used_count": 1046
-              },
               "question": { # may be null
                 "max_count": 3000,
                 "used_count": 11
@@ -1423,8 +1419,6 @@ components:
           $ref: "#/components/schemas/PackageDataResp"
         question:
           $ref: "#/components/schemas/PackageDataResp"
-        lite_page:
-          $ref: "#/components/schemas/PackageDataResp"
         basic_page:
           $ref: "#/components/schemas/PackageDataResp"
         elite_page:
@@ -1471,7 +1465,7 @@ components:
           anyOf:
             - $ref: "#/components/schemas/UploadPackageType"
             - type: string
-          description: if provided, use this package(lite, basic, elite) to upload, this parameter is only effective for PDF file. if upload file type is (md,epub,txt), this parameter will be ignore
+          description: if provided, use this package(elite, basic) to upload, this parameter is only effective for PDF file. if upload file type is (md,epub,txt), this parameter will be ignore
           default: elite
         collection_id:
           title: Collection Id
@@ -1682,7 +1676,6 @@ components:
       type: string
       enum:
         - elite
-        - lite
         - basic
       title: ResourcePackageType
     PDFViewerRect:
@@ -1932,7 +1925,6 @@ components:
       title: UploadPackageType
       enum:
         - elite
-        - lite
         - basic
       type: string
       description: An enumeration.
