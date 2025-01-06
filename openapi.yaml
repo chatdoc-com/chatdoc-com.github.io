@@ -1080,7 +1080,7 @@ paths:
                 "document": {                                                         // document info
                     "id": "26a08207-0c8e-4c6b-9600-08a6bb4b6789",                     // upload id
                     "name": "xxxxxx.pdf",                                             // document name
-                    "page_type": "elite",                                              // page type
+                    "page_type": "elite",                                             // page type
                     "ocr_type": "auto",                                               // ocr type
                     "page_count": 5,                                                  // page count
                     "create_time": 1730089519                                         // create timestamp
@@ -1090,7 +1090,7 @@ paths:
                         "index": 16,                                                  // syllabus index
                         "element": 16,                                                // element index
                         "parent": -1,                                                 // syllabus parent index, -1: no parent
-                        "title": "1 智能家居系统总体设计方案",                            // syllabus title
+                        "title": "1 Introduction",                                    // syllabus title
                         "level": 1,                                                   // syllabus level
                         "children": [],                                               // syllabus children index
                         "dest": {                                                     // syllabus position
@@ -1157,15 +1157,15 @@ paths:
                         },
                         "cells": {                                                    // cells info 
                             "0_0": {                                                  // cells index, format: {row_index}_{col_index}
-                                "text": "说明"
+                                "text": "Intro"
                             },
                             "0_2": {
-                                "text": "长度/B"
+                                "text": "Length/B"
                             },
                             ...
                         },
                         "index": 68,                                                   // element indeex
-                        "title": "表 1 串口与协调器协议格式",                              // table title
+                        "title": "Tab 1 Serial port",                                  // table title
                         "merged": [                                                    // table cell merge info
                             [
                                 [                                                    
