@@ -1055,10 +1055,6 @@ paths:
         | page_count  | total pages of the document, which is also the total pages consumed in this parsing.   |
         | create_time  | document_upload time   |
         
-        `syllabus`: 
-
-        * Table of Contents structure of the document.
-
         `elements`:The document's  elements chunk information, including specific locations and text.
 
         * The main types of elements are:
@@ -1085,30 +1081,6 @@ paths:
                     "page_count": 5,                                                  // page count
                     "create_time": 1730089519                                         // create timestamp
                 },
-                "syllabus": [                                                         // syllabus info 
-                    {
-                        "index": 16,                                                  // syllabus index
-                        "element": 16,                                                // element index
-                        "parent": -1,                                                 // syllabus parent index, -1: no parent
-                        "title": "1 Introduction",                                    // syllabus title
-                        "level": 1,                                                   // syllabus level
-                        "children": [],                                               // syllabus children index
-                        "dest": {                                                     // syllabus position
-                            "box": [
-                                316.82696533203125,
-                                729.0306396484375,
-                                477.0464172363281,
-                                739.8184814453125
-                            ],
-                            "page_index": 0
-                        },
-                        "range": [                                                    // element range
-                            16,
-                            36
-                        ]
-                    },
-                    ...
-                ],
                 "elements": [                                                         // elements info
                     {
                         "page": 0,                                                    // element page
@@ -1635,11 +1607,6 @@ components:
       properties:
         document:
           $ref: '#/components/schemas/PDFParserDocument'
-        syllabus:
-          items:
-            type: object
-          type: array
-          title: Syllabus
         elements:
           items:
             type: object
@@ -1648,7 +1615,6 @@ components:
       type: object
       required:
           - document
-          - syllabus
           - elements
       title: PDFParseResp
     PDFParserDocument:
