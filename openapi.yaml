@@ -1238,7 +1238,7 @@ paths:
                         ],
                         "rotation": 0,
                         "is_heading": false,
-                        "syllabus": 75
+                        "syllabus": -1
                     },
                     ...
                 ]
