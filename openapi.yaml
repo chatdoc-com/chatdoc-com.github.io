@@ -1094,6 +1094,7 @@ paths:
                             67.44403215646744                                         // element outline: bottom
                         ],
                         "rotation": 0,                                                // angle of rotation
+                        "is_heading": false,                                          // element is not heading
                         "syllabus": -1                                                // syllabus index
                     },
                     {
@@ -1108,6 +1109,7 @@ paths:
                             348.09281425476075
                         ],
                         "rotation": 0,
+                        "is_heading": true,                                           // element is heading
                         "syllabus": -1
                     },
                     {
@@ -1159,6 +1161,7 @@ paths:
                         ],
                         "position": null,
                         "rotation": 0,
+                        "is_heading": false 
                         "syllabus": 57,
                         "title_index": 67
                     },
@@ -1177,6 +1180,7 @@ paths:
                             0
                         ],
                         "rotation": 0,
+                        "is_heading": false, 
                         "syllabus": 76
                     },
                     {
@@ -1195,6 +1199,7 @@ paths:
                             0
                         ],
                         "rotation": 0,
+                        "is_heading": false,
                         "syllabus": 21
                     },
                     {
@@ -1216,7 +1221,9 @@ paths:
                             523.8772810625109,
                             765.8235573110002
                         ],
-                        "rotation": 0
+                        "rotation": 0,
+                        "is_heading": false,
+                        "syllabus": 75
                     },
                     {
                         "page": 3,
@@ -1230,6 +1237,7 @@ paths:
                             851.934254360199
                         ],
                         "rotation": 0,
+                        "is_heading": false,
                         "syllabus": 75
                     },
                     ...
