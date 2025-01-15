@@ -427,7 +427,7 @@ info:
 
     Collection is just a special type of `document`, they have common properties like `name`, `status` etc. The difference is that as for questioning, a document can be standalone or grouped as a `collection`, each file collection is a customized database, and you can acquire knowledge effortlessly through conversation.
 
-    ChatDOC offers three distinct page package types: Elite, Basic, and Lite. When you use one of these page packages to upload a file, the same page package type is automatically applied when you clone that file into a collection.
+    ChatDOC offers two distinct page package types: Elite and Basic. When you use one of these page packages to upload a file, the same page package type is automatically applied when you clone that file into a collection.
 
     ## Question
 
@@ -1034,6 +1034,246 @@ paths:
                 $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
+  /pdf_parser/{upload_id}:
+    get:
+      tags:
+        - PDF Parser
+      summary: Pdf Parser
+      description: |-
+        Get the parsed results of your uploaded PDFs.
+        
+        Please note: to upload documents, you need to use the `Upload Document` API; for scanned files, please specify UploadOcrType to parse.
+        
+        **Response**
+        
+        `Document`: 
+        
+        | parameter   | description |
+        |--------|------|
+        | id  | upload_id   |
+        | name  | document_name   |
+        | page_type  | page_type, according to the `page_type` used when uploading the document.   |
+        | ocr_type  | ocr_type, according to the `ocr_type` used when uploading the document.   |
+        | page_count  | total pages of the document, which is also the total pages consumed in this parsing.   |
+        | create_time  | document_upload time   |
+        
+        `elements`:The document's  elements chunk information, including specific locations and text.
+
+        * The main types of elements are:
+
+          * paragraph
+          * table
+          * figure
+          * page_header
+          * page_footer
+
+
+        For more detailed information, please refer to the Response example.
+        
+        * Response example:
+        ```json
+        {
+            "status": "ok",
+            "data": {
+                "document": {                                                         // document info
+                    "id": "26a08207-0c8e-4c6b-9600-08a6bb4b6789",                     // upload id
+                    "name": "xxxxxx.pdf",                                             // document name
+                    "page_type": "elite",                                             // page type
+                    "ocr_type": "auto",                                               // ocr type
+                    "page_count": 5,                                                  // page count
+                    "create_time": 1730089519                                         // create timestamp
+                },
+                "elements": [                                                         // elements info
+                    {
+                        "page": 0,                                                    // element page
+                        "text": "xxxxxxxxxx",                                         // element text
+                        "type": "page_header",                                        // element type: page_header
+                        "index": 0,                                                   // element index
+                        "outline": [                                                  // element outline
+                            54.15061242580414,                                        // element outline: left
+                            46.73454988598824,                                        // element outline: top
+                            558.0768379211426,                                        // element outline: right
+                            67.44403215646744                                         // element outline: bottom
+                        ],
+                        "rotation": 0,                                                // angle of rotation
+                        "is_heading": false,                                          // element is not heading
+                        "syllabus": -1                                                // syllabus index
+                    },
+                    {
+                        "page": 0,
+                        "text": "XXXXXXXXX",                                        
+                        "type": "paragraph",                                          // element type: paragraph
+                        "index": 8,
+                        "outline": [
+                            88.8379647731781,
+                            339.749862742424,
+                            541.4502785682678,
+                            348.09281425476075
+                        ],
+                        "rotation": 0,
+                        "is_heading": true,                                           // element is heading
+                        "syllabus": -1
+                    },
+                    {
+                        "page": 3,
+                        "type": "table",                                              // element type: table
+                        "grid": {                                                     // table grid info 
+                            "rows": [                                                 // row line 
+                                7.860376572608942,
+                                36.0364997625351,
+                                58.635456681251526,
+                                81.14922146797178,
+                                98.57856769561769
+                            ],
+                            "columns": [                                              // col line
+                                14.636069440841673,
+                                61.14946856498718,
+                                106.51888520717623
+                            ]
+                        },
+                        "cells": {                                                    // cells info 
+                            "0_0": {                                                  // cells index, format: {row_index}_{col_index}
+                                "text": "Intro"
+                            },
+                            "0_2": {
+                                "text": "Length/B"
+                            },
+                            ...
+                        },
+                        "index": 68,                                                   // element indeex
+                        "title": "Tab 1 Serial port",                                  // table title
+                        "merged": [                                                    // table cell merge info
+                            [
+                                [                                                    
+                                    0,
+                                    0
+                                ],
+                                [
+                                    0,
+                                    1
+                                ]
+                            ],
+                            ...
+                        ],
+                        "outline": [
+                            62.470155930519105,
+                            171.8411531686783,
+                            282.46920719146726,
+                            296.70778369903564
+                        ],
+                        "position": null,
+                        "rotation": 0,
+                        "is_heading": false 
+                        "syllabus": 57,
+                        "title_index": 67
+                    },
+                    {
+                        "page": 8,
+                        "type": "image",                                            // element type: image
+                        "index": 104,
+                        "outline": [
+                            35.0,
+                            45.0,
+                            577.0,
+                            254.0
+                        ],
+                        "position": [
+                            0,
+                            0
+                        ],
+                        "rotation": 0,
+                        "is_heading": false, 
+                        "syllabus": 76
+                    },
+                    {
+                        "page": 5,                    
+                        "text": "xxxxxxx",
+                        "type": "shape",                                            // element type: shape
+                        "index": 49,
+                        "outline": [
+                            206.7656,
+                            98.4073,
+                            379.5701,
+                            202.0085
+                        ],
+                        "position": [
+                            0,
+                            0
+                        ],
+                        "rotation": 0,
+                        "is_heading": false,
+                        "syllabus": 21
+                    },
+                    {
+                        "page": 25,
+                        "type": "figure",                                             // element type: figure
+                        "index": 406,
+                        "caption": {                                                  // caption info
+                            "text": "Figure B.6: xxxx.",                              // caption text
+                            "outline": [
+                                145.65978624544093,
+                                755.3886497876921,
+                                449.41304623092736,
+                                765.8235573110002
+                            ]
+                        },
+                        "outline": [
+                            70.94628075868386,
+                            73.55555940069547,
+                            523.8772810625109,
+                            765.8235573110002
+                        ],
+                        "rotation": 0,
+                        "is_heading": false,
+                        "syllabus": 75
+                    },
+                    {
+                        "page": 3,
+                        "text": "",
+                        "type": "page_footer",                                        // element type: page_footer
+                        "index": 80,
+                        "outline": [
+                            1.752224612236023,
+                            810.1005857467651,
+                            531.8912698745728,
+                            851.934254360199
+                        ],
+                        "rotation": 0,
+                        "is_heading": false,
+                        "syllabus": -1
+                    },
+                    ...
+                ]
+            }
+        }        
+        ```
+      "operationId": PDF_Parser_pdf_parser_upload_id_get
+      "parameters":
+          - "name": "upload_id"
+            "in": "path"
+            "required": true
+            "schema":
+              "type": "string"
+              "minLength": 36
+              "maxLength": 36
+              "description": "document id, created by `POST /documents/upload` API accordingly."
+              "title": "Upload Id"
+            "description": "document id, created by `POST /documents/upload` API accordingly."
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PDFParseResp'
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - HTTPBearer: []
   /users/quota:
     get:
       tags:
@@ -1165,11 +1405,11 @@ components:
           $ref: "#/components/schemas/PackageDataResp"
         question:
           $ref: "#/components/schemas/PackageDataResp"
-        lite_page:
-          $ref: "#/components/schemas/PackageDataResp"
         basic_page:
           $ref: "#/components/schemas/PackageDataResp"
         elite_page:
+          $ref: "#/components/schemas/PackageDataResp"
+        lite_page:
           $ref: "#/components/schemas/PackageDataResp"
         documents_tokens:
           $ref: "#/components/schemas/PackageDataResp"
@@ -1213,7 +1453,7 @@ components:
           anyOf:
             - $ref: "#/components/schemas/UploadPackageType"
             - type: string
-          description: if provided, use this package(lite, basic, elite) to upload, this parameter is only effective for PDF file. if upload file type is (md,epub,txt), this parameter will be ignore
+          description: if provided, use this package(elite, basic) to upload, this parameter is only effective for PDF file. if upload file type is (md,epub,txt), this parameter will be ignore
           default: elite
         collection_id:
           title: Collection Id
@@ -1373,6 +1613,53 @@ components:
         - doc
       type: string
       description: An enumeration.
+    PDFParseResp:
+      properties:
+        document:
+          $ref: '#/components/schemas/PDFParserDocument'
+        elements:
+          items:
+            type: object
+          type: array
+          title: Elements
+      type: object
+      required:
+          - document
+          - elements
+      title: PDFParseResp
+    PDFParserDocument:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        page_type:
+          $ref: '#/components/schemas/ResourcePackageType'
+        ocr_type:
+          $ref: '#/components/schemas/UploadOcrType'
+        page_count:
+          type: integer
+          title: Page Count
+        create_time:
+          type: integer
+          title: Create Time
+      type: object
+      required:
+        - id
+        - name
+        - page_type
+        - ocr_type
+        - page_count
+        - create_time
+      title: PDFParserDocument
+    ResourcePackageType:
+      type: string
+      enum:
+        - elite
+        - basic
+      title: ResourcePackageType
     PDFViewerRect:
       title: PDFViewerRect
       required:
@@ -1620,7 +1907,6 @@ components:
       title: UploadPackageType
       enum:
         - elite
-        - lite
         - basic
       type: string
       description: An enumeration.
