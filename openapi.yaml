@@ -513,6 +513,7 @@ paths:
         LINK_DOWNLOAD_ERROR = -4           file link download failed
         EXCEED_SIZE_ERROR = -5             file size exceed limit
         EXCEED_TOKENS_ERROR = -6           exceed tokens limit
+        EXCEED_MAX_TOKENS_ERROR = -7       exceed max tokens limit
         PAGE_PACKAGE_NOT_ENOUGH_ERROR = -9 page package not enough
         PAGE_LIMIT_ERROR = -10             page limit error
         TITLE_COMPLETE_ERROR = -11         complete title failed
@@ -601,6 +602,7 @@ paths:
         LINK_DOWNLOAD_ERROR = -4           file link download failed
         EXCEED_SIZE_ERROR = -5             file size exceed limit
         EXCEED_TOKENS_ERROR = -6           exceed tokens limit
+        EXCEED_MAX_TOKENS_ERROR = -7       exceed max tokens limit
         PAGE_PACKAGE_NOT_ENOUGH_ERROR = -9 page package not enough
         PAGE_LIMIT_ERROR = -10             page limit error
         TITLE_COMPLETE_ERROR = -11         complete title failed
