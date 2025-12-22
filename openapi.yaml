@@ -488,10 +488,6 @@ paths:
 
         * Uploading files consumes your pages quota, and uploading same files again will still consume quota.
         * We'll keep your uploaded file for one year. If you do not make another payment for the API after one year, the file will be permanently deleted.
-        * Usage instructions for the OCR field:
-            > OCR Pages Package must be used in conjunction with PDF Pages Package; both packages are deducted equally.
-            > Three parameters are available: defaults to disable, with optional values auto or force.
-            > When OCR is set to force, it allows OCR Pages Package usage for Word documents. However, for other document types like ePub and Markdown, it won't take effect.
 
         For reference, other statuses are as follows:
 
@@ -518,7 +514,7 @@ paths:
         PAGE_LIMIT_ERROR = -10             page limit error
         TITLE_COMPLETE_ERROR = -11         complete title failed
         READ_TMP_FILE_ERROR = -12          read tmp file error
-        OCR_PAGE_LIMIT_ERROR = -13         ocr page limit error
+        OCR_PAGE_LIMIT_ERROR = -13         Deprecated! ocr page limit error
         CONTENT_POLICY_ERROR = -14         content security check did not pass
         CONTENT_DECODE_ERROR = -15         file content decode error
         HTML_CONVERT_ERROR = -16           html convert error
@@ -607,7 +603,7 @@ paths:
         PAGE_LIMIT_ERROR = -10             page limit error
         TITLE_COMPLETE_ERROR = -11         complete title failed
         READ_TMP_FILE_ERROR = -12          read tmp file error
-        OCR_PAGE_LIMIT_ERROR = -13         ocr page limit error
+        OCR_PAGE_LIMIT_ERROR = -13         Deprecated! ocr page limit error
         CONTENT_POLICY_ERROR = -14         content security check did not pass
         CONTENT_DECODE_ERROR = -15         file content decode error
         HTML_CONVERT_ERROR = -16           html convert error
@@ -1213,10 +1209,6 @@ paths:
                 "max_count": 3000,
                 "used_count": 11
               },
-              "ocr_page": { # may be null
-                "max_count": 3000,
-                "used_count": 11
-              },
               "gpt4_question": { # may be null
                 "max_count": 3000,
                 "used_count": 11
@@ -1323,8 +1315,6 @@ components:
           $ref: "#/components/schemas/PackageDataResp"
         gpt4o_question:
           $ref: "#/components/schemas/PackageDataResp"
-        ocr_page:
-          $ref: "#/components/schemas/PackageDataResp"
     APIUploadResp:
       title: APIUploadResp
       required:
@@ -1369,7 +1359,7 @@ components:
           allOf:
             - $ref: "#/components/schemas/UploadOcrType"
           description: if provided, use this OCR type to upload
-          default: disable
+          default: auto
         file:
           title: File
           type: string
@@ -1416,9 +1406,6 @@ components:
           type: string
         page_num:
           title: Page Num
-          type: integer
-        ocr_page_num:
-          title: Ocr Page Num
           type: integer
     DocumentStatus:
       title: DocumentStatus
